@@ -1,25 +1,20 @@
 import { build } from "vite";
-import { cp, mkdir, writeFile } from "node:fs/promises";
+import { cp, mkdir, readdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { mfeConfig } from "./mfe-config.mjs";
+import { remotes, runtimeManifest } from "./runtime-manifest.mjs";
 
 export const root = fileURLToPath(new URL("../", import.meta.url));
-export const remotes = ["intro", "brickhold", "field-guide", "studio"];
-export async function prepareContent() {
-  await mkdir(resolve(root, "apps/shell/public/data"), { recursive: true });
-  await cp(resolve(root, "content"), resolve(root, "apps/shell/public/data"), {
+export { remotes };
+export async function prepareContent(publicDirectory) {
+  await mkdir(resolve(publicDirectory, "data"), { recursive: true });
+  await cp(resolve(root, "content"), resolve(publicDirectory, "data"), {
     recursive: true,
   });
-  const manifest = Object.fromEntries(
-    remotes.map((name) => [
-      name,
-      { module: `mfe/${name}/entry.js`, stylesheet: `mfe/${name}/style.css` },
-    ]),
-  );
   await writeFile(
-    resolve(root, "apps/shell/public/mfe-manifest.json"),
-    JSON.stringify(manifest, null, 2),
+    resolve(publicDirectory, "mfe-manifest.json"),
+    JSON.stringify(runtimeManifest(), null, 2),
   );
 }
 export async function buildRemotes(outputDirectory) {
@@ -30,14 +25,28 @@ if (
   process.argv[1] &&
   resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 ) {
-  await prepareContent();
   const outputDirectory = resolve(
     root,
     process.argv.includes("--mfe") ? "dist/mfe" : "dist/production-mfe",
   );
   await buildRemotes(outputDirectory);
   if (!process.argv.includes("--mfe")) {
-    await build({ configFile: resolve(root, "apps/shell/vite.config.ts") });
+    const publicDirectory = resolve(root, "dist/production-public");
+    const sourcePublic = resolve(root, "apps/shell/public");
+    await mkdir(publicDirectory, { recursive: true });
+    for (const entry of await readdir(sourcePublic, { withFileTypes: true })) {
+      if (["data", "mfe-manifest.json"].includes(entry.name)) continue;
+      await cp(
+        resolve(sourcePublic, entry.name),
+        resolve(publicDirectory, entry.name),
+        { recursive: entry.isDirectory() },
+      );
+    }
+    await prepareContent(publicDirectory);
+    await build({
+      configFile: resolve(root, "apps/shell/vite.config.ts"),
+      publicDir: publicDirectory,
+    });
     await cp(outputDirectory, resolve(root, "dist/site/mfe"), {
       recursive: true,
     });

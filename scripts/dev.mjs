@@ -1,10 +1,9 @@
 import { build, createServer } from "vite";
 import { watch } from "node:fs";
 import { resolve } from "node:path";
-import { root, remotes, prepareContent, buildRemotes } from "./build.mjs";
+import { root, remotes, buildRemotes } from "./build.mjs";
 import { mfeConfig } from "./mfe-config.mjs";
 
-await prepareContent();
 await buildRemotes();
 const server = await createServer({
   configFile: resolve(root, "apps/shell/vite.config.ts"),
@@ -21,7 +20,6 @@ for (const name of remotes) {
 }
 const contentWatcher = watch(resolve(root, "content"), async () => {
   try {
-    await prepareContent();
     server.ws.send({ type: "full-reload" });
   } catch (error) {
     console.error("Content update failed:", error);

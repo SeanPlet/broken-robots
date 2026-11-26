@@ -34,6 +34,7 @@ function GuideContent({
 }) {
   const { data, error } = useContent<CatalogEntry[]>(options, "catalog");
   const [category, setCategory] = useState<"traps" | "enemies">("traps");
+  const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<CatalogEntry | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const trigger = useRef<HTMLButtonElement | null>(null);
@@ -47,9 +48,12 @@ function GuideContent({
     media(options, entry.image.replace(/^media\//, ""));
   const closeDetails = () => dialog.current?.close();
   const entries = data?.filter((entry) => entry.category === category);
+  const pageSize = 3;
+  const visibleEntries = entries?.slice(page * pageSize, (page + 1) * pageSize);
+  const pageCount = Math.ceil((entries?.length ?? 0) / pageSize);
   const count = (group: "traps" | "enemies") =>
     String(
-      data?.filter((entry) => entry.category === group).length ?? 3,
+      data?.filter((entry) => entry.category === group).length ?? 0,
     ).padStart(2, "0");
 
   return (
@@ -63,14 +67,20 @@ function GuideContent({
           <button
             type="button"
             aria-pressed={category === "traps"}
-            onClick={() => setCategory("traps")}
+            onClick={() => {
+              setCategory("traps");
+              setPage(0);
+            }}
           >
             The traps <span aria-hidden="true">{count("traps")}</span>
           </button>
           <button
             type="button"
             aria-pressed={category === "enemies"}
-            onClick={() => setCategory("enemies")}
+            onClick={() => {
+              setCategory("enemies");
+              setPage(0);
+            }}
           >
             The troublemakers <span aria-hidden="true">{count("enemies")}</span>
           </button>
@@ -95,15 +105,18 @@ function GuideContent({
       ) : (
         <div
           className="guide-grid"
+          id="guide-cards"
+          data-count={visibleEntries?.length}
           aria-label={
             category === "traps" ? "Brickhold traps" : "Brickhold enemies"
           }
         >
-          {entries.map((entry, index) => (
+          {visibleEntries?.map((entry, index) => (
             <button
               className={`guide-card guide-card-${entry.id}`}
               type="button"
               key={entry.id}
+              data-category={entry.category}
               aria-label={`Explore ${entry.name}`}
               onClick={(event) => {
                 trigger.current = event.currentTarget;
@@ -127,7 +140,10 @@ function GuideContent({
               </span>
               <span className="guide-card-copy">
                 <span className="guide-card-index" aria-hidden="true">
-                  NO. 0{index + 1}
+                  NO. {String(page * pageSize + index + 1).padStart(2, "0")}
+                  {entry.cost && (
+                    <span className="guide-card-cost">{entry.cost}</span>
+                  )}
                 </span>
                 <span className="guide-card-title">
                   <span className="guide-card-name">{entry.name}</span>
@@ -143,10 +159,47 @@ function GuideContent({
           ))}
         </div>
       )}
+      {entries && entries.length > pageSize && (
+        <nav
+          className="guide-pagination"
+          aria-label={`${category === "traps" ? "Trap" : "Enemy"} roster pages`}
+        >
+          <button
+            type="button"
+            aria-label={`Previous ${category}`}
+            aria-controls="guide-cards"
+            disabled={page === 0}
+            onClick={() => setPage((value) => Math.max(0, value - 1))}
+          >
+            <span className="guide-page-prev">
+              <Arrow />
+            </span>
+          </button>
+          <p role="status" aria-live="polite">
+            {page * pageSize + 1}–
+            {Math.min((page + 1) * pageSize, entries.length)}{" "}
+            <span>
+              of {entries.length}{" "}
+              {category === "traps" ? "defenses" : "enemies"}
+            </span>
+          </p>
+          <button
+            type="button"
+            aria-label={`Next ${category}`}
+            aria-controls="guide-cards"
+            disabled={page >= pageCount - 1}
+            onClick={() =>
+              setPage((value) => Math.min(pageCount - 1, value + 1))
+            }
+          >
+            <Arrow />
+          </button>
+        </nav>
+      )}
       <div className="guide-bottom">
         <span>Small pieces. Big consequences.</span>
         <Spark />
-        <span>More trouble in the making.</span>
+        <span>Captured in Brickhold.</span>
       </div>
       <dialog
         className="guide-dialog"
@@ -184,10 +237,13 @@ function GuideContent({
               <p className="eyebrow">BRICKHOLD FIELD GUIDE</p>
               <h3 id="guide-dialog-title">{selected.name}</h3>
               <p className="guide-dialog-type">{selected.eyebrow}</p>
+              {selected.cost && (
+                <p className="guide-dialog-cost">{selected.cost}</p>
+              )}
               <p>{selected.description}</p>
               <p className="guide-dialog-note">
-                From the Brickhold workbench. The game is in development; these
-                are concept visuals.
+                Actual in-game capture from Brickhold. The game is in
+                development; balance and visuals may change.
               </p>
               <button
                 className="button guide-back"

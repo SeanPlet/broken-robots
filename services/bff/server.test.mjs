@@ -35,7 +35,7 @@ test("site presents the actual studio identity and development status", async ()
     const response = await fetch(`${base}/api/site`);
     assert.equal(response.status, 200);
     const site = await response.json();
-    assert.equal(site.studio.name, "Broken Robots");
+    assert.equal(site.studio.name, "Broken Robot");
     assert.equal(site.studio.email, "hello@brokenrobotstudio.co.za");
     assert.equal(site.game.status, "In development");
   });
@@ -50,9 +50,9 @@ test("catalog filters categories without losing entries or crossing categories",
     const enemies = await (
       await fetch(`${base}/api/catalog?category=enemies`)
     ).json();
-    assert.equal(all.length, 6);
-    assert.equal(traps.length, 3);
-    assert.equal(enemies.length, 3);
+    assert.equal(all.length, 19);
+    assert.equal(traps.length, 8);
+    assert.equal(enemies.length, 11);
     assert.ok(traps.every((entry) => entry.category === "traps"));
     assert.ok(enemies.every((entry) => entry.category === "enemies"));
     assert.deepEqual(

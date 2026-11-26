@@ -177,19 +177,10 @@ a:focus-visible {
   align-items: center;
   gap: 10px;
 }
-.wordmark svg {
-  width: 36px;
-  height: 40px;
-  --paper: #25213f;
-}
-.wordmark > span {
-  font-family: var(--display);
-  font-size: 13px;
-  line-height: 1.02;
-  letter-spacing: -0.2px;
-}
-.wordmark-dot {
-  color: var(--orange);
+.wordmark img {
+  width: 145px;
+  height: auto;
+  filter: drop-shadow(0 2px 3px #211c3666);
 }
 .nav-links {
   display: flex;
@@ -270,11 +261,9 @@ a:focus-visible {
   color: var(--paper);
   font-size: 12px;
 }
-.footer-brand svg {
-  height: 29px;
-  width: 29px;
-  color: var(--yellow);
-  --paper: #211c36;
+.footer-brand img {
+  width: 125px;
+  height: auto;
 }
 .footer-inner > a:last-child {
   font-weight: 700;
@@ -309,12 +298,8 @@ a:focus-visible {
   .nav-inner {
     height: 76px;
   }
-  .wordmark svg {
-    width: 31px;
-    height: 35px;
-  }
-  .wordmark > span {
-    font-size: 11px;
+  .wordmark img {
+    width: 120px;
   }
   .menu-toggle {
     display: flex;

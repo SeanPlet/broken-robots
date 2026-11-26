@@ -1,11 +1,11 @@
 {
   "studio": {
-    "name": "Broken Robots",
+    "name": "Broken Robot",
     "email": "hello@brokenrobotstudio.co.za"
   },
   "game": {
     "title": "Brickhold",
     "status": "In development",
-    "description": "Build a clever defense. Fight alongside it. Brickhold is a brick-built portal defense game designed for four-player online co-op, with devious traps, unruly creatures and a whole lot of flying pieces."
+    "description": "The kingdom's crystals are under attack. Build traps, shape enemy routes and fight alongside your defenses, alone or with up to three friends."
   }
 }

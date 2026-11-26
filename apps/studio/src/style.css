@@ -74,88 +74,66 @@
   position: relative;
   width: 100%;
   max-width: 370px;
-  min-height: 365px;
+  min-height: 285px;
   justify-self: center;
-}
-.studio-pennant {
-  position: absolute;
-  left: 57px;
-  top: 5px;
-  width: 235px;
-  height: 280px;
-  background: #7251af;
-  color: var(--paper);
-  border: 4px solid var(--ink);
-  border-radius: 20px 20px 100px 100px;
-  transform: rotate(-7deg);
-  box-shadow: 9px 9px 0 #25213f2b;
-  display: flex;
-  flex-direction: column;
+  display: grid;
   align-items: center;
-  padding-top: 24px;
 }
-.studio-pennant::before {
+.studio-logo-board {
+  position: relative;
+  width: calc(100% - 12px);
+  background: #453065;
+  padding: 34px 24px;
+  border: 4px solid var(--ink);
+  border-radius: 9px;
+  box-shadow: 9px 9px 0 #25213f2b;
+  transform: rotate(-5deg);
+}
+.studio-logo-board::before {
   content: "";
   position: absolute;
   inset: 10px;
-  border: 2px dashed #fff2d569;
-  border-radius: 10px 10px 85px 85px;
+  border: 1px dashed #fff2d54d;
+  border-radius: 3px;
+  pointer-events: none;
 }
-.studio-big-robot {
-  width: 126px;
-  height: 133px;
-  transform: rotate(9deg);
-  --paper: #7251af;
+.studio-logo-board img {
+  position: relative;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 2px 0 #241a3b55);
 }
-.studio-pennant > span {
-  font-size: 8px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  line-height: 1.7;
-  margin-top: 13px;
-  text-align: center;
-}
-.studio-maker-mark {
+.studio-board-stud {
   position: absolute;
-  top: 212px;
+  width: 11px;
+  height: 11px;
+  background: #d7c3ef;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  box-shadow: 0 2px 0 #251d39;
+}
+.studio-board-stud:nth-child(1) {
   left: 12px;
-  z-index: 1;
-  width: 326px;
-  text-align: center;
-  font: 35px/0.96 var(--display);
-  letter-spacing: -1.7px;
-  transform: rotate(4deg);
-  color: var(--paper);
-  -webkit-text-stroke: 7px var(--ink);
-  paint-order: stroke fill;
-  filter: drop-shadow(0 5px 0 var(--ink));
+  top: 12px;
 }
-.studio-maker-mark span {
-  color: var(--yellow);
+.studio-board-stud:nth-child(2) {
+  right: 12px;
+  top: 12px;
 }
-.studio-screw {
-  position: absolute;
-  width: 31px;
-  height: 31px;
-  color: #7251af;
+.studio-board-stud:nth-child(3) {
+  left: 12px;
+  bottom: 12px;
 }
-.studio-screw-one {
-  top: 41px;
-  right: 0;
-  transform: rotate(13deg);
-}
-.studio-screw-two {
-  bottom: 100px;
-  left: 3px;
-  width: 24px;
-  height: 24px;
+.studio-board-stud:nth-child(4) {
+  right: 12px;
+  bottom: 12px;
 }
 .studio-hand-arrow {
   position: absolute;
   width: 79px;
   height: 44px;
-  right: -7px;
-  bottom: 35px;
+  right: 0;
+  bottom: 10px;
   transform: rotate(21deg);
 }
 .studio-emblem-note {
@@ -163,8 +141,8 @@
   font-size: 14px;
   font-style: italic;
   font-weight: 600;
-  right: -5px;
-  bottom: 9px;
+  right: 0;
+  bottom: -16px;
   transform: rotate(7deg);
 }
 .studio-story {
@@ -351,10 +329,7 @@
   .studio-story > p:not(.eyebrow) {
     font-size: 15px;
   }
-  .studio-emblem {
-    transform: scale(0.88);
-    transform-origin: center;
-  }
+
   .contact-title-block h2 {
     font-size: 42px;
   }
@@ -375,10 +350,10 @@
     gap: 26px;
   }
   .studio-emblem {
-    min-height: 335px;
-    width: 340px;
-    max-width: 100%;
+    min-height: 265px;
+    width: min(370px, 100%);
     transform: none;
+    margin-bottom: 10px;
   }
   .studio-story {
     text-align: center;
@@ -447,16 +422,22 @@
     gap: 14px;
   }
   .studio-emblem {
-    transform: scale(0.87);
-    transform-origin: center bottom;
-    min-height: 325px;
-    margin-top: -30px;
+    min-height: 235px;
+    margin-top: 0;
   }
-  .studio-maker-mark {
-    left: 0;
-    width: 100%;
-    font-size: clamp(28px, 8.9vw, 35px);
+  .studio-logo-board {
+    padding: 30px 20px;
+    transform: rotate(-4deg);
   }
+  .studio-emblem-note {
+    font-size: 12px;
+    bottom: -8px;
+  }
+  .studio-hand-arrow {
+    width: 63px;
+    bottom: 9px;
+  }
+
   .studio-story > .eyebrow {
     font-size: 8px;
     letter-spacing: 1.1px;

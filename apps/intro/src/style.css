@@ -56,34 +56,7 @@
   position: relative;
   z-index: 1;
 }
-.intro-crest {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 8px;
-}
-.intro-crest > span {
-  width: 45px;
-  height: 1px;
-  background: #fbd778aa;
-  position: relative;
-}
-.intro-crest > span::after {
-  content: "";
-  width: 5px;
-  height: 5px;
-  background: var(--yellow);
-  position: absolute;
-  right: 0;
-  top: -2px;
-  transform: rotate(45deg);
-}
-.intro-crest svg {
-  width: 40px;
-  height: 49px;
-  filter: drop-shadow(0 0 15px #ce91ff77);
-}
+
 .intro-presented {
   text-transform: uppercase;
   letter-spacing: 4px;
@@ -97,42 +70,15 @@
   display: inline-block;
   isolation: isolate;
   line-height: 1.18;
-  transform: rotate(-3deg);
+  width: min(100%, 1050px);
   margin: 0 0 30px;
 }
-.intro-logo {
-  display: block;
-  font-family: var(--display);
-  font-weight: 400;
-  font-size: clamp(80px, 10.3vw, 158px);
-  letter-spacing: -7px;
-  color: #ffe2a0;
-  paint-order: stroke fill;
-  -webkit-text-stroke: 9px #32233c;
-  text-shadow:
-    0 7px 0 #b8753d,
-    0 15px 0 #32233c,
-    3px 19px 0 #32233c;
-  filter: drop-shadow(0 5px 0 #0002);
+.intro-game-logo {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 5px 4px #17152b99);
 }
-.intro-logo-studs {
-  position: absolute;
-  left: 13%;
-  right: 11%;
-  top: 9%;
-  display: flex;
-  justify-content: space-between;
-  z-index: -1;
-}
-.intro-logo-studs i {
-  width: clamp(25px, 3vw, 43px);
-  height: 23px;
-  border: 5px solid #32233c;
-  border-bottom: 0;
-  border-radius: 6px 6px 0 0;
-  background: linear-gradient(#ffe6ae 40%, #d69551 40%);
-  transform: translateY(-6px);
-}
+
 .intro-tagline {
   font-family: var(--display);
   font-size: clamp(19px, 2.1vw, 28px);
@@ -334,20 +280,14 @@
   .intro-center {
     margin-top: -55px;
   }
-  .intro-logo {
-    font-size: 11.6vw;
-    letter-spacing: -5px;
-    -webkit-text-stroke-width: 7px;
-  }
+
   .intro-margin-note {
     display: none;
   }
   .intro-scroll {
     margin-left: 0;
   }
-  .intro-crest {
-    margin-bottom: 18px;
-  }
+
   .intro-world img {
     object-position: 54% center;
   }
@@ -378,34 +318,11 @@
       #151425 100%
     );
   }
-  .intro-logo {
-    font-size: 13.1vw;
-    letter-spacing: -2.8px;
-    -webkit-text-stroke-width: 5px;
-    text-shadow:
-      0 5px 0 #b8753d,
-      0 10px 0 #32233c,
-      2px 14px 0 #32233c;
-  }
+
   .intro h1 {
     margin-bottom: 28px;
   }
-  .intro-logo-studs {
-    top: 3%;
-  }
-  .intro-logo-studs i {
-    height: 15px;
-    width: 20px;
-    border-width: 3px;
-    transform: translateY(-3px);
-  }
-  .intro-crest {
-    margin-bottom: 10px;
-  }
-  .intro-crest svg {
-    width: 32px;
-    height: 40px;
-  }
+
   .intro-presented {
     font-size: 9px;
     letter-spacing: 2.8px;

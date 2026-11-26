@@ -1,7 +1,6 @@
 import { useRef, type PointerEvent } from "react";
 import {
   Arrow,
-  Crystal,
   mountComponent,
   media,
   type MountOptions,
@@ -41,9 +40,9 @@ function Intro({ options }: { options: MountOptions }) {
       <div className="intro-world">
         <img
           src={media(options, "portal.webp")}
-          alt="Brickhold concept art: skeletons emerge from a purple portal in a brick-built castle"
-          width="1448"
-          height="1086"
+          alt="Brickhold gameplay: a troll and skeletons emerge from the glowing purple castle portal"
+          width="1920"
+          height="1080"
           fetchPriority="high"
         />
       </div>
@@ -57,21 +56,15 @@ function Intro({ options }: { options: MountOptions }) {
         <i />
       </div>
       <div className="intro-center wrap">
-        <div className="intro-crest" aria-hidden="true">
-          <span />
-          <Crystal />
-          <span />
-        </div>
-        <p className="intro-presented">Broken Robots presents</p>
+        <p className="intro-presented">A Broken Robot game</p>
         <h1 id="intro-title" aria-label="Brickhold">
-          <span className="intro-logo-studs" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-            <i />
-            <i />
-          </span>
-          <span className="intro-logo">BRICKHOLD</span>
+          <img
+            className="intro-game-logo"
+            src={media(options, "brickhold-logo.webp")}
+            alt=""
+            width="1756"
+            height="340"
+          />
         </h1>
         <p className="intro-tagline">
           Build together.
@@ -110,7 +103,7 @@ function Intro({ options }: { options: MountOptions }) {
           <span aria-hidden="true">↓</span>
         </a>
         <p className="intro-state">
-          <span /> In development<small>Concept artwork</small>
+          <span /> In development<small>Actual game capture</small>
         </p>
       </div>
       <div className="intro-battlements" aria-hidden="true" />

@@ -46,7 +46,7 @@ flowchart TD
   Content -. build copies .-> Static
 ```
 
-The default mode is fully static. The shell build copies the shared JSON into its public data output and packages all frontend builds into `dist/site`. This works on GitHub Pages without a server. During development, remote builds are watched and served by shell middleware from `dist/mfe`.
+The default mode is fully static. The production build stages public assets and the shared JSON under `dist/production-public`, then packages all frontend builds into `dist/site`. This works on GitHub Pages without a server. During development, remote builds are watched and served by shell middleware from `dist/mfe`; `/data/site.json` and `/data/catalog.json` are read directly from `content/`, and the runtime manifest comes from `scripts/runtime-manifest.mjs`. This keeps production staging separate from live development files and avoids copying JSON into a watched public directory.
 
 ## Try the BFF locally
 

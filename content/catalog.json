@@ -2,61 +2,199 @@
   {
     "id": "haymaker",
     "category": "traps",
-    "name": "The Haymaker",
+    "name": "Haymaker",
     "eyebrow": "Ceiling trap",
-    "description": "A spinning welcome committee. Four brick-built hammers make the space beneath this ceiling trap a very bad place to stand.",
-    "image": "media/haymaker.webp",
-    "alt": "Concept art of the Haymaker, a hanging rotating shaft with four wooden hammer heads in a brick castle.",
-    "kind": "Concept art"
+    "description": "Spinning hammers turn the lane beneath this ceiling trap into a very unfortunate place to stand.",
+    "image": "media/catalog/haymaker.webp",
+    "alt": "In-game screenshot of Brickhold's Haymaker defense.",
+    "kind": "In-game screenshot",
+    "cost": "800 studs"
   },
   {
     "id": "spikes",
     "category": "traps",
     "name": "Spike Trap",
     "eyebrow": "Floor trap",
-    "description": "Simple. Pointy. Persuasive. Build a lane that brings the crowd right across a nasty surprise underfoot.",
-    "image": "media/spikes.webp",
-    "alt": "Concept art of a brick-built floor trap with a bed of raised spikes.",
-    "kind": "Concept art"
+    "description": "Stakes shoot up from the floor. Bend the route across them and give the next wave a nasty surprise.",
+    "image": "media/catalog/spikes.webp",
+    "alt": "In-game screenshot of Brickhold's Spike Trap defense.",
+    "kind": "In-game screenshot",
+    "cost": "800 studs"
   },
   {
     "id": "arrow-wall",
     "category": "traps",
     "name": "Arrow Wall",
     "eyebrow": "Wall trap",
-    "description": "Put those castle walls to work. A volley across the lane gives incoming creatures another reason to regret their route.",
-    "image": "media/arrow-wall.webp",
-    "alt": "Concept art of a castle wall fitted with a grid of arrow launchers.",
-    "kind": "Concept art"
+    "description": "Volleys of arrows fly across the lane. Put those castle walls to work.",
+    "image": "media/catalog/arrow-wall.webp",
+    "alt": "In-game screenshot of Brickhold's Arrow Wall defense.",
+    "kind": "In-game screenshot",
+    "cost": "1,500 studs"
+  },
+  {
+    "id": "barricade",
+    "category": "traps",
+    "name": "Barricade",
+    "eyebrow": "Route builder",
+    "description": "Free, but limited. Block a lane and steer the ground enemies into the traps you have waiting.",
+    "image": "media/catalog/barricade.webp",
+    "alt": "In-game screenshot of Brickhold's Barricade defense.",
+    "kind": "In-game screenshot",
+    "cost": "Free · limited"
+  },
+  {
+    "id": "brimstone",
+    "category": "traps",
+    "name": "Brimstone",
+    "eyebrow": "Floor trap",
+    "description": "Sets enemies on fire as they cross the tile. A warm welcome for anything coming through the portal.",
+    "image": "media/catalog/brimstone.webp",
+    "alt": "In-game screenshot of Brickhold's Brimstone defense.",
+    "kind": "In-game screenshot",
+    "cost": "1,200 studs"
+  },
+  {
+    "id": "ripsaw",
+    "category": "traps",
+    "name": "Ripsaw",
+    "eyebrow": "Wall trap",
+    "description": "Saw blades run along the wall. Give the horde a route that keeps them close enough to regret it.",
+    "image": "media/catalog/ripsaw.webp",
+    "alt": "In-game screenshot of Brickhold's Ripsaw defense.",
+    "kind": "In-game screenshot",
+    "cost": "700 studs"
+  },
+  {
+    "id": "bouncing-boulder",
+    "category": "traps",
+    "name": "Bouncing Boulder",
+    "eyebrow": "Wall trap",
+    "description": "Bowls enemies over with a bouncing boulder. The lane is about to get a lot less orderly.",
+    "image": "media/catalog/bouncing-boulder.webp",
+    "alt": "In-game screenshot of Brickhold's Bouncing Boulder defense.",
+    "kind": "In-game screenshot",
+    "cost": "1,500 studs"
+  },
+  {
+    "id": "auto-ballista",
+    "category": "traps",
+    "name": "Auto Ballista",
+    "eyebrow": "Ceiling trap",
+    "description": "A ceiling turret that aims itself. Give it a clear view and let it get to work.",
+    "image": "media/catalog/auto-ballista.webp",
+    "alt": "In-game screenshot of Brickhold's Auto Ballista defense.",
+    "kind": "In-game screenshot",
+    "cost": "1,000 studs"
   },
   {
     "id": "gargoyle",
     "category": "enemies",
     "name": "Gargoyle",
-    "eyebrow": "Trouble from above",
-    "description": "Stone wings. Heavy hands. This flying bruiser sails over your floor traps before dropping into a two-handed slam.",
-    "image": "media/gargoyle.webp",
-    "alt": "Concept art of a grey brick minifigure Gargoyle with horns and wide bat wings.",
-    "kind": "Concept art"
+    "eyebrow": "Flying stone bruiser",
+    "description": "A flying stone bruiser. Your floor traps will need a little help with this one.",
+    "image": "media/catalog/gargoyle.webp",
+    "alt": "In-game screenshot of Brickhold's Gargoyle enemy.",
+    "kind": "In-game screenshot"
   },
   {
     "id": "werewolf",
     "category": "enemies",
     "name": "Werewolf Hunter",
-    "eyebrow": "You're the objective",
-    "description": "The crystal can wait. This quick, clawed hunter is much more interested in the hero running around beside it.",
-    "image": "media/werewolf.webp",
-    "alt": "Concept art of a grey brick minifigure Werewolf with a wolf head and clawed hands.",
-    "kind": "Concept art"
+    "eyebrow": "Hunts the heroes",
+    "description": "The crystal can wait. This hunter is interested in the heroes running around beside it.",
+    "image": "media/catalog/werewolf.webp",
+    "alt": "In-game screenshot of Brickhold's Werewolf Hunter enemy.",
+    "kind": "In-game screenshot"
   },
   {
-    "id": "skeletons",
+    "id": "bat-mage",
     "category": "enemies",
-    "name": "Skeleton Squad",
-    "eyebrow": "Some assembly required",
-    "description": "The portal's regulars arrive in packs. Turn their march into a trap-filled obstacle course, then help send them back in pieces.",
-    "image": "media/portal.webp",
-    "alt": "Concept art of a skeleton emerging from a glowing purple portal in a brick castle gateway.",
-    "kind": "Concept art"
+    "name": "Bat Mage",
+    "eyebrow": "Homing magic",
+    "description": "Casts magical projectiles that follow the heroes. Keep an eye on your timing and your way out.",
+    "image": "media/catalog/bat-mage.webp",
+    "alt": "In-game screenshot of Brickhold's Bat Mage enemy.",
+    "kind": "In-game screenshot"
+  },
+  {
+    "id": "skeleton",
+    "category": "enemies",
+    "name": "Skeleton",
+    "eyebrow": "Marches on the crystal",
+    "description": "The portal's regular. Marches straight for the crystal, unless your carefully placed traps have something to say about it.",
+    "image": "media/catalog/skeleton.webp",
+    "alt": "In-game screenshot of Brickhold's Skeleton enemy.",
+    "kind": "In-game screenshot"
+  },
+  {
+    "id": "medium-skeleton",
+    "category": "enemies",
+    "name": "Medium Skeleton",
+    "eyebrow": "Tougher, with a sword",
+    "description": "A tougher skeleton carrying a sword. Another reason to make that trap lane count.",
+    "image": "media/catalog/medium-skeleton.webp",
+    "alt": "In-game screenshot of Brickhold's Medium Skeleton enemy.",
+    "kind": "In-game screenshot"
+  },
+  {
+    "id": "armoured-skeleton",
+    "category": "enemies",
+    "name": "Armoured Skeleton",
+    "eyebrow": "Shield and halberd",
+    "description": "Armoured, armed, and carrying a shield. This skeleton brings a halberd to the party.",
+    "image": "media/catalog/armoured-skeleton.webp",
+    "alt": "In-game screenshot of Brickhold's Armoured Skeleton enemy.",
+    "kind": "In-game screenshot"
+  },
+  {
+    "id": "skeleton-archer",
+    "category": "enemies",
+    "name": "Skeleton Archer",
+    "eyebrow": "Ranged attacker",
+    "description": "Shoots heroes from range. Don't let the front line distract you from the archer behind it.",
+    "image": "media/catalog/skeleton-archer.webp",
+    "alt": "In-game screenshot of Brickhold's Skeleton Archer enemy.",
+    "kind": "In-game screenshot"
+  },
+  {
+    "id": "wargling",
+    "category": "enemies",
+    "name": "Wargling",
+    "eyebrow": "Fast and fragile",
+    "description": "Fast on four feet, fragile when you catch it. Blink and it may already be past your plan.",
+    "image": "media/catalog/wargling.webp",
+    "alt": "In-game screenshot of Brickhold's Wargling enemy.",
+    "kind": "In-game screenshot"
+  },
+  {
+    "id": "ghost",
+    "category": "enemies",
+    "name": "Ghost",
+    "eyebrow": "Floats over floor traps",
+    "description": "Floats over your floor traps. Bring something that can reach it in the air.",
+    "image": "media/catalog/ghost.webp",
+    "alt": "In-game screenshot of Brickhold's Ghost enemy.",
+    "kind": "In-game screenshot"
+  },
+  {
+    "id": "troll",
+    "category": "enemies",
+    "name": "Troll",
+    "eyebrow": "Huge, slow, hits hard",
+    "description": "Huge, slow, and very hard to ignore. The troll is happy to break a barricade that gets in its way.",
+    "image": "media/catalog/troll.webp",
+    "alt": "In-game screenshot of Brickhold's Troll enemy.",
+    "kind": "In-game screenshot"
+  },
+  {
+    "id": "shield-brute",
+    "category": "enemies",
+    "name": "Shield Brute",
+    "eyebrow": "Blocks frontal hits",
+    "description": "Carries a shield that blocks hits from the front. Find a way around it or strike from underneath.",
+    "image": "media/catalog/shield-brute.webp",
+    "alt": "In-game screenshot of Brickhold's Shield Brute enemy.",
+    "kind": "In-game screenshot"
   }
 ]

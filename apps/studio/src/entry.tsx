@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   Arrow,
-  Robot,
+  media,
   mountComponent,
   useContent,
   type SiteContent,
@@ -12,6 +12,7 @@ import "./style.css";
 function Studio({ options }: { options: MountOptions }) {
   const { data } = useContent<SiteContent>(options, "site");
   const email = data?.studio.email ?? "hello@brokenrobotstudio.co.za";
+  const studioName = data?.studio.name ?? "Broken Robot";
   const [copyStatus, setCopyStatus] = useState("");
 
   async function copyEmail() {
@@ -34,46 +35,26 @@ function Studio({ options }: { options: MountOptions }) {
         aria-labelledby="studio-title"
       >
         <div className="studio-layout wrap">
-          <div className="studio-emblem" aria-hidden="true">
-            <svg
-              className="studio-screw studio-screw-one"
-              viewBox="0 0 30 30"
-              fill="none"
-            >
-              <path
-                d="m15 3 4 7 8 1-5 7 1 8-8-3-8 3 1-8-5-7 8-1Z"
-                stroke="currentColor"
-                strokeWidth="2.5"
+          <div className="studio-emblem">
+            <div className="studio-logo-board">
+              <span className="studio-board-stud" aria-hidden="true" />
+              <span className="studio-board-stud" aria-hidden="true" />
+              <span className="studio-board-stud" aria-hidden="true" />
+              <span className="studio-board-stud" aria-hidden="true" />
+              <img
+                src={media(options, "studio-logo.webp")}
+                alt="Broken Robot studio logo, with a battered robot and hand-drawn lettering"
+                width="1716"
+                height="802"
+                loading="lazy"
               />
-            </svg>
+            </div>
             <svg
-              className="studio-screw studio-screw-two"
-              viewBox="0 0 30 30"
+              className="studio-hand-arrow"
+              viewBox="0 0 100 50"
               fill="none"
+              aria-hidden="true"
             >
-              <circle
-                cx="15"
-                cy="15"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path d="m9 21 12-12" stroke="currentColor" strokeWidth="4" />
-            </svg>
-            <div className="studio-pennant">
-              <Robot className="studio-big-robot" />
-              <span>
-                EST. IN
-                <br />
-                THE WORKSHOP
-              </span>
-            </div>
-            <div className="studio-maker-mark">
-              BROKEN
-              <br />
-              <span>ROBOTS</span>
-            </div>
-            <svg className="studio-hand-arrow" viewBox="0 0 100 50" fill="none">
               <path
                 d="M4 41C13 10 62 1 90 17m-15-13 17 14-22 5"
                 stroke="currentColor"
@@ -92,7 +73,7 @@ function Studio({ options }: { options: MountOptions }) {
               <span>A lot of good ideas.</span>
             </h2>
             <p>
-              We're <strong>Broken Robots</strong>, an independent game studio
+              We're <strong>{studioName}</strong>, an independent game studio
               making playful worlds and finding out what happens when a good
               plan meets a few very bad ideas.
             </p>
@@ -113,7 +94,7 @@ function Studio({ options }: { options: MountOptions }) {
       >
         <div className="contact-postcard wrap">
           <div className="contact-postmark" aria-hidden="true">
-            <span>BROKEN ROBOTS</span>
+            <span>{studioName.toUpperCase()}</span>
             <svg viewBox="0 0 90 66" fill="none">
               <path
                 d="m14 45 24-15-7-18 25 11 16-5-3 13 9 7-19 1-12 15-9-13-24 4Z"

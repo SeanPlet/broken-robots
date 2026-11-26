@@ -631,3 +631,94 @@
     gap: 12px !important;
   }
 }
+
+/* Roster crops retain the original screenshot framing. */
+.guide-card[data-category="traps"] .guide-card-image {
+  aspect-ratio: 427/241;
+}
+.guide-card-image img,
+.guide-dialog-art img {
+  object-fit: contain;
+}
+.guide-card-index {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+.guide-card-cost {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0;
+  color: #6e4e21;
+}
+.guide-dialog-cost {
+  font-size: 13px !important;
+  font-weight: 800;
+  color: #694399;
+  margin-bottom: 12px;
+}
+.guide-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 23px;
+  margin-top: 33px;
+}
+.guide-pagination > button {
+  width: 45px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #100d20;
+  border-radius: 5px;
+  background: var(--yellow);
+  box-shadow: 0 4px 0 #100d20;
+  color: var(--ink);
+}
+.guide-pagination > button:disabled {
+  opacity: 0.35;
+  cursor: default;
+  box-shadow: none;
+}
+.guide-pagination > button:not(:disabled):hover {
+  transform: translateY(-2px);
+}
+.guide-pagination p {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--paper);
+  min-width: 120px;
+  text-align: center;
+}
+.guide-pagination p > span {
+  font-weight: 400;
+  color: #d3c8e8;
+}
+.guide-page-prev {
+  display: flex;
+  transform: rotate(180deg);
+}
+.guide-pagination > button:focus-visible {
+  outline-color: var(--yellow);
+}
+@media (min-width: 701px) {
+  .guide-grid[data-count="2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 790px;
+    margin-inline: auto;
+  }
+}
+@media (max-width: 540px) {
+  .guide-pagination {
+    gap: 17px;
+    margin-top: 19px;
+  }
+  .guide-pagination p {
+    font-size: 11px;
+    min-width: 112px;
+  }
+  .guide-card-cost {
+    font-size: 9px;
+  }
+}

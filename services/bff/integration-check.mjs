@@ -27,11 +27,11 @@ try {
   const base = "http://127.0.0.1:5174";
   const siteResponse = await fetch(`${base}/api/site`);
   assert.equal(siteResponse.status, 200);
-  assert.equal((await siteResponse.json()).studio.name, "Broken Robots");
+  assert.equal((await siteResponse.json()).studio.name, "Broken Robot");
   const catalogResponse = await fetch(`${base}/api/catalog?category=enemies`);
   assert.equal(catalogResponse.status, 200);
   const enemies = await catalogResponse.json();
-  assert.equal(enemies.length, 3);
+  assert.equal(enemies.length, 11);
   assert.ok(enemies.every((entry) => entry.category === "enemies"));
   console.log(
     "PASS: actual Vite /api proxy returns BFF site and filtered catalog.",
@@ -48,7 +48,7 @@ try {
   const start = requests.length;
   await page.goto(base);
   await page
-    .getByRole("button", { name: "Explore The Haymaker", exact: true })
+    .getByRole("button", { name: "Explore Haymaker", exact: true })
     .waitFor();
   await page.getByRole("button", { name: "The troublemakers" }).click();
   await page

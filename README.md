@@ -1,8 +1,8 @@
-# Broken Robots
+# Broken Robot
 
 A local React + TypeScript studio website, featuring Brickhold. Four separately built micro frontends compose into one site: introduction, game showcase, field guide, and studio/contact. The shell owns navigation and layout foundations. No GitHub remote or hosted site is configured yet.
 
-The visual identity leads with Brickhold: a full-screen castle/portal scene, a dimensional brick wordmark, parchment story panels, collectible field-guide cards, and a studio contact postcard. [Design notes](docs/DESIGN.md) record the reference direction and implementation choices.
+The visual identity leads with Brickhold: an actual in-game portal scene and supplied game logo, parchment story panels, collectible field-guide cards, and a studio contact postcard. The original studio logo appears throughout. [Design notes](docs/DESIGN.md) record the direction and implementation choices.
 
 ## Run locally
 
@@ -54,7 +54,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for boundaries, request flow, c
 - `apps/shell/public/media/`: self-contained, compressed artwork.
 - `apps/shell/src/styles.css`: shared colours, typography, navigation.
 
-The game repository is not needed to run or build this site. [docs/ASSETS.md](docs/ASSETS.md) records source paths and image labels. To regenerate the existing media, run `node scripts/import-assets.mjs C:/Code/brickhold`. This intentionally imports only the listed assets. The requested `assets/itch` folder was absent from the available checkout, so this first version uses approved references and one real prototype capture.
+The game repository and Downloads folder are not needed to run or build this site. [docs/ASSETS.md](docs/ASSETS.md) records the supplied source files, crop bounds and animation details. To regenerate the media, run `node scripts/import-assets.mjs` with the named originals in Downloads, or pass an explicit source directory. The gallery has six actual game views and two opt-in animated clips. The field guide covers all eight defenses and eleven enemies, with three cards per page. Still images are the default, including for reduced-motion visitors.
 
 ## Browser checks
 

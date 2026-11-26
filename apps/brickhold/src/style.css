@@ -58,8 +58,8 @@
 .game-visual > img {
   width: 100%;
   height: auto;
-  aspect-ratio: 1.5;
-  object-fit: cover;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
   object-position: center 43%;
 }
 .game-image-label {
@@ -101,6 +101,10 @@
 }
 .game-tabs {
   display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
+  gap: 3px;
   border: 2px solid var(--ink);
   border-radius: 5px;
   padding: 3px;
@@ -326,7 +330,7 @@
     margin: auto;
   }
   .game-visual > img {
-    aspect-ratio: 1.35;
+    aspect-ratio: 16 / 9;
   }
   .game-visual {
     box-shadow: 6px 7px 0 #e4c58c;
@@ -393,5 +397,57 @@
   }
   .game-loop-step h3 {
     font-size: 17px;
+  }
+}
+
+.game-motion {
+  position: absolute;
+  right: 11px;
+  top: 13px;
+  border: 2px solid #fff2d58c;
+  box-shadow: 0 3px 0 #151122;
+  background: #25213fe8;
+  color: var(--paper);
+  padding: 9px 12px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  z-index: 3;
+  min-height: 40px;
+}
+.game-motion:hover {
+  background: #60418e;
+}
+.game-motion:focus-visible {
+  outline-color: var(--yellow);
+}
+.game-gallery-caption {
+  font-size: 10px;
+  line-height: 1.6;
+  color: #75634b;
+  margin: 16px 9px 0;
+  text-align: center;
+  font-style: italic;
+}
+@media (max-width: 620px) {
+  .game-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .game-tabs button {
+    padding: 11px 12px;
+    min-height: 40px;
+  }
+  .game-motion {
+    font-size: 9px;
+    padding: 7px 9px;
+    right: 8px;
+    top: 9px;
+  }
+  .game-gallery-caption {
+    font-size: 9px;
   }
 }

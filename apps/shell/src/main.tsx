@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Arrow, Robot, type MountOptions } from "../../../packages/shared";
+import { Arrow, media, type MountOptions } from "../../../packages/shared";
 import "./styles.css";
 
 const baseUrl = new URL(import.meta.env.BASE_URL, document.baseURI).href;
@@ -121,13 +121,13 @@ function App() {
       </a>
       <header className={scrolled ? "site-header is-scrolled" : "site-header"}>
         <div className="nav-inner wrap">
-          <a className="wordmark" href="#top" aria-label="Broken Robots home">
-            <Robot />
-            <span>
-              BROKEN
-              <br />
-              ROBOTS<span className="wordmark-dot">.</span>
-            </span>
+          <a className="wordmark" href="#top" aria-label="Broken Robot home">
+            <img
+              src={media(options, "studio-logo.webp")}
+              alt=""
+              width="1716"
+              height="802"
+            />
           </a>
           <button
             ref={menuToggle}
@@ -162,11 +162,21 @@ function App() {
       </main>
       <footer className="site-footer">
         <div className="footer-inner wrap">
-          <a className="footer-brand" href="#top">
-            <Robot /> Broken Robots
+          <a
+            className="footer-brand"
+            href="#top"
+            aria-label="Broken Robot home"
+          >
+            <img
+              src={media(options, "studio-logo.webp")}
+              alt=""
+              width="1716"
+              height="802"
+              loading="lazy"
+            />
           </a>
           <p>
-            © {new Date().getFullYear()} Broken Robots. Built one brick at a
+            © {new Date().getFullYear()} Broken Robot. Built one brick at a
             time.
           </p>
           <a href="#top">Back to top ↑</a>

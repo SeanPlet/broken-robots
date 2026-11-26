@@ -4,6 +4,7 @@ import { resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readFile } from "node:fs/promises";
 import { watch } from "node:fs";
+import { runtimeManifest } from "../../scripts/runtime-manifest.mjs";
 
 const root = fileURLToPath(new URL("../../", import.meta.url));
 export default defineConfig(({ mode }) => {
@@ -17,6 +18,27 @@ export default defineConfig(({ mode }) => {
       {
         name: "local-micro-frontends",
         configureServer(server) {
+          server.middlewares.use("/mfe-manifest.json", (_req, res) => {
+            res.setHeader("Content-Type", "application/json");
+            res.setHeader("Cache-Control", "no-store");
+            res.end(JSON.stringify(runtimeManifest()));
+          });
+          server.middlewares.use("/data", async (req, res, next) => {
+            const filename = (req.url ?? "/").split("?")[0];
+            if (!["/site.json", "/catalog.json"].includes(filename))
+              return next();
+            try {
+              const data = await readFile(
+                resolve(root, "content", filename.slice(1)),
+              );
+              res.setHeader("Content-Type", "application/json");
+              res.setHeader("Cache-Control", "no-store");
+              res.end(data);
+            } catch {
+              res.statusCode = 500;
+              res.end('{"error":"Content unavailable"}');
+            }
+          });
           const remoteDirectory = resolve(root, "dist/mfe");
           const watcher = watch(
             remoteDirectory,

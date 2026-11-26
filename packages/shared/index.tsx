@@ -11,6 +11,7 @@ export type CatalogEntry = {
   image: string;
   alt: string;
   kind: string;
+  cost?: string;
 };
 export type SiteContent = {
   studio: { name: string; email: string };
@@ -115,28 +116,6 @@ export function Crystal({ className = "" }: { className?: string }) {
         strokeWidth="3"
         strokeLinecap="round"
       />
-    </svg>
-  );
-}
-export function Robot({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      aria-hidden="true"
-      viewBox="0 0 60 62"
-      fill="none"
-    >
-      <path d="M30 12V5m-5 0h10" stroke="currentColor" strokeWidth="4" />
-      <rect x="8" y="14" width="44" height="36" rx="9" fill="currentColor" />
-      <path d="M4 26v13m52-13v13" stroke="currentColor" strokeWidth="5" />
-      <path d="m15 55 8-5m22 5-8-5" stroke="currentColor" strokeWidth="4" />
-      <circle cx="21" cy="29" r="4" fill="var(--paper, #f3f0e8)" />
-      <path
-        d="m36 25 7 8m-7 0 7-8"
-        stroke="var(--paper, #f3f0e8)"
-        strokeWidth="3"
-      />
-      <path d="M21 41h18" stroke="var(--paper, #f3f0e8)" strokeWidth="3" />
     </svg>
   );
 }
