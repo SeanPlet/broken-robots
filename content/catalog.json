@@ -1,14 +1,14 @@
 [
   {
-    "id": "haymaker",
+    "id": "barricade",
     "category": "traps",
-    "name": "Haymaker",
-    "eyebrow": "Ceiling trap",
-    "description": "Spinning hammers turn the lane beneath this ceiling trap into a very unfortunate place to stand.",
-    "image": "media/catalog/haymaker.webp",
-    "alt": "In-game screenshot of Brickhold's Haymaker defense.",
+    "name": "Barricade",
+    "eyebrow": "Route builder",
+    "description": "Free, but limited. Block a lane and steer the ground enemies into the traps you have waiting.",
+    "image": "media/catalog/barricade.webp",
+    "alt": "In-game screenshot of Brickhold's Barricade defense.",
     "kind": "In-game screenshot",
-    "cost": "800 studs"
+    "cost": "Free · limited"
   },
   {
     "id": "spikes",
@@ -22,28 +22,6 @@
     "cost": "800 studs"
   },
   {
-    "id": "arrow-wall",
-    "category": "traps",
-    "name": "Arrow Wall",
-    "eyebrow": "Wall trap",
-    "description": "Volleys of arrows fly across the lane. Put those castle walls to work.",
-    "image": "media/catalog/arrow-wall.webp",
-    "alt": "In-game screenshot of Brickhold's Arrow Wall defense.",
-    "kind": "In-game screenshot",
-    "cost": "1,500 studs"
-  },
-  {
-    "id": "barricade",
-    "category": "traps",
-    "name": "Barricade",
-    "eyebrow": "Route builder",
-    "description": "Free, but limited. Block a lane and steer the ground enemies into the traps you have waiting.",
-    "image": "media/catalog/barricade.webp",
-    "alt": "In-game screenshot of Brickhold's Barricade defense.",
-    "kind": "In-game screenshot",
-    "cost": "Free · limited"
-  },
-  {
     "id": "brimstone",
     "category": "traps",
     "name": "Brimstone",
@@ -53,6 +31,17 @@
     "alt": "In-game screenshot of Brickhold's Brimstone defense.",
     "kind": "In-game screenshot",
     "cost": "1,200 studs"
+  },
+  {
+    "id": "arrow-wall",
+    "category": "traps",
+    "name": "Arrow Wall",
+    "eyebrow": "Wall trap",
+    "description": "Volleys of arrows fly across the lane. Put those castle walls to work.",
+    "image": "media/catalog/arrow-wall.webp",
+    "alt": "In-game screenshot of Brickhold's Arrow Wall defense.",
+    "kind": "In-game screenshot",
+    "cost": "1,500 studs"
   },
   {
     "id": "ripsaw",
@@ -88,34 +77,15 @@
     "cost": "1,000 studs"
   },
   {
-    "id": "gargoyle",
-    "category": "enemies",
-    "name": "Gargoyle",
-    "eyebrow": "Flying stone bruiser",
-    "description": "A flying stone bruiser. Your floor traps will need a little help with this one.",
-    "image": "media/catalog/gargoyle.webp",
-    "alt": "In-game screenshot of Brickhold's Gargoyle enemy.",
-    "kind": "In-game screenshot"
-  },
-  {
-    "id": "werewolf",
-    "category": "enemies",
-    "name": "Werewolf Hunter",
-    "eyebrow": "Hunts the heroes",
-    "description": "The crystal can wait. This hunter is interested in the heroes running around beside it.",
-    "image": "media/catalog/werewolf.webp",
-    "alt": "In-game screenshot of Brickhold's Werewolf Hunter enemy.",
-    "kind": "In-game screenshot"
-  },
-  {
-    "id": "bat-mage",
-    "category": "enemies",
-    "name": "Bat Mage",
-    "eyebrow": "Homing magic",
-    "description": "Casts magical projectiles that follow the heroes. Keep an eye on your timing and your way out.",
-    "image": "media/catalog/bat-mage.webp",
-    "alt": "In-game screenshot of Brickhold's Bat Mage enemy.",
-    "kind": "In-game screenshot"
+    "id": "haymaker",
+    "category": "traps",
+    "name": "Haymaker",
+    "eyebrow": "Ceiling trap",
+    "description": "Spinning hammers turn the lane beneath this ceiling trap into a very unfortunate place to stand.",
+    "image": "media/catalog/haymaker.webp",
+    "alt": "In-game screenshot of Brickhold's Haymaker defense.",
+    "kind": "In-game screenshot",
+    "cost": "800 studs"
   },
   {
     "id": "skeleton",
@@ -175,6 +145,36 @@
     "description": "Floats over your floor traps. Bring something that can reach it in the air.",
     "image": "media/catalog/ghost.webp",
     "alt": "In-game screenshot of Brickhold's Ghost enemy.",
+    "kind": "In-game screenshot"
+  },
+  {
+    "id": "bat-mage",
+    "category": "enemies",
+    "name": "Bat Mage",
+    "eyebrow": "Homing magic",
+    "description": "Casts magical projectiles that follow the heroes. Keep an eye on your timing and your way out.",
+    "image": "media/catalog/bat-mage.webp",
+    "alt": "In-game screenshot of Brickhold's Bat Mage enemy.",
+    "kind": "In-game screenshot"
+  },
+  {
+    "id": "gargoyle",
+    "category": "enemies",
+    "name": "Gargoyle",
+    "eyebrow": "Flying stone bruiser",
+    "description": "A flying stone bruiser. Your floor traps will need a little help with this one.",
+    "image": "media/catalog/gargoyle.webp",
+    "alt": "In-game screenshot of Brickhold's Gargoyle enemy.",
+    "kind": "In-game screenshot"
+  },
+  {
+    "id": "werewolf",
+    "category": "enemies",
+    "name": "Werewolf Hunter",
+    "eyebrow": "Hunts the heroes",
+    "description": "The crystal can wait. This hunter is interested in the heroes running around beside it.",
+    "image": "media/catalog/werewolf.webp",
+    "alt": "In-game screenshot of Brickhold's Werewolf Hunter enemy.",
     "kind": "In-game screenshot"
   },
   {

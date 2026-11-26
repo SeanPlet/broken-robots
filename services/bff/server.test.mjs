@@ -38,6 +38,10 @@ test("site presents the actual studio identity and development status", async ()
     assert.equal(site.studio.name, "Broken Robot");
     assert.equal(site.studio.email, "hello@brokenrobotstudio.co.za");
     assert.equal(site.game.status, "In development");
+    assert.equal(site.maps.length, 1);
+    assert.equal(site.maps[0].id, "playground");
+    assert.equal(site.maps[0].name, "The Playground");
+    assert.equal(site.maps[0].image, "media/world.webp");
   });
 });
 

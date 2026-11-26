@@ -9,7 +9,7 @@ The site is a local-first React learning project: a small studio website, four r
 | Shell           | Document, navigation, shared styling, runtime manifest loading, section loading and retry states |
 | Intro MFE       | Studio introduction and opening artwork                                                          |
 | Brickhold MFE   | Featured game and its current development status                                                 |
-| Field Guide MFE | Interactive trap and enemy catalog                                                               |
+| Field Guide MFE | Complete static trap/enemy collections, Kingdoms maps and future Shardkeeper preview             |
 | Studio MFE      | Studio story and contact                                                                         |
 | Shared content  | `content/site.json` and `content/catalog.json` are the editorial source of truth                 |
 | Optional BFF    | Read-only HTTP presentation API over that shared content                                         |
@@ -47,6 +47,8 @@ flowchart TD
 ```
 
 The default mode is fully static. The production build stages public assets and the shared JSON under `dist/production-public`, then packages all frontend builds into `dist/site`. This works on GitHub Pages without a server. During development, remote builds are watched and served by shell middleware from `dist/mfe`; `/data/site.json` and `/data/catalog.json` are read directly from `content/`, and the runtime manifest comes from `scripts/runtime-manifest.mjs`. This keeps production staging separate from live development files and avoids copying JSON into a watched public directory.
+
+The Field Guide MFE reads the full trap/enemy roster from `catalog.json` and the map collection from the `maps` array in `site.json`. The same files are exposed by `/api/catalog` and `/api/site` in optional BFF mode. Selecting a collection changes the active accessible tab panel; it does not request a paginated slice or open a detail dialog. The Shardkeeper preview remains a separate part of this MFE, ready for a future hero roster when approved content exists.
 
 ## Try the BFF locally
 

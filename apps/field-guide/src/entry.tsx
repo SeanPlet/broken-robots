@@ -1,13 +1,21 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState, type KeyboardEvent } from "react";
 import {
   Arrow,
   media,
   mountComponent,
   useContent,
   type CatalogEntry,
+  type SiteContent,
   type MountOptions,
-} from "../../../packages/shared/index";
+} from "../../../packages/shared";
 import "./style.css";
+
+const tabs = [
+  { id: "traps", label: "The traps" },
+  { id: "enemies", label: "The troublemakers" },
+  { id: "kingdoms", label: "Kingdoms" },
+] as const;
+type Category = (typeof tabs)[number]["id"];
 
 function Spark({ className = "" }: { className?: string }) {
   return (
@@ -25,243 +33,231 @@ function Spark({ className = "" }: { className?: string }) {
   );
 }
 
+function RosterCard({
+  entry,
+  index,
+  options,
+}: {
+  entry: CatalogEntry;
+  index: number;
+  options: MountOptions;
+}) {
+  const titleId = `guide-name-${entry.id}`;
+  return (
+    <article
+      className={`guide-card guide-card-${entry.id}`}
+      data-category={entry.category}
+      aria-labelledby={titleId}
+    >
+      <div className="guide-card-top">
+        <span className="guide-card-stud" aria-hidden="true" />
+        <span>{entry.eyebrow}</span>
+        <span className="guide-card-stud" aria-hidden="true" />
+      </div>
+      <div className="guide-card-image">
+        <img
+          src={media(options, entry.image.replace(/^media\//, ""))}
+          alt={entry.alt}
+          loading="lazy"
+          width="427"
+          height={entry.category === "traps" ? "241" : "427"}
+        />
+      </div>
+      <div className="guide-card-copy">
+        <div className="guide-card-index">
+          <span aria-hidden="true">
+            NO. {String(index + 1).padStart(2, "0")}
+          </span>
+          {entry.cost && <span className="guide-card-cost">{entry.cost}</span>}
+        </div>
+        <h3 className="guide-card-name" id={titleId}>
+          {entry.name}
+        </h3>
+        <p className="guide-card-description">{entry.description}</p>
+      </div>
+    </article>
+  );
+}
+
 function GuideContent({
   options,
+  category,
+  setCategory,
   onRetry,
 }: {
   options: MountOptions;
+  category: Category;
+  setCategory: (category: Category) => void;
   onRetry: () => void;
 }) {
-  const { data, error } = useContent<CatalogEntry[]>(options, "catalog");
-  const [category, setCategory] = useState<"traps" | "enemies">("traps");
-  const [page, setPage] = useState(0);
-  const [selected, setSelected] = useState<CatalogEntry | null>(null);
-  const dialog = useRef<HTMLDialogElement>(null);
-  const trigger = useRef<HTMLButtonElement | null>(null);
-
-  useEffect(() => {
-    if (selected && dialog.current && !dialog.current.open)
-      dialog.current.showModal();
-  }, [selected]);
-
-  const imageUrl = (entry: CatalogEntry) =>
-    media(options, entry.image.replace(/^media\//, ""));
-  const closeDetails = () => dialog.current?.close();
-  const entries = data?.filter((entry) => entry.category === category);
-  const pageSize = 3;
-  const visibleEntries = entries?.slice(page * pageSize, (page + 1) * pageSize);
-  const pageCount = Math.ceil((entries?.length ?? 0) / pageSize);
-  const count = (group: "traps" | "enemies") =>
-    String(
-      data?.filter((entry) => entry.category === group).length ?? 0,
-    ).padStart(2, "0");
-
+  const catalog = useContent<CatalogEntry[]>(options, "catalog");
+  const site = useContent<SiteContent>(options, "site");
+  const tabButtons = useRef<(HTMLButtonElement | null)[]>([]);
+  function count(id: Category) {
+    return id === "kingdoms"
+      ? site.data?.maps.length
+      : catalog.data?.filter((entry) => entry.category === id).length;
+  }
+  function moveTab(event: KeyboardEvent<HTMLDivElement>) {
+    const index = tabs.findIndex((tab) => tab.id === category);
+    let next = index;
+    if (event.key === "ArrowRight") next = (index + 1) % tabs.length;
+    else if (event.key === "ArrowLeft")
+      next = (index - 1 + tabs.length) % tabs.length;
+    else if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = tabs.length - 1;
+    else return;
+    event.preventDefault();
+    setCategory(tabs[next].id);
+    tabButtons.current[next]?.focus();
+  }
   return (
     <>
       <div className="guide-toolbar">
         <div
           className="guide-filters"
-          role="group"
-          aria-label="Field guide category"
+          role="tablist"
+          aria-label="Field guide collections"
+          onKeyDown={moveTab}
         >
-          <button
-            type="button"
-            aria-pressed={category === "traps"}
-            onClick={() => {
-              setCategory("traps");
-              setPage(0);
-            }}
-          >
-            The traps <span aria-hidden="true">{count("traps")}</span>
-          </button>
-          <button
-            type="button"
-            aria-pressed={category === "enemies"}
-            onClick={() => {
-              setCategory("enemies");
-              setPage(0);
-            }}
-          >
-            The troublemakers <span aria-hidden="true">{count("enemies")}</span>
-          </button>
-        </div>
-        <p className="guide-hint">Choose a card. Get acquainted.</p>
-      </div>
-      {error ? (
-        <div className="guide-state" role="alert">
-          <p>{error}</p>
-          <button
-            className="button guide-reload"
-            type="button"
-            onClick={onRetry}
-          >
-            Try again <Arrow />
-          </button>
-        </div>
-      ) : !entries ? (
-        <p className="guide-state" role="status">
-          Opening the field guide…
-        </p>
-      ) : (
-        <div
-          className="guide-grid"
-          id="guide-cards"
-          data-count={visibleEntries?.length}
-          aria-label={
-            category === "traps" ? "Brickhold traps" : "Brickhold enemies"
-          }
-        >
-          {visibleEntries?.map((entry, index) => (
+          {tabs.map((tab, index) => (
             <button
-              className={`guide-card guide-card-${entry.id}`}
+              key={tab.id}
               type="button"
-              key={entry.id}
-              data-category={entry.category}
-              aria-label={`Explore ${entry.name}`}
-              onClick={(event) => {
-                trigger.current = event.currentTarget;
-                setSelected(entry);
+              role="tab"
+              id={`guide-tab-${tab.id}`}
+              aria-controls={`guide-panel-${tab.id}`}
+              aria-selected={category === tab.id}
+              tabIndex={category === tab.id ? 0 : -1}
+              ref={(node) => {
+                tabButtons.current[index] = node;
               }}
+              onClick={() => setCategory(tab.id)}
             >
-              <span className="guide-card-top">
-                <span className="guide-card-stud" aria-hidden="true" />
-                <span>{entry.eyebrow}</span>
-                <span className="guide-card-stud" aria-hidden="true" />
-              </span>
-              <span className="guide-card-image">
-                <img
-                  src={imageUrl(entry)}
-                  alt={entry.alt}
-                  loading="lazy"
-                  width="720"
-                  height="720"
-                />
-                <span className="guide-art-label">{entry.kind}</span>
-              </span>
-              <span className="guide-card-copy">
-                <span className="guide-card-index" aria-hidden="true">
-                  NO. {String(page * pageSize + index + 1).padStart(2, "0")}
-                  {entry.cost && (
-                    <span className="guide-card-cost">{entry.cost}</span>
-                  )}
-                </span>
-                <span className="guide-card-title">
-                  <span className="guide-card-name">{entry.name}</span>
-                  <span className="guide-plus" aria-hidden="true">
-                    +
-                  </span>
-                </span>
-                <span className="guide-card-open">
-                  Take a closer look <Arrow diagonal />
-                </span>
+              {tab.label}
+              <span aria-hidden="true">
+                {count(tab.id) === undefined
+                  ? "—"
+                  : String(count(tab.id)).padStart(2, "0")}
               </span>
             </button>
           ))}
         </div>
-      )}
-      {entries && entries.length > pageSize && (
-        <nav
-          className="guide-pagination"
-          aria-label={`${category === "traps" ? "Trap" : "Enemy"} roster pages`}
-        >
-          <button
-            type="button"
-            aria-label={`Previous ${category}`}
-            aria-controls="guide-cards"
-            disabled={page === 0}
-            onClick={() => setPage((value) => Math.max(0, value - 1))}
+      </div>
+      {tabs.map((tab) => {
+        const isMaps = tab.id === "kingdoms";
+        const error = isMaps ? site.error : catalog.error;
+        const loading = isMaps ? !site.data : !catalog.data;
+        const entries =
+          catalog.data?.filter((entry) => entry.category === tab.id) ?? [];
+        return (
+          <div
+            key={tab.id}
+            className="guide-panel"
+            role="tabpanel"
+            id={`guide-panel-${tab.id}`}
+            aria-labelledby={`guide-tab-${tab.id}`}
+            tabIndex={0}
+            hidden={category !== tab.id}
           >
-            <span className="guide-page-prev">
-              <Arrow />
-            </span>
-          </button>
-          <p role="status" aria-live="polite">
-            {page * pageSize + 1}–
-            {Math.min((page + 1) * pageSize, entries.length)}{" "}
-            <span>
-              of {entries.length}{" "}
-              {category === "traps" ? "defenses" : "enemies"}
-            </span>
+            {error ? (
+              <div className="guide-state" role="alert">
+                <p>{error}</p>
+                <button className="button guide-reload" onClick={onRetry}>
+                  Try again <Arrow />
+                </button>
+              </div>
+            ) : loading ? (
+              <p className="guide-state" role="status">
+                Opening the field guide…
+              </p>
+            ) : isMaps ? (
+              <>
+                <p className="guide-collection-intro">
+                  Places worth defending. Starting with the courtyard where it
+                  all comes together.
+                </p>
+                <div className="guide-map-grid">
+                  {site.data!.maps.map((map) => (
+                    <article
+                      className="guide-map-card"
+                      key={map.id}
+                      aria-labelledby={`guide-map-${map.id}`}
+                    >
+                      <img
+                        src={media(options, map.image.replace(/^media\//, ""))}
+                        alt={map.alt}
+                        loading="lazy"
+                        width="1920"
+                        height="1080"
+                      />
+                      <div className="guide-map-copy">
+                        <p className="eyebrow">{map.eyebrow}</p>
+                        <h3 id={`guide-map-${map.id}`}>{map.name}</h3>
+                        <p>{map.description}</p>
+                        <span className="guide-map-note">
+                          In-game capture · In development
+                        </span>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="guide-collection-intro">
+                  <span className="guide-roster-count">
+                    {entries.length}{" "}
+                    {tab.id === "traps" ? "defenses" : "troublemakers"}.
+                  </span>{" "}
+                  {tab.id === "traps"
+                    ? "Build a plan. Make it everyone's problem."
+                    : "Know what is coming through that portal."}
+                </p>
+                <div className="guide-grid" data-category={tab.id}>
+                  {entries.map((entry, index) => (
+                    <RosterCard
+                      key={entry.id}
+                      entry={entry}
+                      index={index}
+                      options={options}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        );
+      })}
+      <aside className="guide-heroes" aria-labelledby="guide-heroes-title">
+        <img
+          className="guide-hero-portrait"
+          src={media(options, "hero.webp")}
+          alt="A smiling yellow-headed Shardkeeper in a red torso and blue legs, standing in Brickhold's courtyard"
+          loading="lazy"
+          width="800"
+          height="800"
+        />
+        <div className="guide-hero-copy">
+          <p className="eyebrow">THE OTHER SIDE OF THE FIGHT</p>
+          <h3 id="guide-heroes-title">Choose your Shardkeeper.</h3>
+          <p>
+            The heroes behind the defenses. We’ll introduce the playable roster
+            here as it takes shape.
           </p>
-          <button
-            type="button"
-            aria-label={`Next ${category}`}
-            aria-controls="guide-cards"
-            disabled={page >= pageCount - 1}
-            onClick={() =>
-              setPage((value) => Math.min(pageCount - 1, value + 1))
-            }
-          >
-            <Arrow />
-          </button>
-        </nav>
-      )}
+        </div>
+      </aside>
       <div className="guide-bottom">
         <span>Small pieces. Big consequences.</span>
         <Spark />
         <span>Captured in Brickhold.</span>
       </div>
-      <dialog
-        className="guide-dialog"
-        ref={dialog}
-        aria-labelledby="guide-dialog-title"
-        onClick={(event) => {
-          if (event.target === event.currentTarget) closeDetails();
-        }}
-        onClose={() => {
-          setSelected(null);
-          trigger.current?.focus();
-        }}
-      >
-        {selected && (
-          <div className="guide-dialog-layout">
-            <div className="guide-dialog-art">
-              <img
-                src={imageUrl(selected)}
-                alt={selected.alt}
-                width="720"
-                height="720"
-              />
-              <span className="guide-art-label">{selected.kind}</span>
-            </div>
-            <div className="guide-dialog-copy">
-              <button
-                className="guide-dialog-close"
-                type="button"
-                onClick={closeDetails}
-                autoFocus
-                aria-label="Close artwork details"
-              >
-                ×
-              </button>
-              <p className="eyebrow">BRICKHOLD FIELD GUIDE</p>
-              <h3 id="guide-dialog-title">{selected.name}</h3>
-              <p className="guide-dialog-type">{selected.eyebrow}</p>
-              {selected.cost && (
-                <p className="guide-dialog-cost">{selected.cost}</p>
-              )}
-              <p>{selected.description}</p>
-              <p className="guide-dialog-note">
-                Actual in-game capture from Brickhold. The game is in
-                development; balance and visuals may change.
-              </p>
-              <button
-                className="button guide-back"
-                type="button"
-                onClick={closeDetails}
-              >
-                Back to the field guide <Arrow />
-              </button>
-            </div>
-          </div>
-        )}
-      </dialog>
     </>
   );
 }
-
 function FieldGuide({ options }: { options: MountOptions }) {
   const [attempt, setAttempt] = useState(0);
+  const [category, setCategory] = useState<Category>("traps");
   return (
     <section
       className="field-guide"
@@ -279,20 +275,19 @@ function FieldGuide({ options }: { options: MountOptions }) {
             Meet your problems.
           </h2>
           <p className="guide-intro">
-            Some things are built to help you.
-            <br className="guide-mobile-break" /> Others would rather see you in
-            pieces.
+            The defenses, the creatures, and the places worth protecting.
           </p>
         </div>
         <GuideContent
           key={attempt}
           options={options}
+          category={category}
+          setCategory={setCategory}
           onRetry={() => setAttempt((value) => value + 1)}
         />
       </div>
     </section>
   );
 }
-
 export const mount = (container: HTMLElement, options: MountOptions) =>
   mountComponent(container, <FieldGuide options={options} />);

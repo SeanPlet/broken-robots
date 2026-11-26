@@ -1,4 +1,29 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
+
+const activeCollection = (page: Page) => page.getByRole("tabpanel");
+const collectionScreenshotStyle =
+  ".site-header, .skip-link { visibility: hidden; }";
+
+async function loadCollectionImages(page: Page) {
+  for (const image of await page.locator(".field-guide img:visible").all()) {
+    await image.scrollIntoViewIfNeeded();
+    await expect
+      .poll(() =>
+        image.evaluate(
+          (element: HTMLImageElement) =>
+            element.complete && element.naturalWidth > 0,
+        ),
+      )
+      .toBe(true);
+  }
+}
+
+async function waitForGuide(page: Page) {
+  await expect(
+    page.getByRole("tab", { name: "The traps", exact: true }),
+  ).toHaveAttribute("aria-selected", "true");
+  await expect(activeCollection(page).locator(".guide-card")).toHaveCount(8);
+}
 
 test("all four independent sections render, artwork loads and contact works", async ({
   page,
@@ -12,7 +37,7 @@ test("all four independent sections render, artwork loads and contact works", as
   await expect(page.locator("#brickhold")).toBeAttached();
   await expect(page.locator("#workshop")).toBeAttached();
   await expect(page.locator("#contact")).toBeAttached();
-  await expect(page.locator(".guide-card")).toHaveCount(3);
+  await waitForGuide(page);
   await expect(page.locator(".wordmark img")).toHaveAttribute(
     "src",
     /media\/studio-logo.webp$/,
@@ -21,13 +46,11 @@ test("all four independent sections render, artwork loads and contact works", as
     "src",
     /media\/brickhold-logo.webp$/,
   );
-  await page.locator("#contact").scrollIntoViewIfNeeded();
   await expect(page.locator(".contact-email")).toHaveAttribute(
     "href",
     "mailto:hello@brokenrobotstudio.co.za",
   );
-  const images = page.locator("img");
-  for (const img of await images.all()) {
+  for (const img of await page.locator("img:visible").all()) {
     await img.scrollIntoViewIfNeeded();
     await expect
       .poll(() =>
@@ -40,6 +63,10 @@ test("all four independent sections render, artwork loads and contact works", as
   }
   expect(errors).toEqual([]);
   await page.evaluate(() => document.fonts.ready);
+  await page.locator("#workshop").screenshot({
+    path: "test-results/field-guide-traps.png",
+    style: collectionScreenshotStyle,
+  });
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
   await page.screenshot({
     path: "test-results/site-desktop.png",
@@ -48,98 +75,138 @@ test("all four independent sections render, artwork loads and contact works", as
   await page.screenshot({ path: "test-results/site-hero.png" });
 });
 
-test("field guide changes category and its dialog supports keyboard dismissal", async ({
+test("complete trap and enemy collections are static cards with visible descriptions", async ({
   page,
 }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "The troublemakers" }).click();
+  await waitForGuide(page);
+  for (const [tab, total, names] of [
+    [
+      "The traps",
+      8,
+      [
+        "Haymaker",
+        "Spike Trap",
+        "Arrow Wall",
+        "Barricade",
+        "Brimstone",
+        "Ripsaw",
+        "Bouncing Boulder",
+        "Auto Ballista",
+      ],
+    ],
+    [
+      "The troublemakers",
+      11,
+      [
+        "Gargoyle",
+        "Werewolf Hunter",
+        "Bat Mage",
+        "Skeleton",
+        "Medium Skeleton",
+        "Armoured Skeleton",
+        "Skeleton Archer",
+        "Wargling",
+        "Ghost",
+        "Troll",
+        "Shield Brute",
+      ],
+    ],
+  ] as const) {
+    await page.getByRole("tab", { name: tab, exact: true }).click();
+    const panel = activeCollection(page);
+    await expect(panel.locator(".guide-card")).toHaveCount(total);
+    for (const name of names) {
+      const card = panel.getByRole("article", { name, exact: true });
+      await expect(card).toBeVisible();
+      await expect(card.locator(".guide-card-description")).toBeVisible();
+      await expect(card.locator(".guide-card-description")).not.toBeEmpty();
+      await expect(card.locator("button, a, [tabindex]")).toHaveCount(0);
+      await expect(card.locator("img")).toHaveAttribute(
+        "src",
+        /media\/catalog\/.+\.webp$/,
+      );
+    }
+    await panel.getByRole("article").first().click();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(page.locator(".guide-pagination")).toHaveCount(0);
+  }
+  await page.evaluate(() => document.fonts.ready);
+  await loadCollectionImages(page);
+  await page.locator("#workshop").screenshot({
+    path: "test-results/field-guide-enemies.png",
+    style: collectionScreenshotStyle,
+  });
+});
+
+test("collection tabs support keyboard navigation and show the current kingdom", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await waitForGuide(page);
+  const traps = page.getByRole("tab", { name: "The traps", exact: true });
+  const enemies = page.getByRole("tab", {
+    name: "The troublemakers",
+    exact: true,
+  });
+  const kingdoms = page.getByRole("tab", { name: "Kingdoms", exact: true });
+  await traps.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(enemies).toBeFocused();
+  await expect(enemies).toHaveAttribute("aria-selected", "true");
+  await expect(activeCollection(page).locator(".guide-card")).toHaveCount(11);
+  await page.keyboard.press("End");
+  await expect(kingdoms).toBeFocused();
+  await expect(kingdoms).toHaveAttribute("aria-selected", "true");
+  const map = activeCollection(page).getByRole("article", {
+    name: "The Playground",
+    exact: true,
+  });
+  await expect(map).toBeVisible();
+  await expect(map.locator("img")).toHaveAttribute("src", /media\/world.webp$/);
+  await expect(activeCollection(page).getByRole("article")).toHaveCount(1);
   await expect(
-    page.getByRole("button", { name: "Explore Gargoyle" }),
+    page.getByRole("heading", {
+      name: "Choose your Shardkeeper.",
+      exact: true,
+    }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Explore Haymaker", exact: true }),
+    page.locator(".guide-heroes button, .guide-heroes a"),
   ).toHaveCount(0);
-  const card = page.getByRole("button", { name: "Explore Gargoyle" });
-  await card.click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await expect(
-    page.getByRole("dialog").getByRole("heading", { name: "Gargoyle" }),
-  ).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(page.getByRole("dialog")).not.toBeVisible();
-  await expect(card).toBeFocused();
-  await page.getByRole("button", { name: "The traps" }).click();
-  await expect(
-    page.getByRole("button", { name: "Explore Haymaker", exact: true }),
-  ).toBeVisible();
+  await loadCollectionImages(page);
+  await page.locator("#workshop").screenshot({
+    path: "test-results/field-guide-kingdoms.png",
+    style: collectionScreenshotStyle,
+  });
+  await page.keyboard.press("Home");
+  await expect(traps).toBeFocused();
+  await expect(activeCollection(page).locator(".guide-card")).toHaveCount(8);
+  await page.keyboard.press("ArrowLeft");
+  await expect(kingdoms).toBeFocused();
+  await expect(kingdoms).toHaveAttribute("aria-selected", "true");
 });
 
 test("the illustrated layout fits narrow phones and tablets", async ({
   page,
 }) => {
   await page.goto("/");
-  await expect(page.locator(".guide-card")).toHaveCount(3);
+  await waitForGuide(page);
   await page.evaluate(() => document.fonts.ready);
   for (const width of [320, 768, 1024]) {
     await page.setViewportSize({ width, height: 900 });
-    const fits = await page.evaluate(() => {
-      const title = document.querySelector("h1")!.getBoundingClientRect();
-      return (
-        document.documentElement.scrollWidth <= window.innerWidth &&
-        title.left >= 0 &&
-        title.right <= window.innerWidth
-      );
-    });
-    expect(fits, `Layout should fit at ${width}px`).toBe(true);
-  }
-});
-
-test("all eight defenses and eleven enemies can be browsed from the roster", async ({
-  page,
-}) => {
-  await page.goto("/");
-  await expect(page.locator(".guide-card")).toHaveCount(3);
-  for (const [category, filter, total] of [
-    ["traps", "The traps", 8],
-    ["enemies", "The troublemakers", 11],
-  ] as const) {
-    await page.getByRole("button", { name: filter, exact: true }).click();
-    const names = new Set<string>();
-    for (let index = 0; index < Math.ceil(total / 3); index++) {
-      await expect(
-        page.locator('.guide-pagination [role="status"]'),
-      ).toContainText(`of ${total}`);
-      for (const card of await page.locator(".guide-card").all()) {
-        names.add((await card.getAttribute("aria-label"))!);
-        await expect(card.locator("img")).toHaveAttribute(
-          "src",
-          /media\/catalog\/.+\.webp$/,
+    for (const tab of ["The traps", "The troublemakers", "Kingdoms"]) {
+      await page.getByRole("tab", { name: tab, exact: true }).click();
+      const fits = await page.evaluate(() => {
+        const title = document.querySelector("h1")!.getBoundingClientRect();
+        return (
+          document.documentElement.scrollWidth <= window.innerWidth &&
+          title.left >= 0 &&
+          title.right <= window.innerWidth
         );
-      }
-      const next = page.getByRole("button", {
-        name: `Next ${category}`,
-        exact: true,
       });
-      if (index < Math.ceil(total / 3) - 1) {
-        const previousFirst = await page
-          .locator(".guide-card")
-          .first()
-          .getAttribute("aria-label");
-        await next.click();
-        await expect(page.locator(".guide-card").first()).not.toHaveAttribute(
-          "aria-label",
-          previousFirst!,
-        );
-      } else await expect(next).toBeDisabled();
+      expect(fits, `${tab} layout should fit at ${width}px`).toBe(true);
     }
-    expect(names.size).toBe(total);
-    expect(
-      names.has(
-        category === "traps" ? "Explore Auto Ballista" : "Explore Shield Brute",
-      ),
-    ).toBe(true);
-    if (category === "enemies")
-      expect(names.has("Explore Bat Mage")).toBe(true);
   }
 });
 
@@ -153,7 +220,7 @@ test("reduced-motion visitors receive still images until they choose to play", a
       animatedRequests.push(request.url());
   });
   await page.goto("/");
-  await expect(page.locator(".guide-card")).toHaveCount(3);
+  await waitForGuide(page);
   await expect(page.locator(".game-visual img")).toHaveAttribute(
     "src",
     /battle.webp$/,
@@ -227,7 +294,7 @@ test("a failed remote leaves other sections usable and can retry", async ({
     .locator('[data-mfe="field-guide"]')
     .getByRole("button", { name: "Try again" })
     .click();
-  await expect(page.locator(".guide-card")).toHaveCount(3);
+  await waitForGuide(page);
 });
 
 test("the complete artifact works below a GitHub Pages repository path", async ({
@@ -238,7 +305,7 @@ test("the complete artifact works below a GitHub Pages repository path", async (
     if (response.status() >= 400) failures.push(response.url());
   });
   await page.goto("/broken-robots/");
-  await expect(page.locator(".guide-card")).toHaveCount(3);
+  await waitForGuide(page);
   await expect(page.locator(".intro-world img")).toHaveAttribute(
     "src",
     /\/broken-robots\/media\/portal.webp$/,
@@ -247,9 +314,22 @@ test("the complete artifact works below a GitHub Pages repository path", async (
     "src",
     /\/broken-robots\/media\/brickhold-logo.webp$/,
   );
-  await page.getByRole("button", { name: "The troublemakers" }).click();
-  await page.getByRole("button", { name: "Explore Werewolf Hunter" }).click();
-  await expect(page.getByRole("dialog")).toBeVisible();
+  await page
+    .getByRole("tab", { name: "The troublemakers", exact: true })
+    .click();
+  await expect(activeCollection(page).locator(".guide-card")).toHaveCount(11);
+  await expect(
+    activeCollection(page).getByRole("article", {
+      name: "Werewolf Hunter",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await page.getByRole("tab", { name: "Kingdoms", exact: true }).click();
+  await expect(
+    activeCollection(page)
+      .getByRole("article", { name: "The Playground", exact: true })
+      .locator("img"),
+  ).toHaveAttribute("src", /\/broken-robots\/media\/world.webp$/);
   expect(failures).toEqual([]);
 });
 
@@ -259,9 +339,9 @@ test.describe("small screens", () => {
     isMobile: true,
     hasTouch: true,
   });
-  test("menu, art and dialogs fit a phone", async ({ page }) => {
+  test("menu, full collections and maps fit a phone", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator(".guide-card")).toHaveCount(3);
+    await waitForGuide(page);
     const toggle = page.getByRole("button", { name: /^(Menu|Close)$/ });
     await toggle.click();
     await expect(toggle).toHaveAttribute("aria-expanded", "true");
@@ -273,11 +353,31 @@ test.describe("small screens", () => {
       "aria-expanded",
       "false",
     );
-    await page.getByRole("button", { name: "Explore Spike Trap" }).click();
-    await expect(page.getByRole("dialog")).toBeVisible();
-    const box = await page.getByRole("dialog").boundingBox();
-    expect(box!.width).toBeLessThanOrEqual(390);
-    await page.getByRole("button", { name: "Close artwork details" }).click();
+    await expect(activeCollection(page).locator(".guide-card")).toHaveCount(8);
+    await expect(
+      activeCollection(page).getByRole("article", {
+        name: "Spike Trap",
+        exact: true,
+      }),
+    ).toBeVisible();
+    await page
+      .getByRole("tab", { name: "The troublemakers", exact: true })
+      .click();
+    await expect(activeCollection(page).locator(".guide-card")).toHaveCount(11);
+    await page.getByRole("tab", { name: "Kingdoms", exact: true }).click();
+    await expect(
+      activeCollection(page).getByRole("article", {
+        name: "The Playground",
+        exact: true,
+      }),
+    ).toBeVisible();
+    await loadCollectionImages(page);
+    await page.locator("#workshop").screenshot({
+      path: "test-results/field-guide-mobile-kingdoms.png",
+      style: collectionScreenshotStyle,
+    });
+    await page.getByRole("tab", { name: "The traps", exact: true }).click();
+    await loadCollectionImages(page);
     await page.locator("#contact").scrollIntoViewIfNeeded();
     expect(
       await page.evaluate(

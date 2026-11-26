@@ -1,4 +1,14 @@
 {
+  "maps": [
+    {
+      "id": "playground",
+      "name": "The Playground",
+      "eyebrow": "Current arena",
+      "description": "A castle courtyard with stone walls, winding lanes and a crystal worth protecting. Build your route, recruit the Blue Knight guards, and meet the next wave on your own terms.",
+      "image": "media/world.webp",
+      "alt": "An aerial in-game view of the Playground's castle courtyard, guard posts and crystal in Brickhold."
+    }
+  ],
   "studio": {
     "name": "Broken Robot",
     "email": "hello@brokenrobotstudio.co.za"

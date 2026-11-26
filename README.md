@@ -46,15 +46,15 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for boundaries, request flow, c
 
 ## Edit content and artwork
 
-- `content/site.json`: studio identity and game status.
-- `content/catalog.json`: trap/enemy cards and detail dialogs.
+- `content/site.json`: studio identity, game status and Kingdoms map cards.
+- `content/catalog.json`: complete trap/enemy collections with inline descriptions and costs.
 - `apps/intro/src/entry.tsx`: introduction copy.
 - `apps/brickhold/src/entry.tsx`: game presentation.
 - `apps/studio/src/entry.tsx`: about/contact copy.
 - `apps/shell/public/media/`: self-contained, compressed artwork.
 - `apps/shell/src/styles.css`: shared colours, typography, navigation.
 
-The game repository and Downloads folder are not needed to run or build this site. [docs/ASSETS.md](docs/ASSETS.md) records the supplied source files, crop bounds and animation details. To regenerate the media, run `node scripts/import-assets.mjs` with the named originals in Downloads, or pass an explicit source directory. The gallery has six actual game views and two opt-in animated clips. The field guide covers all eight defenses and eleven enemies, with three cards per page. Still images are the default, including for reduced-motion visitors.
+The game repository and Downloads folder are not needed to run or build this site. [docs/ASSETS.md](docs/ASSETS.md) records the supplied source files, crop bounds and animation details. To regenerate the media, run `node scripts/import-assets.mjs` with the named originals in Downloads, or pass an explicit source directory. The gallery has six actual game views and two opt-in animated clips. The field guide has three keyboard-accessible tabs: The traps, The troublemakers and Kingdoms. Each roster displays its whole collection at once: eight defenses or eleven enemies as non-clickable cards with hover effects and visible descriptions. Kingdoms starts with the actual Playground arena. A separate Shardkeeper preview beneath the collections establishes where the future playable-hero roster will sit. Still images are the default, including for reduced-motion visitors.
 
 ## Browser checks
 
@@ -63,7 +63,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-Tests start their own production preview on port 4173 and cover loading all four MFEs, category filtering, keyboard dialog dismissal, gameplay switching, mobile navigation, image loading, a failed remote with retry, and deployment below a repository path. Build first. On Windows the configuration uses the installed Microsoft Edge; elsewhere it uses Playwright Chromium. `node services/bff/integration-check.mjs` also checks the live BFF through the Vite proxy and browser (uses Edge on Windows).
+Tests start their own production preview on port 4173 and cover loading all four MFEs, complete static collections, keyboard tab navigation, the current kingdom, gameplay switching, mobile navigation, image loading, a failed remote with retry, and deployment below a repository path. Build first. On Windows the configuration uses the installed Microsoft Edge; elsewhere it uses Playwright Chromium. `node services/bff/integration-check.mjs` also checks the live BFF through the Vite proxy and browser (uses Edge on Windows).
 
 ## GitHub Pages later
 

@@ -47,13 +47,11 @@ try {
   page.on("pageerror", (error) => browserErrors.push(error.message));
   const start = requests.length;
   await page.goto(base);
+  await page.getByRole("article", { name: "Haymaker", exact: true }).waitFor();
   await page
-    .getByRole("button", { name: "Explore Haymaker", exact: true })
-    .waitFor();
-  await page.getByRole("button", { name: "The troublemakers" }).click();
-  await page
-    .getByRole("button", { name: "Explore Gargoyle", exact: true })
-    .waitFor();
+    .getByRole("tab", { name: "The troublemakers", exact: true })
+    .click();
+  await page.getByRole("article", { name: "Gargoyle", exact: true }).waitFor();
   assert.ok(
     requests.slice(start).includes("/api/catalog"),
     "Browser catalog request must reach the real BFF.",

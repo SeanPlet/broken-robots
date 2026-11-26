@@ -14,6 +14,14 @@ export type CatalogEntry = {
   cost?: string;
 };
 export type SiteContent = {
+  maps: {
+    id: string;
+    name: string;
+    eyebrow: string;
+    description: string;
+    image: string;
+    alt: string;
+  }[];
   studio: { name: string; email: string };
   game: { title: string; status: string; description: string };
 };
