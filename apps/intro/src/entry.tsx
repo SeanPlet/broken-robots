@@ -27,14 +27,13 @@ function Intro({ options }: { options: MountOptions }) {
     )
       return;
     const bounds = event.currentTarget.getBoundingClientRect();
-    scene.current?.style.setProperty(
-      "--scene-x",
-      `${(event.clientX / bounds.width - 0.5) * 9}px`,
-    );
-    scene.current?.style.setProperty(
-      "--scene-y",
-      `${((event.clientY - bounds.top) / bounds.height - 0.5) * 6}px`,
-    );
+    const x = (event.clientX - bounds.left) / bounds.width;
+    const y = (event.clientY - bounds.top) / bounds.height;
+    scene.current?.setAttribute("data-pointer-active", "true");
+    scene.current?.style.setProperty("--pointer-x", `${x * 100}%`);
+    scene.current?.style.setProperty("--pointer-y", `${y * 100}%`);
+    scene.current?.style.setProperty("--scene-x", `${(x - 0.5) * 28}px`);
+    scene.current?.style.setProperty("--scene-y", `${(y - 0.5) * 18}px`);
   }
   return (
     <section
@@ -46,6 +45,7 @@ function Intro({ options }: { options: MountOptions }) {
       onPointerMove={lookAround}
       onPointerLeave={() => {
         if (motionPaused) return;
+        scene.current?.removeAttribute("data-pointer-active");
         scene.current?.style.setProperty("--scene-x", "0px");
         scene.current?.style.setProperty("--scene-y", "0px");
       }}
@@ -60,6 +60,7 @@ function Intro({ options }: { options: MountOptions }) {
         />
       </div>
       <div className="intro-shade" aria-hidden="true" />
+      <div className="intro-cursor-glow" aria-hidden="true" />
       <div className="intro-runes" aria-hidden="true">
         <i />
         <i />
