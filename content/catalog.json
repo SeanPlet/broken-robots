@@ -1,0 +1,62 @@
+[
+  {
+    "id": "haymaker",
+    "category": "traps",
+    "name": "The Haymaker",
+    "eyebrow": "Ceiling trap",
+    "description": "A spinning welcome committee. Four brick-built hammers make the space beneath this ceiling trap a very bad place to stand.",
+    "image": "media/haymaker.webp",
+    "alt": "Concept art of the Haymaker, a hanging rotating shaft with four wooden hammer heads in a brick castle.",
+    "kind": "Concept art"
+  },
+  {
+    "id": "spikes",
+    "category": "traps",
+    "name": "Spike Trap",
+    "eyebrow": "Floor trap",
+    "description": "Simple. Pointy. Persuasive. Build a lane that brings the crowd right across a nasty surprise underfoot.",
+    "image": "media/spikes.webp",
+    "alt": "Concept art of a brick-built floor trap with a bed of raised spikes.",
+    "kind": "Concept art"
+  },
+  {
+    "id": "arrow-wall",
+    "category": "traps",
+    "name": "Arrow Wall",
+    "eyebrow": "Wall trap",
+    "description": "Put those castle walls to work. A volley across the lane gives incoming creatures another reason to regret their route.",
+    "image": "media/arrow-wall.webp",
+    "alt": "Concept art of a castle wall fitted with a grid of arrow launchers.",
+    "kind": "Concept art"
+  },
+  {
+    "id": "gargoyle",
+    "category": "enemies",
+    "name": "Gargoyle",
+    "eyebrow": "Trouble from above",
+    "description": "Stone wings. Heavy hands. This flying bruiser sails over your floor traps before dropping into a two-handed slam.",
+    "image": "media/gargoyle.webp",
+    "alt": "Concept art of a grey brick minifigure Gargoyle with horns and wide bat wings.",
+    "kind": "Concept art"
+  },
+  {
+    "id": "werewolf",
+    "category": "enemies",
+    "name": "Werewolf Hunter",
+    "eyebrow": "You're the objective",
+    "description": "The crystal can wait. This quick, clawed hunter is much more interested in the hero running around beside it.",
+    "image": "media/werewolf.webp",
+    "alt": "Concept art of a grey brick minifigure Werewolf with a wolf head and clawed hands.",
+    "kind": "Concept art"
+  },
+  {
+    "id": "skeletons",
+    "category": "enemies",
+    "name": "Skeleton Squad",
+    "eyebrow": "Some assembly required",
+    "description": "The portal's regulars arrive in packs. Turn their march into a trap-filled obstacle course, then help send them back in pieces.",
+    "image": "media/portal.webp",
+    "alt": "Concept art of a skeleton emerging from a glowing purple portal in a brick castle gateway.",
+    "kind": "Concept art"
+  }
+]

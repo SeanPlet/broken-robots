@@ -1,0 +1,9 @@
+node_modules
+dist
+test-results
+playwright-report
+package-lock.json
+apps/shell/public/media
+apps/shell/public/fonts
+apps/shell/public/data
+apps/shell/public/mfe-manifest.json

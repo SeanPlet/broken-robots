@@ -1,0 +1,438 @@
+.field-guide {
+  padding-top: 30px;
+  padding-bottom: 100px;
+  scroll-margin-top: 100px;
+}
+.guide-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 32px;
+  margin-bottom: 39px;
+}
+.guide-heading .eyebrow {
+  margin-bottom: 22px;
+}
+.guide-heading .section-title {
+  margin: 0;
+  line-height: 1.04;
+  letter-spacing: -3.8px;
+  font-weight: 600;
+}
+.guide-orange {
+  color: var(--orange);
+}
+.guide-intro {
+  font-size: 17px;
+  line-height: 1.65;
+  margin: 0 0 5px;
+}
+.guide-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  border-top: 1px solid var(--line);
+  padding-top: 26px;
+  margin-bottom: 28px;
+}
+.guide-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.guide-filters button {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  padding: 13px 20px;
+  border-radius: 100px;
+  font: 500 14px var(--body);
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+.guide-filters button[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.guide-filters button span {
+  font: 10px var(--body);
+  opacity: 0.65;
+}
+.guide-filters button:hover {
+  border-color: var(--ink);
+}
+.guide-hint {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+.guide-hint span {
+  display: inline-block;
+  font-size: 25px;
+  margin-left: 10px;
+  vertical-align: middle;
+  color: var(--orange);
+}
+.guide-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 25px;
+}
+.guide-card {
+  display: block;
+  text-align: left;
+  border: 0;
+  border-radius: 17px;
+  background: transparent;
+  color: var(--ink);
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--body);
+  min-width: 0;
+}
+.guide-card-image {
+  position: relative;
+  overflow: hidden;
+  border-radius: 17px;
+  aspect-ratio: 1.13;
+  background: #e6e4da;
+}
+.guide-card-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s;
+}
+.guide-card:hover .guide-card-image img {
+  transform: scale(1.04);
+}
+.guide-card:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 8px;
+}
+.guide-art-label {
+  position: absolute;
+  left: 15px;
+  bottom: 15px;
+  background: var(--paper);
+  color: var(--ink);
+  padding: 7px 10px;
+  border-radius: 4px;
+  font: 500 10px var(--body);
+  letter-spacing: 0.3px;
+}
+.guide-card-number {
+  position: absolute;
+  top: 16px;
+  left: 17px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  width: 31px;
+  height: 31px;
+  background: var(--paper);
+  font-size: 10px;
+}
+.guide-card-copy {
+  padding-top: 23px;
+}
+.guide-card-copy .eyebrow {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  margin: 0 0 9px;
+}
+.guide-card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.guide-card-title h3 {
+  font: 500 27px var(--display);
+  letter-spacing: -1.1px;
+  margin: 0;
+}
+.guide-plus {
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  font-size: 23px;
+  font-weight: 300;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    color 0.2s;
+}
+.guide-card:hover .guide-plus {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: white;
+}
+.guide-card-gargoyle img,
+.guide-card-werewolf img {
+  object-fit: cover;
+  object-position: center 33%;
+}
+.guide-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  margin-top: 34px;
+  padding-top: 20px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.guide-bottom > span:last-child {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.guide-bottom > span:last-child span {
+  font-size: 23px;
+  color: var(--orange);
+}
+.guide-reload {
+  font: 400 11px var(--body);
+  color: var(--muted);
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  padding: 2px 0 4px;
+  margin-top: 18px;
+  cursor: pointer;
+}
+.guide-reload:hover {
+  color: var(--ink);
+}
+.guide-reload span {
+  margin-left: 5px;
+}
+.guide-state {
+  min-height: 240px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border: 1px dashed var(--line);
+  border-radius: 17px;
+  padding: 24px;
+  color: var(--muted);
+}
+.guide-dialog {
+  width: min(950px, calc(100% - 40px));
+  max-width: 950px;
+  padding: 0;
+  border: 0;
+  border-radius: 22px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 24px 100px #0005;
+  overflow: auto;
+  max-height: calc(100dvh - 50px);
+}
+.guide-dialog::backdrop {
+  background: #151811b8;
+  backdrop-filter: blur(5px);
+}
+.guide-dialog-layout {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  min-height: 460px;
+}
+.guide-dialog-art {
+  position: relative;
+  min-height: 360px;
+  background: #e6e4da;
+}
+.guide-dialog-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+}
+.guide-dialog-copy {
+  padding: 65px 38px 38px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+.guide-dialog-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  border: 1px solid var(--line);
+  background: transparent;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  font-size: 25px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.guide-dialog-close:hover {
+  background: var(--orange);
+  color: white;
+  border-color: var(--orange);
+}
+.guide-dialog-copy > .eyebrow {
+  font-size: 9px;
+  margin: 0 0 22px;
+}
+.guide-dialog-copy h3 {
+  font: 500 42px/1.08 var(--display);
+  letter-spacing: -2px;
+  margin: 0 0 13px;
+}
+.guide-dialog-type {
+  color: var(--orange);
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0 0 16px;
+}
+.guide-dialog-copy > p:not(.eyebrow):not(.guide-dialog-type) {
+  font-size: 15px;
+  line-height: 1.7;
+}
+.guide-dialog-copy .guide-dialog-note {
+  font-size: 11px !important;
+  color: var(--muted);
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+}
+.guide-back {
+  font-size: 12px !important;
+  padding: 11px 14px !important;
+  display: inline-flex;
+  gap: 15px;
+  align-items: center;
+  margin-top: 12px;
+}
+.guide-back svg {
+  width: 17px;
+}
+.guide-dialog button:focus-visible,
+.guide-filters button:focus-visible,
+.guide-reload:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 4px;
+}
+@media (max-width: 1000px) {
+  .field-guide {
+    padding-top: 20px;
+    padding-bottom: 75px;
+  }
+  .guide-heading .section-title {
+    font-size: 54px;
+    letter-spacing: -3px;
+  }
+  .guide-grid {
+    gap: 17px;
+  }
+  .guide-card-title h3 {
+    font-size: 23px;
+  }
+  .guide-hint {
+    display: none;
+  }
+  .guide-card-image {
+    aspect-ratio: 1;
+  }
+  .guide-card-copy {
+    padding-top: 18px;
+  }
+  .guide-filters button {
+    padding: 11px 17px;
+  }
+}
+@media (max-width: 700px) {
+  .field-guide {
+    padding-top: 10px;
+    padding-bottom: 60px;
+  }
+  .guide-heading {
+    display: block;
+    margin-bottom: 27px;
+  }
+  .guide-heading .section-title {
+    font-size: 43px;
+    letter-spacing: -2.6px;
+  }
+  .guide-heading .eyebrow {
+    margin-bottom: 16px;
+  }
+  .guide-intro {
+    font-size: 14px;
+    margin-top: 22px;
+  }
+  .guide-intro br {
+    display: none;
+  }
+  .guide-toolbar {
+    padding-top: 20px;
+    margin-bottom: 23px;
+  }
+  .guide-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .guide-card-image {
+    aspect-ratio: 1.25;
+  }
+  .guide-card-title h3 {
+    font-size: 27px;
+  }
+  .guide-card-copy {
+    padding-top: 17px;
+  }
+  .guide-bottom {
+    gap: 18px;
+    align-items: flex-start;
+  }
+  .guide-bottom > span:last-child {
+    max-width: 140px;
+    text-align: right;
+    line-height: 1.6;
+  }
+  .guide-dialog-layout {
+    grid-template-columns: 1fr;
+  }
+  .guide-dialog-art {
+    min-height: 0;
+    aspect-ratio: 1.25;
+  }
+  .guide-dialog-copy {
+    padding: 35px 26px 28px;
+  }
+  .guide-dialog-copy h3 {
+    font-size: 35px;
+  }
+  .guide-dialog-copy > .eyebrow {
+    max-width: calc(100% - 25px);
+    margin-bottom: 18px;
+  }
+  .guide-dialog-close {
+    top: 14px;
+    right: 14px;
+  }
+}

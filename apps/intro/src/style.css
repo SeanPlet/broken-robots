@@ -1,0 +1,247 @@
+.intro {
+  padding-top: 66px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 52px;
+  position: relative;
+}
+.intro-copy {
+  padding-top: 17px;
+}
+.intro-copy h1 {
+  font-size: clamp(66px, 7.5vw, 108px);
+  line-height: 0.99;
+  letter-spacing: -7px;
+  margin-top: 29px;
+  white-space: nowrap;
+}
+.intro-play {
+  position: relative;
+  display: inline-block;
+}
+.intro-play svg {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: -12px;
+  height: 20px;
+  fill: none;
+  stroke: var(--orange);
+  stroke-width: 3;
+}
+.intro-period {
+  color: var(--orange);
+}
+.intro-description {
+  font-size: 15px;
+  line-height: 1.85;
+  margin-top: 35px;
+  color: var(--muted);
+}
+.intro-copy > .button {
+  margin-top: 28px;
+}
+.intro-note {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  margin-top: 33px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.intro-note p > span {
+  color: var(--muted);
+}
+.intro-spark {
+  font-size: 43px;
+  line-height: 1;
+  color: var(--orange);
+}
+.intro-art {
+  position: relative;
+  padding-top: 11px;
+}
+.intro-poster {
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid #272a241a;
+  transform: rotate(2deg);
+  box-shadow: 0 12px 0 -5px #dcdad0;
+}
+.intro-poster > img {
+  width: 100%;
+  height: 440px;
+  object-fit: cover;
+  object-position: 54% center;
+}
+.intro-poster-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 22px 21px 17px;
+  background: linear-gradient(transparent, #13281bd9);
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  color: white;
+}
+.intro-poster-bottom > span:first-child {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: -1px;
+}
+.intro-poster-bottom > span:last-child {
+  font-size: 8px;
+  letter-spacing: 1.4px;
+}
+.intro-sticker {
+  position: absolute;
+  right: -15px;
+  top: -14px;
+  transform: rotate(11deg);
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  background: var(--yellow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid #272a2450;
+  box-shadow: 3px 4px 0 #272a2412;
+  text-align: center;
+}
+.intro-sticker > span {
+  font-size: 8px;
+  letter-spacing: 2px;
+}
+.intro-sticker strong {
+  font-family: var(--display);
+  font-size: 17px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+.intro-art-caption {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 24px;
+  font-size: 10px;
+  color: var(--muted);
+  padding-left: 12px;
+}
+.intro-art-caption > span:last-child {
+  margin-left: auto;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.intro-doodle {
+  position: absolute;
+  width: 80px;
+  height: 70px;
+  right: 20px;
+  bottom: -55px;
+  transform: rotate(15deg);
+}
+.intro-divider {
+  grid-column: 1/-1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 63px;
+  border-top: 1px solid var(--line);
+  padding-block: 22px;
+  font-size: 9px;
+  letter-spacing: 1.8px;
+  font-weight: 600;
+  color: var(--muted);
+}
+@media (min-width: 1550px) {
+  .intro-poster > img {
+    height: 480px;
+  }
+  .intro {
+    padding-top: 78px;
+    gap: 0 80px;
+  }
+  .intro-copy h1 {
+    font-size: 116px;
+  }
+}
+@media (max-width: 1100px) {
+  .intro {
+    gap: 0 36px;
+  }
+  .intro-copy h1 {
+    font-size: 7.8vw;
+    letter-spacing: -5px;
+  }
+  .intro-poster > img {
+    height: 420px;
+  }
+  .desktop-break {
+    display: none;
+  }
+  .intro-description {
+    max-width: 350px;
+  }
+  .intro-sticker {
+    width: 105px;
+    height: 105px;
+    right: -9px;
+  }
+  .intro-sticker strong {
+    font-size: 15px;
+  }
+}
+@media (max-width: 760px) {
+  .intro {
+    grid-template-columns: 1fr;
+    padding-top: 38px;
+    gap: 45px;
+  }
+  .intro-copy h1 {
+    font-size: clamp(62px, 12.5vw, 100px);
+    letter-spacing: -5px;
+  }
+  .intro-description {
+    max-width: 430px;
+  }
+  .intro-note {
+    margin-top: 25px;
+  }
+  .intro-art {
+    max-width: 580px;
+    width: calc(100% - 12px);
+    margin-inline: auto;
+  }
+  .intro-poster > img {
+    height: auto;
+    aspect-ratio: 1.25;
+    object-position: center;
+  }
+  .intro-sticker {
+    top: -13px;
+    right: -8px;
+    width: 110px;
+    height: 110px;
+  }
+  .intro-divider {
+    margin-top: 0;
+    font-size: 8px;
+  }
+  .intro-doodle {
+    display: none;
+  }
+  .intro-copy {
+    padding-top: 0;
+  }
+  .intro-art-caption {
+    padding-left: 0;
+  }
+}

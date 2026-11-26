@@ -1,0 +1,235 @@
+.game-section {
+  padding-top: 39px;
+  padding-bottom: 80px;
+}
+.game-panel {
+  background: #2c342a;
+  color: var(--paper);
+  border-radius: 14px;
+  padding: 32px 42px 0;
+  position: relative;
+  overflow: hidden;
+}
+.game-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ffffff26;
+  padding-bottom: 24px;
+}
+.game-topline .eyebrow {
+  color: #d3d4bf;
+}
+.game-status {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  font-size: 10px;
+  background: #ffffff09;
+  border: 1px solid #ffffff25;
+  padding: 7px 10px;
+  border-radius: 4px;
+  color: #d5d8cb;
+}
+.game-status > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--yellow);
+}
+.game-main {
+  display: grid;
+  grid-template-columns: 0.95fr 1fr;
+  gap: 50px;
+  padding-block: 36px;
+}
+.game-copy {
+  padding-block: 9px;
+}
+.game-wordmark {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 3px;
+  color: var(--yellow);
+  margin-bottom: 25px;
+}
+.game-copy h2 {
+  font-size: clamp(36px, 4.4vw, 61px);
+  letter-spacing: -3px;
+  line-height: 1.06;
+  margin-bottom: 22px;
+}
+.game-copy > p:not(.game-wordmark) {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #e2e3d8;
+}
+.game-copy > p.game-description {
+  margin-top: 17px;
+  color: #b3baab;
+  font-size: 13px;
+  max-width: 340px;
+}
+.game-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 23px;
+  font-size: 12px;
+  margin-top: 28px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #a5aa94;
+  color: var(--yellow);
+}
+.game-link:hover {
+  color: white;
+}
+.game-visual {
+  position: relative;
+  min-width: 0;
+}
+.game-visual > img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1.12;
+  object-fit: cover;
+  border-radius: 9px;
+}
+.game-tabs {
+  position: absolute;
+  z-index: 1;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  background: #f3f0e8e8;
+  padding: 4px;
+  border-radius: 5px;
+  backdrop-filter: blur(10px);
+}
+.game-tabs button {
+  font-size: 10px;
+  padding: 8px 11px;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  color: var(--ink);
+}
+.game-tabs button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+.game-image-label {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  background: #232a23d9;
+  color: #f3f0e8;
+  padding: 10px;
+  font-size: 9px;
+  letter-spacing: 0.3px;
+  border-radius: 3px;
+  backdrop-filter: blur(8px);
+}
+.game-facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  border-top: 1px solid #ffffff26;
+  padding-block: 26px 30px;
+}
+.game-facts > div {
+  display: flex;
+  gap: 15px;
+}
+.game-fact-number {
+  font-size: 10px;
+  color: var(--yellow);
+  padding-top: 3px;
+}
+.game-facts h3 {
+  font-size: 13px;
+  font-weight: 500;
+}
+.game-facts p {
+  font-size: 10px;
+  color: #aeb5a6;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+@media (max-width: 1000px) {
+  .game-panel {
+    padding: 27px 28px 0;
+  }
+  .game-main {
+    gap: 25px;
+  }
+  .game-copy h2 {
+    font-size: 44px;
+    letter-spacing: -2px;
+  }
+  .game-visual > img {
+    aspect-ratio: 1.05;
+  }
+  .game-facts > div {
+    gap: 8px;
+  }
+  .game-facts h3 {
+    font-size: 12px;
+  }
+  .game-facts p {
+    font-size: 9px;
+  }
+}
+@media (max-width: 700px) {
+  .game-section {
+    padding-top: 0;
+    padding-bottom: 60px;
+  }
+  .game-panel {
+    padding: 24px 22px 0;
+  }
+  .game-main {
+    grid-template-columns: 1fr;
+    padding-top: 25px;
+    gap: 28px;
+  }
+  .game-copy h2 {
+    font-size: 49px;
+  }
+  .game-copy > p.game-description {
+    max-width: 440px;
+  }
+  .game-visual > img {
+    height: auto;
+    aspect-ratio: 1.13;
+    max-height: none;
+  }
+  .game-facts {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .game-facts h3 {
+    font-size: 14px;
+  }
+  .game-facts p {
+    font-size: 12px;
+  }
+  .game-fact-number {
+    font-size: 11px;
+    min-width: 30px;
+  }
+  .game-topline .eyebrow {
+    font-size: 9px;
+    letter-spacing: 1.1px;
+  }
+  .game-status {
+    font-size: 9px;
+  }
+  .game-wordmark {
+    margin-bottom: 20px;
+  }
+  .game-copy h2 {
+    font-size: clamp(39px, 10vw, 52px);
+  }
+}
