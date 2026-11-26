@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Arrow, media, type MountOptions } from "../../../packages/shared";
+import { useDecorationInView } from "../../../packages/shared/use-decoration-in-view";
 import "./styles.css";
 
 const baseUrl = new URL(import.meta.env.BASE_URL, document.baseURI).href;
@@ -98,6 +99,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const menuToggle = useRef<HTMLButtonElement>(null);
+  const footerRef = useDecorationInView<HTMLElement>();
   useEffect(() => {
     const update = () => setScrolled(window.scrollY > 40);
     update();
@@ -148,8 +150,8 @@ function App() {
             <a href="#brickhold">The game</a>
             <a href="#workshop">Field guide</a>
             <a href="#studio">The studio</a>
-            <a className="button button-small" href="#contact">
-              Get in touch <Arrow diagonal />
+            <a className="button nav-contact" href="#contact">
+              Contact us <Arrow diagonal />
             </a>
           </nav>
         </div>
@@ -160,7 +162,7 @@ function App() {
         <MicroFrontend name="field-guide" label="the workshop" />
         <MicroFrontend name="studio" label="about the studio" />
       </main>
-      <footer className="site-footer">
+      <footer className="site-footer" ref={footerRef}>
         <div className="footer-inner wrap">
           <a
             className="footer-brand"
@@ -179,7 +181,9 @@ function App() {
             © {new Date().getFullYear()} Broken Robot. Built one brick at a
             time.
           </p>
-          <a href="#top">Back to top ↑</a>
+          <a className="footer-to-top" href="#top">
+            Back to top <span aria-hidden="true">↑</span>
+          </a>
         </div>
       </footer>
     </>

@@ -15,6 +15,7 @@
   },
   "game": {
     "title": "Brickhold",
+    "playtestUrl": "https://brokenrobotstudio.itch.io/brickhold",
     "status": "In development",
     "description": "The kingdom's crystals are under attack. Build traps, shape enemy routes and fight alongside your defenses, alone or with up to three friends."
   }

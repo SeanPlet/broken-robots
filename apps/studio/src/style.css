@@ -79,6 +79,22 @@
   display: grid;
   align-items: center;
 }
+.studio-emblem .studio-particles {
+  --particle-color: #9b5b36;
+  --particle-accent: #8254ad;
+}
+.studio-emblem .studio-particles i:nth-child(1) {
+  --particle-y: 82%;
+}
+.studio-emblem .studio-particles i:nth-child(3) {
+  --particle-y: 16%;
+}
+.studio-emblem .studio-particles i:nth-child(4) {
+  --particle-y: 87%;
+}
+.studio-emblem .studio-particles i:nth-child(6) {
+  --particle-y: 16%;
+}
 .studio-logo-board {
   position: relative;
   width: calc(100% - 12px);
@@ -128,22 +144,50 @@
   right: 12px;
   bottom: 12px;
 }
-.studio-hand-arrow {
-  position: absolute;
-  width: 79px;
-  height: 44px;
-  right: 0;
-  bottom: 10px;
-  transform: rotate(21deg);
+@media (prefers-reduced-motion: no-preference) {
+  .studio-board-stud::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    background: #fff3c7;
+    clip-path: polygon(
+      50% 0,
+      62% 38%,
+      100% 50%,
+      62% 62%,
+      50% 100%,
+      38% 62%,
+      0 50%,
+      38% 38%
+    );
+    animation: studio-stud-glint 6s ease-in-out infinite paused;
+  }
+  .studio-board-stud:nth-child(2)::after {
+    animation-delay: -3.8s;
+  }
+  .studio-board-stud:nth-child(3)::after {
+    animation-delay: -2.2s;
+  }
+  .studio-board-stud:nth-child(4)::after {
+    animation-delay: -4.5s;
+  }
+  :root:not([data-decoration-paused])
+    .studio-emblem[data-decoration-in-view]
+    .studio-board-stud::after {
+    animation-play-state: running;
+  }
 }
-.studio-emblem-note {
-  position: absolute;
-  font-size: 14px;
-  font-style: italic;
-  font-weight: 600;
-  right: 0;
-  bottom: -16px;
-  transform: rotate(7deg);
+@keyframes studio-stud-glint {
+  0%,
+  18%,
+  100% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-22deg);
+  }
+  8% {
+    opacity: 0.92;
+    transform: scale(1) rotate(12deg);
+  }
 }
 .studio-story {
   min-width: 0;
@@ -193,9 +237,24 @@
   background: var(--paper);
   border: 3px solid var(--ink);
   box-shadow: 9px 10px 0 #25213f26;
-  padding: 48px 48px 28px;
+  padding: clamp(24px, 4vw, 48px);
   transform: rotate(-0.8deg);
   isolation: isolate;
+}
+.contact-postcard::after {
+  content: "";
+  position: absolute;
+  inset: 8px 8px auto;
+  height: 4px;
+  background: repeating-linear-gradient(
+    125deg,
+    #855cad 0 9px,
+    transparent 9px 17px,
+    #d1a355 17px 26px,
+    transparent 26px 34px
+  );
+  opacity: 0.55;
+  pointer-events: none;
 }
 .contact-postcard::before {
   content: "";
@@ -205,31 +264,40 @@
   pointer-events: none;
   z-index: -1;
 }
+.contact-letterhead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "title stamp" "intro stamp";
+  align-items: start;
+  column-gap: clamp(14px, 4vw, 44px);
+  row-gap: 10px;
+}
 .contact-title-block {
-  padding-right: 160px;
+  grid-area: title;
 }
 .contact-title-block > .eyebrow {
   font-size: 9px;
   letter-spacing: 1.8px;
-  margin-bottom: 13px;
+  margin-bottom: 11px;
 }
 .contact-title-block h2 {
-  font: 49px/1.15 var(--display);
-  letter-spacing: -1px;
+  font: clamp(26px, 4.1vw, 49px) / 1.14 var(--display);
+  letter-spacing: -0.025em;
 }
-.contact-aside {
-  font-size: 16px;
-  font-style: italic;
-  margin-top: 9px;
+.contact-intro {
+  grid-area: intro;
+  font-size: clamp(14px, 1.6vw, 16px);
+  line-height: 1.6;
+  max-width: 48ch;
   color: var(--muted);
 }
 .contact-postmark {
-  position: absolute;
-  right: 43px;
-  top: 30px;
-  width: 120px;
-  height: 133px;
+  grid-area: stamp;
+  align-self: center;
+  width: clamp(65px, 10.5vw, 110px);
+  aspect-ratio: 1 / 1.08;
   border: 2px dashed #7251af;
+  background: #7251af0a;
   color: #7251af;
   transform: rotate(9deg);
   display: flex;
@@ -238,33 +306,63 @@
   flex-direction: column;
 }
 .contact-postmark > span {
-  font-size: 7px;
-  letter-spacing: 1px;
+  font-size: clamp(4.5px, 0.63vw, 7px);
+  letter-spacing: 0.11em;
   font-weight: 800;
 }
 .contact-postmark svg {
-  width: 77px;
-  height: 73px;
+  width: 70%;
+  height: auto;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .contact-raven {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: contact-raven-flutter 6.2s ease-in-out infinite paused;
+  }
+  :root:not([data-decoration-paused])
+    .contact-postcard[data-decoration-in-view]
+    .contact-raven {
+    animation-play-state: running;
+  }
+  :root:not([data-decoration-paused]) .contact-postmark svg {
+    transition: transform 320ms cubic-bezier(0.22, 0.7, 0.3, 1);
+  }
+  :root:not([data-decoration-paused])
+    .contact-postcard:has(.contact-actions :is(:hover, :focus-visible))
+    .contact-postmark
+    svg {
+    transform: translate(4px, -5px) rotate(-7deg);
+  }
+}
+@keyframes contact-raven-flutter {
+  0%,
+  21%,
+  100% {
+    transform: none;
+  }
+  9% {
+    transform: translate(6px, -7px) rotate(-12deg);
+  }
+  15% {
+    transform: translate(3px, -2px) rotate(4deg);
+  }
 }
 .contact-bottom {
-  border-top: 2px solid #d6c4a0;
-  margin-top: 29px;
-  padding-top: 24px;
+  border-top: 1px dashed #b9a47e;
+  margin-top: 25px;
+  padding-top: 20px;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  gap: 25px;
-  align-items: flex-end;
-}
-.contact-message p {
-  font-size: 14px;
-  line-height: 1.7;
+  gap: 17px 24px;
+  align-items: center;
 }
 .contact-email {
   display: inline-block;
-  font-size: 23px;
+  font-size: clamp(16px, 2vw, 22px);
   line-height: 1.4;
   font-weight: 800;
-  margin-top: 11px;
   overflow-wrap: anywhere;
 }
 .contact-email:hover {
@@ -273,45 +371,49 @@
 }
 .contact-actions {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 18px;
-  flex-shrink: 0;
+  gap: 10px 13px;
 }
 .contact-actions .button {
-  min-width: 175px;
+  min-height: 46px;
+  padding: 9px 15px;
+  gap: 13px;
 }
 .contact-copy {
-  border: 0;
-  border-bottom: 1px solid #6e647e66;
-  padding: 0 0 3px;
+  border: 1px solid #b9a47e;
+  border-radius: 6px;
+  min-height: 44px;
+  padding: 7px 11px;
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  background: transparent;
-  font-size: 11px;
+  background: #fff9e8;
+  font-size: 12px;
   font-weight: 700;
-  color: var(--muted);
-}
-.contact-copy:hover {
   color: var(--ink);
 }
-.contact-copy-status {
-  font-size: 11px;
-  line-height: 1.6;
-  color: #694399;
-  min-height: 19px;
-  margin-top: 17px;
-  text-align: right;
+.contact-copy:hover {
+  background: #f4e6c6;
+  border-color: #8e7654;
 }
-.contact-delivery-note {
-  display: block;
-  text-align: left;
-  font-size: 7px;
-  font-weight: 700;
-  letter-spacing: 1.3px;
-  color: var(--muted);
-  margin-top: 4px;
+.contact-copy-label {
+  display: grid;
+  text-align: start;
+}
+.contact-copy-label > span {
+  grid-area: 1 / 1;
+}
+.contact-copy-label > span[aria-hidden="true"] {
+  visibility: hidden;
+}
+.contact-copy-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 .studio-section a:focus-visible,
 .studio-contact a:focus-visible,
@@ -328,16 +430,6 @@
   }
   .studio-story > p:not(.eyebrow) {
     font-size: 15px;
-  }
-
-  .contact-title-block h2 {
-    font-size: 42px;
-  }
-  .contact-email {
-    font-size: 20px;
-  }
-  .contact-postcard {
-    padding: 42px 34px 24px;
   }
 }
 @media (max-width: 800px) {
@@ -373,45 +465,6 @@
   }
   .contact-postcard {
     transform: none;
-    padding: 35px 30px 22px;
-  }
-  .contact-title-block h2 {
-    font-size: 37px;
-  }
-  .contact-title-block {
-    padding-right: 120px;
-  }
-  .contact-postmark {
-    right: 27px;
-    top: 27px;
-    width: 96px;
-    height: 112px;
-  }
-  .contact-postmark > span {
-    font-size: 5.5px;
-  }
-  .contact-postmark svg {
-    width: 61px;
-    height: 62px;
-  }
-  .contact-bottom {
-    display: block;
-    margin-top: 26px;
-  }
-  .contact-message p br {
-    display: none;
-  }
-  .contact-actions {
-    align-items: flex-start;
-    flex-direction: row;
-    margin-top: 23px;
-    gap: 22px;
-  }
-  .contact-copy {
-    align-self: center;
-  }
-  .contact-copy-status {
-    text-align: left;
   }
 }
 @media (max-width: 540px) {
@@ -429,15 +482,6 @@
     padding: 30px 20px;
     transform: rotate(-4deg);
   }
-  .studio-emblem-note {
-    font-size: 12px;
-    bottom: -8px;
-  }
-  .studio-hand-arrow {
-    width: 63px;
-    bottom: 9px;
-  }
-
   .studio-story > .eyebrow {
     font-size: 8px;
     letter-spacing: 1.1px;
@@ -456,72 +500,37 @@
     font-size: 12px;
   }
   .contact-postcard {
-    padding: 28px 23px 23px;
     box-shadow: 5px 6px 0 #25213f26;
   }
-  .contact-title-block {
-    padding-right: 0;
-  }
-  .contact-title-block > .eyebrow {
-    max-width: calc(100% - 63px);
-    font-size: 7px;
-    line-height: 1.6;
-    letter-spacing: 1px;
-    min-height: 29px;
-    margin-bottom: 12px;
-  }
-  .contact-title-block h2 {
-    font-size: 31px;
-    line-height: 1.2;
-    max-width: 230px;
-    letter-spacing: -0.5px;
-  }
-  .contact-postmark {
-    top: 17px;
-    right: 19px;
-    width: 62px;
-    height: 69px;
-    border-width: 1.5px;
-  }
-  .contact-postmark > span {
-    font-size: 4px;
-    letter-spacing: 0.3px;
-  }
-  .contact-postmark svg {
-    width: 44px;
-    height: 41px;
-  }
-  .contact-aside {
-    font-size: 13px;
-    margin-top: 11px;
+  .contact-letterhead {
+    grid-template-areas: "title stamp" "intro intro";
+    row-gap: 14px;
   }
   .contact-bottom {
     margin-top: 22px;
     padding-top: 18px;
   }
-  .contact-message p {
-    font-size: 13px;
-    line-height: 1.8;
-  }
   .contact-email {
-    font-size: 16px;
-    letter-spacing: -0.3px;
-    margin-top: 13px;
+    font-size: clamp(14px, 4.1vw, 16px);
+    letter-spacing: -0.012em;
   }
   .contact-actions {
-    flex-wrap: wrap;
-    gap: 20px;
+    column-gap: 10px;
   }
   .contact-actions .button {
-    min-width: 165px;
+    gap: 10px;
+    padding-inline: 12px;
   }
   .contact-copy {
-    font-size: 11px;
+    padding-inline: 9px;
   }
-  .contact-delivery-note {
-    font-size: 6px;
-    letter-spacing: 0.9px;
-    line-height: 1.5;
-    max-width: 220px;
+}
+@media (max-width: 360px) {
+  .contact-actions {
+    display: grid;
+    width: 100%;
+  }
+  .contact-copy {
+    justify-content: center;
   }
 }

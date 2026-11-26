@@ -1,6 +1,6 @@
 # Broken Robot
 
-A local React + TypeScript studio website, featuring Brickhold. Four separately built micro frontends compose into one site: introduction, game showcase, field guide, and studio/contact. The shell owns navigation and layout foundations. No GitHub remote or hosted site is configured yet.
+A React + TypeScript studio website featuring Brickhold. Four separately built micro frontends compose into one site: introduction, game showcase, field guide, and studio/contact. The shell owns navigation and layout foundations.
 
 The visual identity leads with Brickhold: an actual in-game portal scene and supplied game logo, parchment story panels, collectible field-guide cards, and a studio contact postcard. The original studio logo appears throughout. [Design notes](docs/DESIGN.md) record the direction and implementation choices.
 
@@ -46,7 +46,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for boundaries, request flow, c
 
 ## Edit content and artwork
 
-- `content/site.json`: studio identity, game status and Kingdoms map cards.
+- `content/site.json`: studio identity, playtest link, game status and Kingdoms map cards.
 - `content/catalog.json`: complete trap/enemy collections with inline descriptions and costs.
 - `apps/intro/src/entry.tsx`: introduction copy.
 - `apps/brickhold/src/entry.tsx`: game presentation.
@@ -54,7 +54,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for boundaries, request flow, c
 - `apps/shell/public/media/`: self-contained, compressed artwork.
 - `apps/shell/src/styles.css`: shared colours, typography, navigation.
 
-The game repository and Downloads folder are not needed to run or build this site. [docs/ASSETS.md](docs/ASSETS.md) records the supplied source files, crop bounds and animation details. To regenerate the media, run `node scripts/import-assets.mjs` with the named originals in Downloads, or pass an explicit source directory. The gallery has six actual game views and two opt-in animated clips. The field guide has three keyboard-accessible tabs: The traps, The troublemakers and Kingdoms. Each roster displays its whole collection at once: eight defenses or eleven enemies as non-clickable cards with hover effects and visible descriptions. Kingdoms starts with the actual Playground arena. A separate Shardkeeper preview beneath the collections establishes where the future playable-hero roster will sit. Still images are the default, including for reduced-motion visitors.
+The game repository and Downloads folder are not needed to run or build this site. [docs/ASSETS.md](docs/ASSETS.md) records the supplied source files, crop bounds and animation details. To regenerate the media, run `node scripts/import-assets.mjs` with the named originals in Downloads, or pass an explicit source directory. The gallery has six actual game views. Defend has an opt-in gameplay video that starts paused and supports pausing and resuming in place. The field guide has three keyboard-accessible tabs: The traps, The troublemakers and Kingdoms. Each roster displays its whole collection at once: eight defenses or eleven enemies as non-clickable cards with hover effects and visible descriptions. Kingdoms starts with the actual Playground arena. A separate Shardkeeper preview beneath the collections establishes where the future playable-hero roster will sit. Gallery motion only starts when requested, including for reduced-motion visitors.
 
 ## Browser checks
 
@@ -67,8 +67,8 @@ Tests start their own production preview on port 4173 and cover loading all four
 
 ## GitHub Pages later
 
-An opt-in manual workflow lives at `.github/workflows/pages.yml`. After creating the GitHub repository and pushing this local repository, select **Settings → Pages → Source → GitHub Actions**, then run **Actions → Deploy website → Run workflow**. It uploads only `dist/site`. Nothing publishes automatically on push in this starter.
+An opt-in manual workflow lives at `.github/workflows/pages.yml`. In the GitHub repository, select **Settings → Pages → Source → GitHub Actions**, then run **Actions → Deploy website → Run workflow**. It uploads only `dist/site`. Nothing publishes automatically on push.
 
-The build uses relative URLs and works at a repository subpath or domain root. Your custom domain is configured later in GitHub Pages settings and your domain provider's DNS. No placeholder `CNAME`, remote, domain or external store/social links have been added.
+The build works at a repository subpath or domain root. The Pages workflow reads the configured public URL and uses it for the canonical URL, social preview image and `sitemap.xml`. For another host, set `SITE_URL` to the final public URL, including any site subpath, before running `npm run build`. Local builds omit host-dependent URLs. On a subpath host, submit the generated sitemap URL directly in Search Console because crawlers read `robots.txt` at the domain root.
 
-Code and media do not currently have a blanket redistribution licence. Preserve upstream font/media notices and review the game assets' individual rights before public publication. No release date or public game download is claimed.
+Code and media do not currently have a blanket redistribution licence. Preserve upstream font/media notices and review the game assets' individual rights before public publication. The hero links to the Brickhold playtest on itch.io.

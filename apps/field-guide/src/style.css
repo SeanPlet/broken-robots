@@ -5,9 +5,17 @@
   color: var(--paper);
   background-color: #201c36;
   background-image:
+    radial-gradient(ellipse 24rem 17rem at 4% 4rem, #8851bf30, transparent 78%),
+    radial-gradient(
+      ellipse 20rem 20rem at 96% 17rem,
+      #d9a74f18,
+      transparent 78%
+    ),
     radial-gradient(ellipse at 50% 20%, #4f3d6859, transparent 58%),
     radial-gradient(#fff2d50b 1px, transparent 1px);
   background-size:
+    auto,
+    auto,
     auto,
     20px 20px;
   scroll-margin-top: 70px;
@@ -33,14 +41,54 @@
 .guide-panel[hidden] {
   display: none;
 }
+.guide-panels {
+  position: relative;
+  isolation: isolate;
+}
+.guide-panels[data-transitioning] {
+  overflow: clip;
+  overflow-clip-margin: 12px;
+}
+.guide-panel {
+  display: flow-root;
+  position: relative;
+  z-index: 1;
+}
+.guide-panel[aria-hidden="true"] {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 0;
+  pointer-events: none;
+}
 .guide-panel:focus-visible {
   outline: 2px solid var(--yellow);
   outline-offset: 10px;
 }
 .guide-heading {
+  position: relative;
+  isolation: isolate;
   text-align: center;
   max-width: 960px;
   margin: 0 auto 32px;
+}
+.guide-heading .guide-particles {
+  inset: -40px 0 -27px;
+  z-index: -1;
+  --particle-color: #efbf67;
+  --particle-accent: #c197ee;
+}
+.guide-heading .guide-particles i:nth-child(3) {
+  --particle-x: 19%;
+  --particle-y: 21%;
+}
+.guide-heading .guide-particles i:nth-child(4) {
+  --particle-x: 93%;
+  --particle-y: 84%;
+}
+@media (max-width: 620px) {
+  .guide-heading .guide-particles i:nth-child(3) {
+    --particle-x: 2%;
+  }
 }
 .guide-heading .eyebrow {
   justify-content: center;
@@ -72,6 +120,7 @@
   width: 28px;
   height: 28px;
   color: var(--yellow);
+  filter: drop-shadow(0 0 7px currentColor);
   pointer-events: none;
 }
 .guide-spark-left {
@@ -175,6 +224,21 @@
   gap: 28px 22px;
   padding: 9px 7px 18px;
 }
+/* Keep the hover area in place while the card lifts. */
+.guide-card-slot {
+  display: grid;
+  min-width: 0;
+  --card-tilt: -1deg;
+}
+.guide-card-slot:nth-child(4n + 2) {
+  --card-tilt: 1.1deg;
+}
+.guide-card-slot:nth-child(4n + 3) {
+  --card-tilt: -0.6deg;
+}
+.guide-card-slot:nth-child(4n) {
+  --card-tilt: 0.8deg;
+}
 .guide-card {
   position: relative;
   display: flex;
@@ -189,25 +253,37 @@
   color: var(--ink);
   font-family: var(--body);
   box-shadow: 0 7px 0 #100b20;
-  transform: rotate(-1deg);
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
+  transform: translateY(var(--card-lift, 0px)) rotate(var(--card-tilt));
   cursor: default;
 }
-.guide-card:nth-child(4n + 2) {
-  transform: rotate(1.1deg);
-}
-.guide-card:nth-child(4n + 3) {
-  transform: rotate(-0.6deg);
-}
-.guide-card:nth-child(4n) {
-  transform: rotate(0.8deg);
-}
-.guide-card:hover {
-  transform: translateY(-5px) rotate(0);
-  box-shadow: 0 12px 0 #100b20;
-  z-index: 1;
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .guide-card-slot {
+    --card-hover-duration: 380ms;
+    --card-hover-easing: cubic-bezier(0.28, 0.12, 0.25, 1);
+  }
+  .guide-card {
+    transition: transform var(--card-hover-duration) var(--card-hover-easing);
+  }
+  .guide-card::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    box-shadow: 0 11px 0 #100b20;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--card-hover-duration) var(--card-hover-easing);
+  }
+  .guide-card-slot:hover {
+    --card-hover-duration: 310ms;
+  }
+  .guide-card-slot:hover .guide-card {
+    /* Keep the artwork and type at the same angle throughout the lift. */
+    --card-lift: -4px;
+  }
+  .guide-card-slot:hover .guide-card::after {
+    opacity: 1;
+  }
 }
 .guide-card-top {
   display: flex;
@@ -238,6 +314,7 @@
   box-shadow: 0 2px 0 #b6975f;
 }
 .guide-card-image {
+  position: relative;
   display: block;
   margin: 8px 8px 0;
   aspect-ratio: 1;
@@ -245,6 +322,28 @@
   border: 2px solid #33263d;
   border-radius: 2px;
   background: #141123;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  :root:not([data-decoration-paused]) .guide-card-image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at 97% 3%,
+      #fff3d974,
+      #e7baff22 29%,
+      transparent 55%
+    );
+    box-shadow: inset 0 0 0 1px #fff1d0a3;
+    opacity: 0;
+    transition: opacity 320ms ease;
+  }
+  :root:not([data-decoration-paused])
+    .guide-card-slot:hover
+    .guide-card-image::after {
+    opacity: 1;
+  }
 }
 .guide-card[data-category="traps"] .guide-card-image {
   aspect-ratio: 427/241;
@@ -349,6 +448,8 @@
   color: #806f83;
 }
 .guide-heroes {
+  position: relative;
+  isolation: isolate;
   display: grid;
   grid-template-columns: 145px minmax(0, 1fr);
   align-items: center;
@@ -358,6 +459,15 @@
   border-top: 1px solid #b69bd84a;
   border-bottom: 1px solid #b69bd84a;
   background: #b69bd80a;
+}
+.guide-heroes .guide-hero-particles {
+  z-index: -1;
+  --particle-color: #e5b55b;
+  --particle-accent: #c297ef;
+}
+.guide-heroes .guide-hero-particles i:nth-child(3) {
+  --particle-x: 21%;
+  --particle-y: 15%;
 }
 .guide-hero-portrait {
   width: 145px;
@@ -620,18 +730,11 @@
     gap: 28px;
     padding: 7px 10px 16px;
   }
-  .guide-card,
-  .guide-card:nth-child(4n + 2),
-  .guide-card:nth-child(4n + 3),
-  .guide-card:nth-child(4n) {
-    transform: rotate(-0.7deg);
+  .guide-card-slot:nth-child(n) {
+    --card-tilt: -0.7deg;
   }
-  .guide-card:nth-child(even) {
-    transform: rotate(0.7deg);
-  }
-  .guide-card:hover,
-  .guide-card:nth-child(even):hover {
-    transform: translateY(-5px) rotate(0);
+  .guide-card-slot:nth-child(even) {
+    --card-tilt: 0.7deg;
   }
   .guide-card-top {
     padding-inline: 14px;

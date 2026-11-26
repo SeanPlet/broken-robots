@@ -60,11 +60,10 @@
       0 12px 24px #bd77ff35;
     border-color: #fff2d5;
   }
-  .intro-actions a svg,
-  .intro-guide-link > span {
+  .intro-actions a svg {
     transition: transform 0.2s ease;
   }
-  .intro-actions a:is(:hover, :focus-visible) :is(svg, span) {
+  .intro-actions a:is(:hover, :focus-visible) svg {
     transform: translate(3px, -2px);
   }
 }
@@ -78,6 +77,21 @@
   object-fit: cover;
   object-position: center 55%;
   filter: saturate(0.9);
+}
+.intro-portal-light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 24% 35% at 54% 52%,
+      #d86bff59,
+      #a547ec29 38%,
+      transparent 74%
+    ),
+    radial-gradient(ellipse 28% 19% at 54% 70%, #ba60ef33, transparent 72%);
+  opacity: 0.58;
+  animation: intro-portal-bloom 8s ease-in-out infinite alternate;
 }
 .intro-shade {
   z-index: -1;
@@ -149,26 +163,8 @@
 }
 .intro-actions {
   display: flex;
-  gap: 26px;
-  align-items: center;
   justify-content: center;
   margin-top: 26px;
-}
-.intro-guide-link {
-  background: #211c36de;
-  border: 2px solid #d7bcf47a;
-  border-radius: 6px;
-  box-shadow: 0 4px 0 #1a152e;
-  font-size: 13px;
-  font-weight: 800;
-  text-shadow: 0 2px 5px #161327;
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.intro-guide-link:hover {
-  color: var(--yellow);
 }
 .intro-bottom {
   position: absolute;
@@ -179,25 +175,28 @@
   font-size: 11px;
 }
 .intro-margin-note {
+  position: relative;
+}
+.intro-margin-note p {
   font-size: 15px;
   font-weight: 700;
   transform: rotate(-7deg);
   line-height: 1.45;
-  position: relative;
   text-shadow: 0 2px 3px #211b35;
 }
-.intro-margin-note > span {
+.intro-margin-note p > span {
   font-size: 12px;
   font-weight: 500;
 }
 .intro-margin-note svg {
-  width: 75px;
   position: absolute;
-  right: -65px;
-  top: -8px;
-  stroke: var(--paper);
-  stroke-width: 2;
+  right: -68px;
+  bottom: 16px;
   fill: none;
+  stroke: var(--paper);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .intro-scroll {
   display: flex;
@@ -214,7 +213,6 @@
   border: 2px solid #fff2d58c;
   border-radius: 10px;
   position: relative;
-  animation: intro-scroll-nudge 3.6s ease-in-out infinite;
 }
 .intro-scroll > span:first-child::after {
   content: "";
@@ -224,10 +222,11 @@
   width: 2px;
   height: 6px;
   background: var(--paper);
+  border-radius: 2px;
+  animation: intro-scroll-wheel 14s ease-in-out 1.8s infinite;
 }
 .intro-scroll > span:last-child {
   font-size: 18px;
-  animation: intro-scroll-nudge 3.6s ease-in-out infinite;
 }
 .intro-state {
   font-size: 10px;
@@ -317,19 +316,64 @@
   );
   transition: transform 0.65s ease-out;
 }
+.intro-runes::before,
+.intro-runes::after {
+  content: "";
+  position: absolute;
+  width: 42px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--trail-color, #f4caff));
+  opacity: 0;
+  animation: intro-spark-trail 14s linear infinite;
+}
+.intro-runes::before {
+  left: 13%;
+  top: 57%;
+  animation-delay: -0.6s;
+}
+.intro-runes::after {
+  right: 16%;
+  top: 31%;
+  --trail-color: #ffe2a0;
+  animation-duration: 19s;
+  animation-delay: -9s;
+}
 .intro-runes i {
   position: absolute;
   left: 8%;
   top: 32%;
   height: 6px;
   width: 6px;
-  background: #d7a9ff;
+  color: #ddb0ff;
+  background: currentColor;
   border-radius: 50%;
-  box-shadow: 0 0 12px #b36bff99;
+  box-shadow: 0 0 10px currentColor;
   opacity: 0.35;
   animation: intro-particle-drift var(--drift-duration, 17s) ease-in-out
     var(--drift-delay, -4s) infinite alternate;
   animation-duration: calc(var(--drift-duration, 17s) * 0.6);
+}
+.intro-runes i:nth-child(4n + 2) {
+  color: var(--yellow);
+}
+.intro-runes i:nth-child(4n + 3) {
+  border-radius: 1px;
+  --drift-turn: 55deg;
+}
+.intro-runes i:nth-child(4n) {
+  border-radius: 0;
+  clip-path: polygon(
+    50% 0,
+    63% 38%,
+    100% 50%,
+    63% 62%,
+    50% 100%,
+    37% 62%,
+    0 50%,
+    37% 38%
+  );
+  --drift-turn: 24deg;
 }
 .intro-runes i:nth-child(2) {
   left: 25%;
@@ -413,9 +457,47 @@
   --drift-delay: -10s;
   --drift-x: -14px;
 }
+.intro-runes i:nth-child(13) {
+  left: 31%;
+  top: 58%;
+  width: 3px;
+  height: 3px;
+  --drift-duration: 18s;
+  --drift-delay: -5s;
+  --drift-x: -24px;
+}
+.intro-runes i:nth-child(14) {
+  left: 65%;
+  top: 64%;
+  width: 3px;
+  height: 3px;
+  --drift-duration: 14s;
+  --drift-delay: -9s;
+  --drift-x: 42px;
+}
+.intro-runes i:nth-child(15) {
+  left: 22%;
+  top: 42%;
+  width: 4px;
+  height: 4px;
+  --drift-duration: 17s;
+  --drift-delay: -13s;
+  --drift-x: -30px;
+}
+.intro-runes i:nth-child(16) {
+  left: 83%;
+  top: 59%;
+  width: 11px;
+  height: 11px;
+  --drift-duration: 22s;
+  --drift-delay: -7s;
+  --drift-x: -27px;
+}
 .intro[data-motion-paused="true"] .intro-runes i,
-.intro[data-motion-paused="true"] .intro-scroll > span:first-child,
-.intro[data-motion-paused="true"] .intro-scroll > span:last-child,
+.intro[data-motion-paused="true"] .intro-runes::before,
+.intro[data-motion-paused="true"] .intro-runes::after,
+.intro[data-motion-paused="true"] .intro-portal-light,
+.intro[data-motion-paused="true"] .intro-scroll > span:first-child::after,
 .intro[data-motion-paused="true"] .intro-status-dot::after {
   animation-play-state: paused;
 }
@@ -425,26 +507,54 @@
 }
 @keyframes intro-particle-drift {
   0% {
-    transform: translate3d(-4px, 12px, 0) scale(0.7);
-    opacity: 0.35;
+    transform: translate3d(-4px, 12px, 0) rotate(0deg) scale(0.55);
+    opacity: 0.18;
   }
   50% {
-    opacity: 0.85;
+    opacity: 0.82;
   }
   100% {
-    transform: translate3d(var(--drift-x, 16px), -110px, 0) scale(1);
-    opacity: 0.5;
+    transform: translate3d(var(--drift-x, 16px), -110px, 0)
+      rotate(var(--drift-turn, 0deg)) scale(1);
+    opacity: 0.26;
   }
 }
-@keyframes intro-scroll-nudge {
-  0%,
-  50%,
-  85%,
-  100% {
-    transform: translateY(0);
+@keyframes intro-portal-bloom {
+  from {
+    opacity: 0.32;
   }
-  67% {
+  to {
+    opacity: 0.86;
+  }
+}
+@keyframes intro-spark-trail {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(-30deg) scaleX(0.4);
+  }
+  3% {
+    opacity: 0.75;
+  }
+  9%,
+  100% {
+    opacity: 0;
+    transform: translate3d(100px, -58px, 0) rotate(-30deg) scaleX(1);
+  }
+}
+@keyframes intro-scroll-wheel {
+  0%,
+  11%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+  7% {
+    opacity: 0;
     transform: translateY(6px);
+  }
+  8% {
+    opacity: 0;
+    transform: none;
   }
 }
 @keyframes intro-status-pulse {
@@ -489,7 +599,10 @@
   }
 }
 @media (max-width: 620px) {
-  .intro-runes i:nth-child(n + 9) {
+  .intro-runes::after {
+    display: none;
+  }
+  .intro-runes i:nth-child(n + 11) {
     display: none;
   }
   .intro {
@@ -536,13 +649,7 @@
     margin-top: 14px;
   }
   .intro-actions {
-    flex-direction: column;
-    gap: 9px;
     margin-top: 27px;
-  }
-  .intro-guide-link {
-    font-size: 12px;
-    padding: 11px 14px;
   }
   .intro-bottom {
     bottom: 65px;
@@ -571,7 +678,7 @@
 @media (prefers-reduced-motion: reduce) {
   .intro :is(h1, .intro-runes),
   .intro-actions a:is(:hover, :focus-visible, :active),
-  .intro-actions a:is(:hover, :focus-visible) :is(svg, span) {
+  .intro-actions a:is(:hover, :focus-visible) svg {
     transform: none !important;
   }
   .intro-cursor-glow {

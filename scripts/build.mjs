@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { mfeConfig } from "./mfe-config.mjs";
 import { remotes, runtimeManifest } from "./runtime-manifest.mjs";
+import { emitSiteSeo } from "./site-seo.mjs";
 
 export const root = fileURLToPath(new URL("../", import.meta.url));
 export { remotes };
@@ -51,6 +52,7 @@ if (
       recursive: true,
     });
     await writeFile(resolve(root, "dist/site/.nojekyll"), "");
+    await emitSiteSeo(resolve(root, "dist/site"));
     console.log("\nReady: dist/site (static GitHub Pages output).");
   }
 }

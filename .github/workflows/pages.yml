@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  pages: read
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -18,7 +19,12 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+      - name: Read Pages site URL
+        id: pages
+        uses: actions/configure-pages@v5
       - run: npm run build
+        env:
+          SITE_URL: ${{ steps.pages.outputs.base_url }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist/site

@@ -9,6 +9,8 @@ import {
   type MountOptions,
 } from "../../../packages/shared";
 import "./style.css";
+import { usePanelTransition } from "../../../packages/shared/use-panel-transition";
+import { AmbientParticles } from "../../../packages/shared/ambient-particles";
 
 const tabs = [
   { id: "traps", label: "The traps" },
@@ -93,6 +95,7 @@ function GuideContent({
   const catalog = useContent<CatalogEntry[]>(options, "catalog");
   const site = useContent<SiteContent>(options, "site");
   const tabButtons = useRef<(HTMLButtonElement | null)[]>([]);
+  const panelsRef = usePanelTransition(category, "collection");
   function count(id: Category) {
     return id === "kingdoms"
       ? site.data?.maps.length
@@ -137,99 +140,109 @@ function GuideContent({
               {tab.label}
               <span aria-hidden="true">
                 {count(tab.id) === undefined
-                  ? "—"
+                  ? "…"
                   : String(count(tab.id)).padStart(2, "0")}
               </span>
             </button>
           ))}
         </div>
       </div>
-      {tabs.map((tab) => {
-        const isMaps = tab.id === "kingdoms";
-        const error = isMaps ? site.error : catalog.error;
-        const loading = isMaps ? !site.data : !catalog.data;
-        const entries =
-          catalog.data?.filter((entry) => entry.category === tab.id) ?? [];
-        return (
-          <div
-            key={tab.id}
-            className="guide-panel"
-            role="tabpanel"
-            id={`guide-panel-${tab.id}`}
-            aria-labelledby={`guide-tab-${tab.id}`}
-            tabIndex={0}
-            hidden={category !== tab.id}
-          >
-            {error ? (
-              <div className="guide-state" role="alert">
-                <p>{error}</p>
-                <button className="button guide-reload" onClick={onRetry}>
-                  Try again <Arrow />
-                </button>
-              </div>
-            ) : loading ? (
-              <p className="guide-state" role="status">
-                Opening the field guide…
-              </p>
-            ) : isMaps ? (
-              <>
-                <p className="guide-collection-intro">
-                  Places worth defending. Starting with the courtyard where it
-                  all comes together.
+      <div className="guide-panels" ref={panelsRef}>
+        {tabs.map((tab) => {
+          const isMaps = tab.id === "kingdoms";
+          const error = isMaps ? site.error : catalog.error;
+          const loading = isMaps ? !site.data : !catalog.data;
+          const entries =
+            catalog.data?.filter((entry) => entry.category === tab.id) ?? [];
+          return (
+            <div
+              key={tab.id}
+              className="guide-panel"
+              data-panel-key={tab.id}
+              role="tabpanel"
+              id={`guide-panel-${tab.id}`}
+              aria-labelledby={`guide-tab-${tab.id}`}
+              tabIndex={0}
+              hidden={category !== tab.id}
+              aria-hidden={category !== tab.id}
+              inert={category !== tab.id}
+            >
+              {error ? (
+                <div className="guide-state" role="alert">
+                  <p>{error}</p>
+                  <button className="button guide-reload" onClick={onRetry}>
+                    Try again <Arrow />
+                  </button>
+                </div>
+              ) : loading ? (
+                <p className="guide-state" role="status">
+                  Opening the field guide…
                 </p>
-                <div className="guide-map-grid">
-                  {site.data!.maps.map((map) => (
-                    <article
-                      className="guide-map-card"
-                      key={map.id}
-                      aria-labelledby={`guide-map-${map.id}`}
-                    >
-                      <img
-                        src={media(options, map.image.replace(/^media\//, ""))}
-                        alt={map.alt}
-                        loading="lazy"
-                        width="1920"
-                        height="1080"
-                      />
-                      <div className="guide-map-copy">
-                        <p className="eyebrow">{map.eyebrow}</p>
-                        <h3 id={`guide-map-${map.id}`}>{map.name}</h3>
-                        <p>{map.description}</p>
-                        <span className="guide-map-note">
-                          In-game capture · In development
-                        </span>
+              ) : isMaps ? (
+                <>
+                  <p className="guide-collection-intro">
+                    Places worth defending. Starting with the courtyard where it
+                    all comes together.
+                  </p>
+                  <div className="guide-map-grid">
+                    {site.data!.maps.map((map) => (
+                      <article
+                        className="guide-map-card"
+                        key={map.id}
+                        aria-labelledby={`guide-map-${map.id}`}
+                      >
+                        <img
+                          src={media(
+                            options,
+                            map.image.replace(/^media\//, ""),
+                          )}
+                          alt={map.alt}
+                          loading="lazy"
+                          width="1920"
+                          height="1080"
+                        />
+                        <div className="guide-map-copy">
+                          <p className="eyebrow">{map.eyebrow}</p>
+                          <h3 id={`guide-map-${map.id}`}>{map.name}</h3>
+                          <p>{map.description}</p>
+                          <span className="guide-map-note">
+                            In-game capture · In development
+                          </span>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="guide-collection-intro">
+                    <span className="guide-roster-count">
+                      {entries.length}{" "}
+                      {tab.id === "traps" ? "defenses" : "troublemakers"}.
+                    </span>{" "}
+                    {tab.id === "traps"
+                      ? "Build a plan. Make it everyone's problem."
+                      : "Know what is coming through that portal."}
+                  </p>
+                  <div className="guide-grid" data-category={tab.id}>
+                    {entries.map((entry, index) => (
+                      <div className="guide-card-slot" key={entry.id}>
+                        <RosterCard
+                          entry={entry}
+                          index={index}
+                          options={options}
+                        />
                       </div>
-                    </article>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <>
-                <p className="guide-collection-intro">
-                  <span className="guide-roster-count">
-                    {entries.length}{" "}
-                    {tab.id === "traps" ? "defenses" : "troublemakers"}.
-                  </span>{" "}
-                  {tab.id === "traps"
-                    ? "Build a plan. Make it everyone's problem."
-                    : "Know what is coming through that portal."}
-                </p>
-                <div className="guide-grid" data-category={tab.id}>
-                  {entries.map((entry, index) => (
-                    <RosterCard
-                      key={entry.id}
-                      entry={entry}
-                      index={index}
-                      options={options}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-        );
-      })}
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
       <aside className="guide-heroes" aria-labelledby="guide-heroes-title">
+        <AmbientParticles className="guide-hero-particles" shape="runes" />
         <img
           className="guide-hero-portrait"
           src={media(options, "hero.webp")}
@@ -268,6 +281,7 @@ function FieldGuide({ options }: { options: MountOptions }) {
         <Spark className="guide-spark guide-spark-left" />
         <Spark className="guide-spark guide-spark-right" />
         <div className="guide-heading">
+          <AmbientParticles className="guide-particles" shape="runes" />
           <p className="eyebrow">THE BRICKHOLD FIELD GUIDE</p>
           <h2 className="section-title" id="workshop-title">
             <span>Pick your tools.</span>

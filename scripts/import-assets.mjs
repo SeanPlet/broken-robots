@@ -18,6 +18,7 @@ export const screenshotSources = {
   "portal.webp": { source: "04_out_of_the_portal.jpg", width: 1920 },
   "guard-post.webp": { source: "guard_post.jpg", width: 1280 },
   "guardians.webp": { source: "06_guard_post.jpg", width: 1600 },
+  "hero-fight-07.webp": { source: "hero_fight_07.jpg", width: 1600 },
   "gameplay.webp": { source: "03_build_mode.jpg", width: 1600 },
   "funnel.webp": { source: "07_barricade_funnel.jpg", width: 1600 },
   "battle.webp": { source: "01_horde_through_traps.jpg", width: 1600 },

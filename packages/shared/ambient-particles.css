@@ -1,0 +1,110 @@
+.ambient-particles {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  pointer-events: none;
+}
+.ambient-particles i {
+  position: absolute;
+  left: var(--particle-x, 8%);
+  top: var(--particle-y, 63%);
+  width: var(--particle-size, 9px);
+  height: var(--particle-size, 9px);
+  color: var(--particle-color, #dfa35d);
+  opacity: 0.48;
+  transform: rotate(var(--particle-angle, -15deg));
+}
+.ambient-particles i:nth-child(2) {
+  --particle-x: 17%;
+  --particle-y: 37%;
+  --particle-size: 6px;
+  --particle-angle: 24deg;
+  --particle-delay: -3s;
+}
+.ambient-particles i:nth-child(3) {
+  --particle-x: 6%;
+  --particle-y: 28%;
+  --particle-size: 13px;
+  --particle-delay: -6s;
+}
+.ambient-particles i:nth-child(4) {
+  --particle-x: 88%;
+  --particle-y: 69%;
+  --particle-size: 12px;
+  --particle-angle: 18deg;
+  --particle-drift: -13px;
+  --particle-delay: -2s;
+}
+.ambient-particles i:nth-child(5) {
+  --particle-x: 95%;
+  --particle-y: 48%;
+  --particle-size: 6px;
+  --particle-drift: -12px;
+  --particle-delay: -4s;
+}
+.ambient-particles i:nth-child(6) {
+  --particle-x: 83%;
+  --particle-y: 30%;
+  --particle-size: 8px;
+  --particle-angle: -31deg;
+  --particle-drift: -11px;
+  --particle-delay: -5s;
+}
+.ambient-particles i:nth-child(even) {
+  color: var(--particle-accent, #946cc3);
+}
+.ambient-particles[data-particle-shape="bricks"] i {
+  width: calc(var(--particle-size, 9px) + 6px);
+  height: calc(var(--particle-size, 9px) + 6px);
+  background: center / contain no-repeat;
+}
+.ambient-particles[data-particle-shape="runes"] i {
+  background: currentColor;
+  clip-path: polygon(
+    50% 0,
+    64% 36%,
+    100% 50%,
+    64% 64%,
+    50% 100%,
+    36% 64%,
+    0 50%,
+    36% 36%
+  );
+}
+.ambient-particles[data-particle-shape="sparks"] i {
+  width: calc(var(--particle-size, 9px) * 1.3);
+  height: 2px;
+  background: linear-gradient(90deg, transparent, currentColor);
+  border-radius: 3px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ambient-particles i {
+    animation: ambient-particle-drift 7s ease-in-out var(--particle-delay, -1s)
+      infinite alternate paused;
+  }
+  :root:not([data-decoration-paused])
+    .ambient-particles[data-decoration-in-view]
+    i {
+    animation-play-state: running;
+  }
+}
+@keyframes ambient-particle-drift {
+  from {
+    opacity: 0.25;
+    transform: translate(0, 12px) rotate(var(--particle-angle, -15deg));
+  }
+  55% {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 0.35;
+    transform: translate(var(--particle-drift, 13px), -15px)
+      rotate(calc(var(--particle-angle, -15deg) + 27deg));
+  }
+}
+@media (max-width: 620px) {
+  .ambient-particles i:nth-child(2),
+  .ambient-particles i:nth-child(6) {
+    display: none;
+  }
+}

@@ -5,12 +5,18 @@ import {
   media,
   type MountOptions,
 } from "../../../packages/shared";
+import site from "../../../content/site.json";
 import "./style.css";
 
 function Intro({ options }: { options: MountOptions }) {
   const scene = useRef<HTMLElement>(null);
   const [motionPaused, setMotionPaused] = useState(false);
   const [inView, setInView] = useState(true);
+  useEffect(() => {
+    const root = document.documentElement;
+    root.toggleAttribute("data-decoration-paused", motionPaused);
+    return () => root.removeAttribute("data-decoration-paused");
+  }, [motionPaused]);
   useEffect(() => {
     if (!scene.current || typeof IntersectionObserver === "undefined") return;
     const observer = new IntersectionObserver(([entry]) => {
@@ -58,6 +64,7 @@ function Intro({ options }: { options: MountOptions }) {
           height="1080"
           fetchPriority="high"
         />
+        <div className="intro-portal-light" aria-hidden="true" />
       </div>
       <div className="intro-shade" aria-hidden="true" />
       <div className="intro-cursor-glow" aria-hidden="true" />
@@ -74,14 +81,18 @@ function Intro({ options }: { options: MountOptions }) {
         <i />
         <i />
         <i />
+        <i />
+        <i />
+        <i />
+        <i />
       </div>
       <div className="intro-center wrap">
         <p className="intro-presented">A Broken Robot game</p>
-        <h1 id="intro-title" aria-label="Brickhold">
+        <h1 id="intro-title">
           <img
             className="intro-game-logo"
             src={media(options, "brickhold-logo.webp")}
-            alt=""
+            alt="Brickhold"
             width="1756"
             height="340"
           />
@@ -96,23 +107,22 @@ function Intro({ options }: { options: MountOptions }) {
           One very important crystal.
         </p>
         <div className="intro-actions">
-          <a className="button" href="#brickhold">
-            Explore the game <Arrow />
-          </a>
-          <a className="intro-guide-link" href="#workshop">
-            Traps &amp; troublemakers <span aria-hidden="true">↗</span>
+          <a className="button" href={site.game.playtestUrl}>
+            Playtest the game now <Arrow diagonal />
           </a>
         </div>
       </div>
       <div className="intro-bottom wrap">
-        <p className="intro-margin-note">
-          Good plans.
-          <br />
-          <span>Questionable execution.</span>
-          <svg aria-hidden="true" viewBox="0 0 100 65">
-            <path d="M8 12c36-21 82 4 73 35m-13-6 13 9 10-13" />
+        <div className="intro-margin-note">
+          <p>
+            Good plans.
+            <br />
+            <span>Questionable execution.</span>
+          </p>
+          <svg aria-hidden="true" width="84" height="44" viewBox="0 0 84 44">
+            <path d="M6 14C25 0 63 2 74 34m-11-5 11 5 5-11" />
           </svg>
-        </p>
+        </div>
         <a
           href="#brickhold"
           className="intro-scroll"

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Arrow,
   Crystal,
@@ -9,6 +9,9 @@ import {
   type MountOptions,
 } from "../../../packages/shared";
 import "./style.css";
+import { usePanelTransition } from "../../../packages/shared/use-panel-transition";
+import { AmbientParticles } from "../../../packages/shared/ambient-particles";
+import { useDecorationInView } from "../../../packages/shared/use-decoration-in-view";
 
 const gallery: Record<
   string,
@@ -17,7 +20,7 @@ const gallery: Record<
     image: string;
     caption: string;
     alt: string;
-    animation?: string;
+    video?: string;
   }
 > = {
   world: {
@@ -40,17 +43,16 @@ const gallery: Record<
   },
   defend: {
     label: "Defend",
-    image: "battle.webp",
+    image: "horde-poster.webp",
     caption: "A very bad day to be a skeleton",
     alt: "A horde crosses spike and fire traps while an arrow wall fires across Brickhold's portal lane",
-    animation: "horde-loop.webp",
+    video: "horde-loop.mp4",
   },
   fight: {
     label: "Fight",
-    image: "gameplay-poster.webp",
+    image: "hero-fight-07.webp",
     caption: "Get stuck in",
     alt: "A hero fights the incoming enemies in Brickhold",
-    animation: "gameplay-loop.webp",
   },
   guardians: {
     label: "Guardians",
@@ -62,12 +64,15 @@ const gallery: Record<
 function Brickhold({ options }: { options: MountOptions }) {
   const [view, setView] = useState("defend");
   const [playing, setPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const slidesRef = usePanelTransition(view, "gallery");
+  const crystalRef = useDecorationInView<HTMLDivElement>();
   const { data } = useContent<SiteContent>(options, "site");
-  const shot = gallery[view];
+  const selectedShot = gallery[view];
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
     const stop = () => {
-      if (preference.matches) setPlaying(false);
+      if (preference.matches) videoRef.current?.pause();
     };
     preference.addEventListener("change", stop);
     return () => preference.removeEventListener("change", stop);
@@ -79,6 +84,11 @@ function Brickhold({ options }: { options: MountOptions }) {
       aria-labelledby="game-title"
     >
       <div className="game-heading wrap">
+        <AmbientParticles
+          className="game-particles"
+          shape="bricks"
+          options={options}
+        />
         <p className="eyebrow">
           <span /> Brick-built co-op portal defense <span />
         </p>
@@ -99,22 +109,58 @@ function Brickhold({ options }: { options: MountOptions }) {
           <span className="game-tape game-tape-left" aria-hidden="true" />
           <span className="game-tape game-tape-right" aria-hidden="true" />
           <div className="game-visual">
-            <img
-              src={media(
-                options,
-                playing && shot.animation ? shot.animation : shot.image,
-              )}
-              alt={shot.alt}
-              loading="lazy"
-              width="1920"
-              height="1080"
-            />
-            {shot.animation && (
+            <div className="game-slides" ref={slidesRef}>
+              {Object.entries(gallery).map(([id, shot]) => (
+                <div
+                  key={id}
+                  className="game-shot"
+                  data-panel-key={id}
+                  hidden={view !== id}
+                  aria-hidden={view !== id}
+                  inert={view !== id}
+                >
+                  {shot.video ? (
+                    <video
+                      ref={videoRef}
+                      src={media(options, shot.video)}
+                      poster={media(options, shot.image)}
+                      aria-label={shot.alt}
+                      preload="auto"
+                      muted
+                      loop
+                      playsInline
+                      width="1920"
+                      height="1080"
+                      onPlay={() => setPlaying(true)}
+                      onPause={() => setPlaying(false)}
+                    />
+                  ) : (
+                    <img
+                      src={media(options, shot.image)}
+                      alt={shot.alt}
+                      loading="eager"
+                      decoding="async"
+                      width="1920"
+                      height="1080"
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+            {selectedShot.video && (
               <button
                 type="button"
                 className="game-motion"
                 aria-pressed={playing}
-                onClick={() => setPlaying((value) => !value)}
+                onClick={() => {
+                  const video = videoRef.current;
+                  if (!video) return;
+                  if (video.paused) {
+                    void video.play().catch(() => setPlaying(false));
+                  } else {
+                    video.pause();
+                  }
+                }}
               >
                 <svg
                   aria-hidden="true"
@@ -124,17 +170,23 @@ function Brickhold({ options }: { options: MountOptions }) {
                   fill="currentColor"
                 >
                   {playing ? (
-                    <path d="M4 4h12v12H4z" />
+                    <path d="M4 3h4v14H4zm8 0h4v14h-4z" />
                   ) : (
                     <path d="m6 3 11 7-11 7z" />
                   )}
                 </svg>
-                {playing ? "Stop animation" : "Play gameplay"}
+                {playing ? "Pause gameplay" : "Play gameplay"}
               </button>
             )}
             <span className="game-image-label">
-              {playing ? "Animated gameplay" : "In-game screenshot"} ·{" "}
-              {shot.caption}
+              <span key={view}>
+                {selectedShot.video
+                  ? playing
+                    ? "Animated gameplay"
+                    : "Gameplay paused"
+                  : "In-game screenshot"}{" "}
+                · {selectedShot.caption}
+              </span>
             </span>
           </div>
           <div className="game-gallery-footer">
@@ -149,6 +201,10 @@ function Brickhold({ options }: { options: MountOptions }) {
                   key={id}
                   aria-pressed={view === id}
                   onClick={() => {
+                    if (id === view) return;
+                    videoRef.current?.pause();
+                    if (id === "defend" && videoRef.current)
+                      videoRef.current.currentTime = 0;
                     setView(id);
                     setPlaying(false);
                   }}
@@ -205,7 +261,7 @@ function Brickhold({ options }: { options: MountOptions }) {
           </a>
         </div>
       </div>
-      <div className="game-development wrap">
+      <div className="game-development wrap" ref={crystalRef}>
         <Crystal />
         <p>
           <strong>{data?.game.status ?? "In development"}</strong>
