@@ -22,19 +22,23 @@ export async function prepareContent() {
     JSON.stringify(manifest, null, 2),
   );
 }
-export async function buildRemotes() {
+export async function buildRemotes(outputDirectory) {
   for (const name of remotes)
-    await build({ ...mfeConfig(name), configFile: false });
+    await build({ ...mfeConfig(name, outputDirectory), configFile: false });
 }
 if (
   process.argv[1] &&
   resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 ) {
   await prepareContent();
-  await buildRemotes();
+  const outputDirectory = resolve(
+    root,
+    process.argv.includes("--mfe") ? "dist/mfe" : "dist/production-mfe",
+  );
+  await buildRemotes(outputDirectory);
   if (!process.argv.includes("--mfe")) {
     await build({ configFile: resolve(root, "apps/shell/vite.config.ts") });
-    await cp(resolve(root, "dist/mfe"), resolve(root, "dist/site/mfe"), {
+    await cp(outputDirectory, resolve(root, "dist/site/mfe"), {
       recursive: true,
     });
     await writeFile(resolve(root, "dist/site/.nojekyll"), "");

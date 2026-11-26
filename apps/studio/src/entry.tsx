@@ -13,14 +13,15 @@ function Studio({ options }: { options: MountOptions }) {
   const { data } = useContent<SiteContent>(options, "site");
   const email = data?.studio.email ?? "hello@brokenrobotstudio.co.za";
   const [copyStatus, setCopyStatus] = useState("");
+
   async function copyEmail() {
     try {
       if (!navigator.clipboard) throw new Error("Clipboard unavailable");
       await navigator.clipboard.writeText(email);
-      setCopyStatus("Email address copied. Say hello when you’re ready!");
+      setCopyStatus("Address copied. We look forward to your message!");
     } catch {
       setCopyStatus(
-        "Couldn’t copy the address. Use the email link to open your mail app.",
+        "Couldn't copy the address. You can use the email link instead.",
       );
     }
   }
@@ -28,60 +29,79 @@ function Studio({ options }: { options: MountOptions }) {
   return (
     <>
       <section
-        className="studio-section wrap"
+        className="studio-section"
         id="studio"
         aria-labelledby="studio-title"
       >
-        <div className="studio-panel">
-          <div className="studio-drawing" aria-hidden="true">
-            <div className="studio-orbit studio-orbit-one" />
-            <div className="studio-orbit studio-orbit-two" />
-            <span className="studio-spark studio-spark-one">✳</span>
-            <span className="studio-spark studio-spark-two">+</span>
-            <span className="studio-sketch-label studio-sketch-top">
-              FIG. 01 — STILL FIGURING IT OUT
-            </span>
-            <Robot className="studio-big-robot" />
+        <div className="studio-layout wrap">
+          <div className="studio-emblem" aria-hidden="true">
             <svg
-              className="studio-sketch-arrow"
-              viewBox="0 0 90 70"
+              className="studio-screw studio-screw-one"
+              viewBox="0 0 30 30"
               fill="none"
             >
               <path
-                d="M81 9C57 0 24 15 26 45m-13-9 14 12 10-16"
+                d="m15 3 4 7 8 1-5 7 1 8-8-3-8 3 1-8-5-7 8-1Z"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth="2.5"
+              />
+            </svg>
+            <svg
+              className="studio-screw studio-screw-two"
+              viewBox="0 0 30 30"
+              fill="none"
+            >
+              <circle
+                cx="15"
+                cy="15"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path d="m9 21 12-12" stroke="currentColor" strokeWidth="4" />
+            </svg>
+            <div className="studio-pennant">
+              <Robot className="studio-big-robot" />
+              <span>
+                EST. IN
+                <br />
+                THE WORKSHOP
+              </span>
+            </div>
+            <div className="studio-maker-mark">
+              BROKEN
+              <br />
+              <span>ROBOTS</span>
+            </div>
+            <svg className="studio-hand-arrow" viewBox="0 0 100 50" fill="none">
+              <path
+                d="M4 41C13 10 62 1 90 17m-15-13 17 14-22 5"
+                stroke="currentColor"
+                strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
             </svg>
-            <span className="studio-sketch-note">
-              a few loose screws.
-              <br />
-              plenty of good ideas.
-            </span>
-            <div className="studio-drawing-stamp">
-              WONKY BY DESIGN <span>★</span>
-            </div>
+            <span className="studio-emblem-note">yep, that's us.</span>
           </div>
           <div className="studio-story">
-            <p className="eyebrow">03 / MEET THE MAKERS</p>
+            <p className="eyebrow">THE MINDS BEHIND THE MAYHEM</p>
             <h2 id="studio-title">
-              A little wonky.
-              <br />A lot of heart<span>.</span>
+              A few loose screws.
+              <br />
+              <span>A lot of good ideas.</span>
             </h2>
             <p>
-              We're Broken Robots. An indie game studio with a soft spot for
-              playful worlds, clever little systems, and the kind of chaos that
-              gets better with friends.
+              We're <strong>Broken Robots</strong>, an independent game studio
+              making playful worlds and finding out what happens when a good
+              plan meets a few very bad ideas.
             </p>
             <p>
-              Right now, we're pouring that energy into Brickhold. Building,
-              breaking, tinkering, and seeing what happens when we put one more
-              trap in the way.
+              Right now, that means Brickhold: a castle full of contraptions,
+              creatures, and one more reason to call your friends.
             </p>
             <a className="studio-text-link" href="#contact">
-              Come say hello <Arrow diagonal />
+              Pull up a chair. Say hello. <Arrow />
             </a>
           </div>
         </div>
@@ -91,34 +111,42 @@ function Studio({ options }: { options: MountOptions }) {
         id="contact"
         aria-labelledby="contact-title"
       >
-        <div className="wrap">
-          <div className="contact-heading">
-            <div>
-              <p className="eyebrow">GOOD CONVERSATIONS START SOMEWHERE</p>
-              <h2 id="contact-title">
-                Let's make
-                <br />
-                some noise<span>.</span>
-              </h2>
-            </div>
-            <span className="contact-spark" aria-hidden="true">
-              ✳
-            </span>
+        <div className="contact-postcard wrap">
+          <div className="contact-postmark" aria-hidden="true">
+            <span>BROKEN ROBOTS</span>
+            <svg viewBox="0 0 90 66" fill="none">
+              <path
+                d="m14 45 24-15-7-18 25 11 16-5-3 13 9 7-19 1-12 15-9-13-24 4Z"
+                fill="currentColor"
+              />
+              <path
+                d="m20 52 17-4m-22 11 18-5M57 14l10-7m-3 9 11-4"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+              <circle cx="64" cy="26" r="2" fill="var(--paper)" />
+            </svg>
+            <span>AIR MAIL / SORT OF</span>
+          </div>
+          <div className="contact-title-block">
+            <p className="eyebrow">TO: OUR NEW FAVOURITE HUMAN</p>
+            <h2 id="contact-title">Send a raven.</h2>
+            <p className="contact-aside">(An email is fine, too.)</p>
           </div>
           <div className="contact-bottom">
-            <div>
+            <div className="contact-message">
               <p>
-                Got a question, a wild idea, or just a friendly beep?
-                <br />{" "}
-                Our inbox is open.
+                Questions about Brickhold? A wonderfully ridiculous idea?
+                <br /> We'd love to hear it.
               </p>
               <a className="contact-email" href={`mailto:${email}`}>
                 {email}
               </a>
             </div>
             <div className="contact-actions">
-              <a className="button orange" href={`mailto:${email}`}>
-                Say hello <Arrow diagonal />
+              <a className="button" href={`mailto:${email}`}>
+                Write to us <Arrow diagonal />
               </a>
               <button
                 className="contact-copy"
@@ -133,7 +161,7 @@ function Studio({ options }: { options: MountOptions }) {
                   viewBox="0 0 20 20"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="1.3"
+                  strokeWidth="1.8"
                 >
                   <rect x="6.5" y="6.5" width="10" height="10" rx="1.5" />
                   <path d="M12 6V3.5h-9v9H6" />
@@ -144,6 +172,9 @@ function Studio({ options }: { options: MountOptions }) {
           <p className="contact-copy-status" role="status" aria-live="polite">
             {copyStatus}
           </p>
+          <span className="contact-delivery-note" aria-hidden="true">
+            NO ACTUAL RAVENS WERE INCONVENIENCED.
+          </span>
         </div>
       </section>
     </>

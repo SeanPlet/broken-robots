@@ -1,8 +1,8 @@
 @font-face {
-  font-family: Space Grotesk;
-  src: url("/fonts/space-grotesk-latin.woff2") format("woff2");
+  font-family: Bungee;
+  src: url("/fonts/bungee-latin.woff2") format("woff2");
   font-style: normal;
-  font-weight: 300 700;
+  font-weight: 400;
   font-display: swap;
 }
 @font-face {
@@ -13,13 +13,15 @@
   font-display: swap;
 }
 :root {
-  --paper: #f3f0e8;
-  --ink: #272a24;
-  --orange: #ed5c36;
-  --muted: #65675f;
-  --line: #d5d5c9;
-  --yellow: #eee891;
-  --display: "Space Grotesk", sans-serif;
+  --paper: #fff2d5;
+  --ink: #25213f;
+  --orange: #f2b648;
+  --yellow: #f9d975;
+  --muted: #6e647e;
+  --line: #d6c4a0;
+  --purple: #8d69dd;
+  --mint: #c0e5b0;
+  --display: "Bungee", sans-serif;
   --body: "DM Sans", sans-serif;
   color: var(--ink);
   background: var(--paper);
@@ -68,7 +70,7 @@ button {
   color: inherit;
 }
 ::selection {
-  background: #ed5c3640;
+  background: #8d69dd50;
 }
 h1,
 h2,
@@ -80,85 +82,92 @@ h1,
 h2,
 h3 {
   font-family: var(--display);
-  font-weight: 600;
+  font-weight: 400;
 }
 button:focus-visible,
-a:focus-visible,
-summary:focus-visible {
-  outline: 3px solid var(--orange);
+a:focus-visible {
+  outline: 3px solid var(--purple);
   outline-offset: 6px;
 }
 .wrap {
-  width: min(1240px, calc(100% - 96px));
+  width: min(1180px, calc(100% - 96px));
   margin-inline: auto;
 }
 .eyebrow {
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1.8px;
+  font-weight: 800;
+  letter-spacing: 2px;
   text-transform: uppercase;
   display: flex;
   align-items: center;
   gap: 10px;
 }
-.eyebrow .dot,
-.status-dot {
-  width: 7px;
-  height: 7px;
-  background: var(--orange);
-  border-radius: 50%;
-  display: inline-block;
-}
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 26px;
-  padding: 17px 23px;
-  border: 1px solid var(--orange);
+  gap: 24px;
+  padding: 15px 23px;
+  border: 3px solid var(--ink);
   background: var(--orange);
-  border-radius: 6px;
+  color: var(--ink);
+  border-radius: 8px;
+  box-shadow: 0 5px 0 var(--ink);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 900;
   line-height: 1.4;
   transition:
-    transform 0.2s,
-    background 0.2s;
-  min-height: 48px;
+    transform 0.16s,
+    box-shadow 0.16s,
+    background 0.16s;
+  min-height: 54px;
 }
 .button:hover {
-  background: #da4c28;
+  background: var(--yellow);
   transform: translateY(-2px);
+  box-shadow: 0 7px 0 var(--ink);
+}
+.button:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 var(--ink);
 }
 .button-small {
-  padding: 12px 17px;
-  gap: 26px;
+  padding: 10px 16px;
+  gap: 20px;
+  font-size: 12px;
+  min-height: 45px;
+  box-shadow: 0 4px 0 var(--ink);
 }
 .button-outline {
-  background: transparent;
-  border-color: var(--line);
-}
-.button-outline:hover {
-  background: #e5e2d8;
+  background: var(--paper);
 }
 .section-title {
-  font-size: clamp(38px, 4.8vw, 66px);
-  line-height: 1.03;
-  letter-spacing: -3px;
+  font-size: clamp(30px, 3.8vw, 48px);
+  line-height: 1.15;
+  letter-spacing: -1px;
 }
 .muted {
   color: var(--muted);
 }
 .site-header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 20;
-  background: #f3f0e8f2;
-  backdrop-filter: blur(18px);
-  border-bottom: 1px solid var(--line);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  color: var(--paper);
+  transition:
+    background 0.25s,
+    border-color 0.25s;
+  border-bottom: 1px solid transparent;
+}
+.site-header.is-scrolled {
+  background: #211c36f2;
+  backdrop-filter: blur(12px);
+  border-color: #fff2d521;
 }
 .nav-inner {
-  height: 96px;
+  height: 90px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -166,18 +175,18 @@ summary:focus-visible {
 .wordmark {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 .wordmark svg {
-  width: 43px;
-  height: 47px;
+  width: 36px;
+  height: 40px;
+  --paper: #25213f;
 }
 .wordmark > span {
   font-family: var(--display);
-  font-size: 18px;
-  line-height: 0.95;
-  font-weight: 700;
-  letter-spacing: -0.8px;
+  font-size: 13px;
+  line-height: 1.02;
+  letter-spacing: -0.2px;
 }
 .wordmark-dot {
   color: var(--orange);
@@ -185,12 +194,30 @@ summary:focus-visible {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 36px;
+  gap: 31px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 800;
 }
-.nav-links > a:not(.button):hover {
-  color: var(--orange);
+.nav-links > a:not(.button) {
+  position: relative;
+  padding-block: 12px;
+  text-shadow: 0 2px 5px #1f173f77;
+}
+.nav-links > a:not(.button)::after {
+  content: "";
+  height: 3px;
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 100%;
+  background: var(--orange);
+  transition: right 0.2s;
+}
+.nav-links > a:not(.button):hover::after {
+  right: 0;
+}
+.site-header a:focus-visible {
+  outline-color: var(--yellow);
 }
 .menu-toggle {
   display: none;
@@ -209,66 +236,67 @@ summary:focus-visible {
   transform: translateY(0);
 }
 .remote-loading {
-  padding-block: 40px;
+  padding-block: 50px;
   min-height: 120px;
   color: var(--muted);
 }
 .remote-error {
   margin-block: 40px;
   padding: 35px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  border: 3px solid var(--ink);
+  border-radius: 8px;
+  background: var(--paper);
 }
 .remote-error p {
   margin-bottom: 20px;
 }
 .site-footer {
-  padding-block: 32px;
+  background: #211c36;
+  color: #d7cde6;
+  padding-block: 30px;
+}
+.footer-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 24px;
-  font-size: 11px;
-  color: var(--muted);
+  gap: 25px;
+  font-size: 10px;
 }
 .footer-brand {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
   font-family: var(--display);
-  font-weight: 700;
-  color: var(--ink);
-  font-size: 14px;
+  color: var(--paper);
+  font-size: 12px;
 }
 .footer-brand svg {
-  height: 25px;
-  width: 25px;
+  height: 29px;
+  width: 29px;
+  color: var(--yellow);
+  --paper: #211c36;
 }
-.site-footer > a:last-child {
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 4px;
-}
-@media (min-width: 1550px) {
-  .wrap {
-    width: min(1360px, calc(100% - 128px));
-  }
+.footer-inner > a:last-child {
+  font-weight: 700;
+  color: var(--paper);
 }
 @media (max-width: 900px) {
   .wrap {
     width: calc(100% - 48px);
   }
-  .nav-links {
-    gap: 22px;
-  }
   .nav-inner {
-    height: 82px;
+    height: 80px;
   }
-  .site-footer {
+  .nav-links {
+    gap: 21px;
+  }
+  .footer-inner {
     flex-wrap: wrap;
   }
-  .site-footer p {
+  .footer-inner p {
     order: 3;
     width: 100%;
+    line-height: 1.6;
   }
 }
 @media (max-width: 620px) {
@@ -282,21 +310,23 @@ summary:focus-visible {
     height: 76px;
   }
   .wordmark svg {
-    width: 35px;
-    height: 39px;
+    width: 31px;
+    height: 35px;
   }
   .wordmark > span {
-    font-size: 16px;
+    font-size: 11px;
   }
   .menu-toggle {
     display: flex;
     gap: 15px;
     align-items: center;
-    background: none;
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    padding: 10px 12px;
-    font-size: 12px;
+    background: #211c36a8;
+    border: 2px solid #fff2d578;
+    border-radius: 6px;
+    padding: 9px 12px;
+    font-size: 11px;
+    color: var(--paper);
+    font-weight: 700;
   }
   .nav-links {
     display: none;
@@ -304,10 +334,10 @@ summary:focus-visible {
     left: 0;
     right: 0;
     top: 76px;
-    padding: 22px 18px 28px;
-    background: var(--paper);
-    border-bottom: 1px solid var(--line);
-    box-shadow: 0 16px 20px #272a240a;
+    padding: 12px 18px 28px;
+    background: #211c36;
+    border-bottom: 3px solid var(--orange);
+    box-shadow: 0 16px 20px #211c3640;
   }
   .nav-links.is-open {
     display: flex;
@@ -317,20 +347,17 @@ summary:focus-visible {
   }
   .nav-links a:not(.button) {
     padding: 17px 8px;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid #fff2d522;
   }
   .nav-links .button {
     margin-top: 18px;
   }
-  .section-title {
-    letter-spacing: -1.8px;
-  }
-  .site-footer {
-    font-size: 10px;
+  .footer-inner {
+    font-size: 9px;
     gap: 22px;
   }
-  .site-header .button-small {
-    min-height: 46px;
+  .footer-brand {
+    font-size: 10px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -342,5 +369,8 @@ summary:focus-visible {
   *::after {
     animation: none !important;
     transition: none !important;
+  }
+  .intro-world {
+    transform: none !important;
   }
 }

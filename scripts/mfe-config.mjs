@@ -4,12 +4,12 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
-export function mfeConfig(name) {
+export function mfeConfig(name, outputDirectory = resolve(root, "dist/mfe")) {
   return defineConfig({
     plugins: [react()],
     define: { "process.env.NODE_ENV": JSON.stringify("production") },
     build: {
-      outDir: resolve(root, "dist/mfe", name),
+      outDir: resolve(outputDirectory, name),
       emptyOutDir: true,
       lib: {
         entry: resolve(root, "apps", name, "src/entry.tsx"),

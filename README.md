@@ -2,6 +2,8 @@
 
 A local React + TypeScript studio website, featuring Brickhold. Four separately built micro frontends compose into one site: introduction, game showcase, field guide, and studio/contact. The shell owns navigation and layout foundations. No GitHub remote or hosted site is configured yet.
 
+The visual identity leads with Brickhold: a full-screen castle/portal scene, a dimensional brick wordmark, parchment story panels, collectible field-guide cards, and a studio contact postcard. [Design notes](docs/DESIGN.md) record the reference direction and implementation choices.
+
 ## Run locally
 
 Requires Node 20.19+ (Node 22 LTS recommended).

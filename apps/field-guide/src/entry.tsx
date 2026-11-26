@@ -9,6 +9,22 @@ import {
 } from "../../../packages/shared/index";
 import "./style.css";
 
+function Spark({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 40 40"
+      aria-hidden="true"
+      fill="none"
+    >
+      <path
+        d="M20 1 24 15 39 20 24 24 20 39 15 24 1 20 15 15Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 function GuideContent({
   options,
   onRetry,
@@ -31,6 +47,10 @@ function GuideContent({
     media(options, entry.image.replace(/^media\//, ""));
   const closeDetails = () => dialog.current?.close();
   const entries = data?.filter((entry) => entry.category === category);
+  const count = (group: "traps" | "enemies") =>
+    String(
+      data?.filter((entry) => entry.category === group).length ?? 3,
+    ).padStart(2, "0");
 
   return (
     <>
@@ -45,26 +65,27 @@ function GuideContent({
             aria-pressed={category === "traps"}
             onClick={() => setCategory("traps")}
           >
-            The traps <span>03</span>
+            The traps <span aria-hidden="true">{count("traps")}</span>
           </button>
           <button
             type="button"
             aria-pressed={category === "enemies"}
             onClick={() => setCategory("enemies")}
           >
-            The troublemakers <span>03</span>
+            The troublemakers <span aria-hidden="true">{count("enemies")}</span>
           </button>
         </div>
-        <p className="guide-hint">
-          A few things we've been tinkering with.{" "}
-          <span aria-hidden="true">↙</span>
-        </p>
+        <p className="guide-hint">Choose a card. Get acquainted.</p>
       </div>
       {error ? (
         <div className="guide-state" role="alert">
           <p>{error}</p>
-          <button className="guide-reload" type="button" onClick={onRetry}>
-            Try again <span aria-hidden="true">↻</span>
+          <button
+            className="button guide-reload"
+            type="button"
+            onClick={onRetry}
+          >
+            Try again <Arrow />
           </button>
         </div>
       ) : !entries ? (
@@ -80,7 +101,7 @@ function GuideContent({
         >
           {entries.map((entry, index) => (
             <button
-              className="guide-card"
+              className={`guide-card guide-card-${entry.id}`}
               type="button"
               key={entry.id}
               aria-label={`Explore ${entry.name}`}
@@ -89,37 +110,43 @@ function GuideContent({
                 setSelected(entry);
               }}
             >
-              <div className={`guide-card-image guide-card-${entry.id}`}>
+              <span className="guide-card-top">
+                <span className="guide-card-stud" aria-hidden="true" />
+                <span>{entry.eyebrow}</span>
+                <span className="guide-card-stud" aria-hidden="true" />
+              </span>
+              <span className="guide-card-image">
                 <img
                   src={imageUrl(entry)}
                   alt={entry.alt}
                   loading="lazy"
                   width="720"
-                  height="640"
+                  height="720"
                 />
                 <span className="guide-art-label">{entry.kind}</span>
-                <span className="guide-card-number" aria-hidden="true">
-                  0{index + 1}
+              </span>
+              <span className="guide-card-copy">
+                <span className="guide-card-index" aria-hidden="true">
+                  NO. 0{index + 1}
                 </span>
-              </div>
-              <div className="guide-card-copy">
-                <p className="eyebrow">{entry.eyebrow}</p>
-                <div className="guide-card-title">
-                  <h3>{entry.name}</h3>
+                <span className="guide-card-title">
+                  <span className="guide-card-name">{entry.name}</span>
                   <span className="guide-plus" aria-hidden="true">
                     +
                   </span>
-                </div>
-              </div>
+                </span>
+                <span className="guide-card-open">
+                  Take a closer look <Arrow diagonal />
+                </span>
+              </span>
             </button>
           ))}
         </div>
       )}
       <div className="guide-bottom">
         <span>Small pieces. Big consequences.</span>
-        <span>
-          BRICKHOLD FIELD NOTES <span aria-hidden="true">✳</span>
-        </span>
+        <Spark />
+        <span>More trouble in the making.</span>
       </div>
       <dialog
         className="guide-dialog"
@@ -154,12 +181,7 @@ function GuideContent({
               >
                 ×
               </button>
-              <p className="eyebrow">
-                BRICKHOLD /{" "}
-                {selected.category === "traps"
-                  ? "THE TRAPS"
-                  : "THE TROUBLEMAKERS"}
-              </p>
+              <p className="eyebrow">BRICKHOLD FIELD GUIDE</p>
               <h3 id="guide-dialog-title">{selected.name}</h3>
               <p className="guide-dialog-type">{selected.eyebrow}</p>
               <p>{selected.description}</p>
@@ -168,11 +190,11 @@ function GuideContent({
                 are concept visuals.
               </p>
               <button
-                className="button button-outline guide-back"
+                className="button guide-back"
                 type="button"
                 onClick={closeDetails}
               >
-                Back to the workbench <Arrow />
+                Back to the field guide <Arrow />
               </button>
             </div>
           </div>
@@ -186,30 +208,32 @@ function FieldGuide({ options }: { options: MountOptions }) {
   const [attempt, setAttempt] = useState(0);
   return (
     <section
-      className="field-guide wrap"
+      className="field-guide"
       id="workshop"
       aria-labelledby="workshop-title"
     >
-      <div className="guide-heading">
-        <div>
-          <p className="eyebrow">02 / THE WORKSHOP</p>
+      <div className="wrap guide-inner">
+        <Spark className="guide-spark guide-spark-left" />
+        <Spark className="guide-spark guide-spark-right" />
+        <div className="guide-heading">
+          <p className="eyebrow">THE BRICKHOLD FIELD GUIDE</p>
           <h2 className="section-title" id="workshop-title">
-            Fresh from the
+            <span>Pick your tools.</span>
             <br />
-            workbench<span className="guide-orange">.</span>
+            Meet your problems.
           </h2>
+          <p className="guide-intro">
+            Some things are built to help you.
+            <br className="guide-mobile-break" /> Others would rather see you in
+            pieces.
+          </p>
         </div>
-        <p className="guide-intro muted">
-          Meet the contraptions.
-          <br />
-          And the creatures they're built for.
-        </p>
+        <GuideContent
+          key={attempt}
+          options={options}
+          onRetry={() => setAttempt((value) => value + 1)}
+        />
       </div>
-      <GuideContent
-        key={attempt}
-        options={options}
-        onRetry={() => setAttempt((value) => value + 1)}
-      />
     </section>
   );
 }

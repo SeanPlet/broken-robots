@@ -7,7 +7,7 @@ test("all four independent sections render, artwork loads and contact works", as
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Small studio. Big play." }),
+    page.getByRole("heading", { name: "Brickhold", exact: true }),
   ).toBeVisible();
   await expect(page.locator("#brickhold")).toBeAttached();
   await expect(page.locator("#workshop")).toBeAttached();
@@ -31,11 +31,13 @@ test("all four independent sections render, artwork loads and contact works", as
       .toBe(true);
   }
   expect(errors).toEqual([]);
+  await page.evaluate(() => document.fonts.ready);
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
   await page.screenshot({
     path: "test-results/site-desktop.png",
     fullPage: true,
   });
+  await page.screenshot({ path: "test-results/site-hero.png" });
 });
 
 test("field guide changes category and its dialog supports keyboard dismissal", async ({
@@ -64,6 +66,26 @@ test("field guide changes category and its dialog supports keyboard dismissal", 
   ).toBeVisible();
 });
 
+test("the illustrated layout fits narrow phones and tablets", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator(".guide-card")).toHaveCount(3);
+  await page.evaluate(() => document.fonts.ready);
+  for (const width of [320, 768, 1024]) {
+    await page.setViewportSize({ width, height: 900 });
+    const fits = await page.evaluate(() => {
+      const title = document.querySelector("h1")!.getBoundingClientRect();
+      return (
+        document.documentElement.scrollWidth <= window.innerWidth &&
+        title.left >= 0 &&
+        title.right <= window.innerWidth
+      );
+    });
+    expect(fits, `Layout should fit at ${width}px`).toBe(true);
+  }
+});
+
 test("game showcase switches from concept art to real prototype capture", async ({
   page,
 }) => {
@@ -89,7 +111,7 @@ test("a failed remote leaves other sections usable and can retry", async ({
     page.locator('[data-mfe="field-guide"] [role="alert"]'),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "Small studio. Big play." }),
+    page.getByRole("heading", { name: "Brickhold", exact: true }),
   ).toBeVisible();
   await expect(page.locator("#contact")).toBeAttached();
   await page.unroute("**/mfe/field-guide/entry.js");
@@ -133,7 +155,7 @@ test.describe("small screens", () => {
     await expect(toggle).toHaveAttribute("aria-expanded", "true");
     await page
       .getByRole("navigation")
-      .getByRole("link", { name: "The workshop" })
+      .getByRole("link", { name: "Field guide" })
       .click();
     await expect(page.getByRole("button", { name: "Menu" })).toHaveAttribute(
       "aria-expanded",

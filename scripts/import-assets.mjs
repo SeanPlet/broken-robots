@@ -25,17 +25,14 @@ for (const [name, path] of Object.entries(images)) {
   const output = resolve(root, "apps/shell/public/media", `${name}.webp`);
   const result = await sharp(resolve(source, path))
     .resize({
-      width: name === "portal" ? 1200 : 1000,
+      width: name === "portal" ? 1448 : 1000,
       withoutEnlargement: true,
     })
     .webp({ quality: 85 })
     .toFile(output);
   console.log(`${name}.webp: ${Math.round(result.size / 1024)} KB`);
 }
-for (const [font, output] of [
-  ["space-grotesk", "space-grotesk"],
-  ["dm-sans", "dm-sans"],
-]) {
+for (const [font, output] of [["dm-sans", "dm-sans"]]) {
   const fontRoot = resolve(root, "node_modules/@fontsource-variable", font);
   await cp(
     resolve(fontRoot, "files", `${font}-latin-wght-normal.woff2`),
@@ -46,3 +43,14 @@ for (const [font, output] of [
     resolve(root, "apps/shell/public/fonts", `${output}-LICENSE.txt`),
   );
 }
+await cp(
+  resolve(
+    root,
+    "node_modules/@fontsource/bungee/files/bungee-latin-400-normal.woff2",
+  ),
+  resolve(root, "apps/shell/public/fonts/bungee-latin.woff2"),
+);
+await cp(
+  resolve(root, "node_modules/@fontsource/bungee/LICENSE"),
+  resolve(root, "apps/shell/public/fonts/bungee-LICENSE.txt"),
+);

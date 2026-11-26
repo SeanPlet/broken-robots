@@ -1,6 +1,6 @@
 # Website media
 
-All copied game media originates in the local `C:/Code/brickhold` repository. Only web-sized derivatives are included here; the game does not need to be available to build or serve the website. The importer preserves the artwork, resizes to at most 1000px (1200px for the hero), and encodes WebP at quality 85. It does not synthesize or alter the designs.
+All copied game media originates in the local `C:/Code/brickhold` repository. Only web-sized derivatives are included here; the game does not need to be available to build or serve the website. The importer preserves the artwork, resizes to at most 1000px (1448px for the full-screen hero), and encodes WebP at quality 85. It does not synthesize or alter the designs.
 
 | Website file in `apps/shell/public/media` | Source relative to Brickhold                                                     | Presentation                      |
 | ----------------------------------------- | -------------------------------------------------------------------------------- | --------------------------------- |
@@ -17,4 +17,4 @@ The `assets/itch` folder requested for the website was not present in the checke
 
 Approved reference status describes the game's design direction; it does not establish a new redistribution licence. Preserve original rights. The prototype screenshot includes LDraw-derived assets, and the hero uses BornCG facial art carrying a supplied noncommercial restriction. Upstream records are in Brickhold's `assets/models/ATTRIBUTION.md`, `assets/characters/ATTRIBUTION.md`, `docs/asset_attribution/`, and `docs/CLASSIC_HERO.md`. Consult them when preparing a public press kit or commercial launch.
 
-Space Grotesk and DM Sans are self-hosted variable fonts from Fontsource. Their OFL notices are copied beside the fonts in `apps/shell/public/fonts/`. The SVG robot mark is an original code-drawn placeholder for this website and can be replaced with final studio branding.
+Bungee and DM Sans are self-hosted fonts from Fontsource. Their OFL notices are copied beside the fonts in `apps/shell/public/fonts/`. The Brickhold wordmark uses Bungee with original CSS brick studs, an outline and dimensional shadows. The SVG robot, crystal, raven stamp and other decorations are original code-drawn website artwork. No graphics were copied from the reference websites.

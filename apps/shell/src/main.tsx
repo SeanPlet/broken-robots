@@ -96,7 +96,14 @@ function MicroFrontend({ name, label }: { name: string; label: string }) {
 }
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const menuToggle = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const update = () => setScrolled(window.scrollY > 40);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
   useEffect(() => {
     function escape(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -112,7 +119,7 @@ function App() {
       <a href="#main" className="skip-link">
         Skip to content
       </a>
-      <header className="site-header">
+      <header className={scrolled ? "site-header is-scrolled" : "site-header"}>
         <div className="nav-inner wrap">
           <a className="wordmark" href="#top" aria-label="Broken Robots home">
             <Robot />
@@ -138,11 +145,11 @@ function App() {
             aria-label="Main navigation"
             onClick={() => setMenuOpen(false)}
           >
-            <a href="#brickhold">Our game</a>
-            <a href="#workshop">The workshop</a>
+            <a href="#brickhold">The game</a>
+            <a href="#workshop">Field guide</a>
             <a href="#studio">The studio</a>
             <a className="button button-small" href="#contact">
-              Say hello <Arrow diagonal />
+              Get in touch <Arrow diagonal />
             </a>
           </nav>
         </div>
@@ -153,14 +160,17 @@ function App() {
         <MicroFrontend name="field-guide" label="the workshop" />
         <MicroFrontend name="studio" label="about the studio" />
       </main>
-      <footer className="site-footer wrap">
-        <a className="footer-brand" href="#top">
-          <Robot /> Broken Robots
-        </a>
-        <p>
-          © {new Date().getFullYear()} Broken Robots. Made with a little chaos.
-        </p>
-        <a href="#top">Back to top ↑</a>
+      <footer className="site-footer">
+        <div className="footer-inner wrap">
+          <a className="footer-brand" href="#top">
+            <Robot /> Broken Robots
+          </a>
+          <p>
+            © {new Date().getFullYear()} Broken Robots. Built one brick at a
+            time.
+          </p>
+          <a href="#top">Back to top ↑</a>
+        </div>
       </footer>
     </>
   );
