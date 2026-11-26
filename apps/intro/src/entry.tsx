@@ -1,4 +1,4 @@
-import { useRef, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 import {
   Arrow,
   mountComponent,
@@ -9,8 +9,19 @@ import "./style.css";
 
 function Intro({ options }: { options: MountOptions }) {
   const scene = useRef<HTMLElement>(null);
+  const [motionPaused, setMotionPaused] = useState(false);
+  const [inView, setInView] = useState(true);
+  useEffect(() => {
+    if (!scene.current || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setInView(entry.isIntersecting);
+    });
+    observer.observe(scene.current);
+    return () => observer.disconnect();
+  }, []);
   function lookAround(event: PointerEvent<HTMLElement>) {
     if (
+      motionPaused ||
       event.pointerType !== "mouse" ||
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
     )
@@ -31,8 +42,10 @@ function Intro({ options }: { options: MountOptions }) {
       id="top"
       aria-labelledby="intro-title"
       ref={scene}
+      data-motion-paused={motionPaused || !inView}
       onPointerMove={lookAround}
       onPointerLeave={() => {
+        if (motionPaused) return;
         scene.current?.style.setProperty("--scene-x", "0px");
         scene.current?.style.setProperty("--scene-y", "0px");
       }}
@@ -48,6 +61,12 @@ function Intro({ options }: { options: MountOptions }) {
       </div>
       <div className="intro-shade" aria-hidden="true" />
       <div className="intro-runes" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+        <i />
+        <i />
+        <i />
         <i />
         <i />
         <i />
@@ -98,12 +117,38 @@ function Intro({ options }: { options: MountOptions }) {
           className="intro-scroll"
           aria-label="Scroll to discover Brickhold"
         >
-          <span />
+          <span aria-hidden="true" />
           <span>There’s trouble down here</span>
           <span aria-hidden="true">↓</span>
         </a>
         <p className="intro-state">
-          <span /> In development<small>Actual game capture</small>
+          <span className="intro-status-dot" aria-hidden="true" /> In
+          development<small>Actual game capture</small>
+          <button
+            className="intro-motion-toggle"
+            type="button"
+            onClick={() => setMotionPaused((value) => !value)}
+            aria-label={
+              motionPaused
+                ? "Resume decorative motion"
+                : "Pause decorative motion"
+            }
+          >
+            <svg
+              aria-hidden="true"
+              width="11"
+              height="11"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+            >
+              {motionPaused ? (
+                <path d="m4 2 9 6-9 6z" />
+              ) : (
+                <path d="M3 2h3v12H3zm7 0h3v12h-3z" />
+              )}
+            </svg>
+            {motionPaused ? "Resume motion" : "Pause motion"}
+          </button>
         </p>
       </div>
       <div className="intro-battlements" aria-hidden="true" />

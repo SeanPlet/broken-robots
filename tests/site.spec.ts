@@ -210,6 +210,108 @@ test("the illustrated layout fits narrow phones and tablets", async ({
   }
 });
 
+test("intro motion runs gently, pauses on request or offscreen, and respects reduced motion", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  const intro = page.locator(".intro");
+  const animations = () =>
+    intro.evaluate((element) =>
+      element
+        .getAnimations({ subtree: true })
+        .filter(
+          (animation): animation is CSSAnimation =>
+            animation instanceof CSSAnimation &&
+            animation.animationName.startsWith("intro-"),
+        )
+        .map((animation) => ({
+          name: animation.animationName,
+          state: animation.playState,
+          time: Number(animation.currentTime),
+        })),
+    );
+  const offsets = () =>
+    intro.evaluate((element: HTMLElement) => [
+      element.style.getPropertyValue("--scene-x"),
+      element.style.getPropertyValue("--scene-y"),
+    ]);
+  await expect
+    .poll(async () =>
+      [...new Set((await animations()).map(({ name }) => name))].sort(),
+    )
+    .toEqual([
+      "intro-particle-drift",
+      "intro-scroll-nudge",
+      "intro-status-pulse",
+    ]);
+  const initial = await animations();
+  const expectState = async (state: "running" | "paused") => {
+    await expect
+      .poll(async () =>
+        (await animations()).map((animation) => animation.state),
+      )
+      .toEqual(initial.map(() => state));
+  };
+  await expectState("running");
+  await expect
+    .poll(async () =>
+      (await animations()).every(
+        (animation, index) => animation.time > initial[index].time,
+      ),
+    )
+    .toBe(true);
+  const initialOffsets = await offsets();
+  await page.mouse.move(200, 250);
+  await expect.poll(offsets).not.toEqual(initialOffsets);
+
+  await page.getByRole("button", { name: "Pause decorative motion" }).focus();
+  await page.keyboard.press("Enter");
+  await expectState("paused");
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+      ),
+  );
+  const pausedOffsets = await offsets();
+  const pausedAnimations = await animations();
+  await page.mouse.move(1200, 350);
+  await page.mouse.move(1438, 40);
+  await page.evaluate(async () => {
+    for (let frame = 0; frame < 4; frame++)
+      await new Promise<void>((resolve) =>
+        requestAnimationFrame(() => resolve()),
+      );
+  });
+  expect(await offsets()).toEqual(pausedOffsets);
+  expect(await animations()).toEqual(pausedAnimations);
+
+  await page.locator("#contact").scrollIntoViewIfNeeded();
+  await expect(intro).not.toBeInViewport();
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+  await expect(intro).toBeInViewport();
+  await expectState("paused");
+  await page.getByRole("button", { name: "Resume decorative motion" }).click();
+  await expectState("running");
+  await page.mouse.move(1000, 200);
+  await expect.poll(offsets).not.toEqual(pausedOffsets);
+
+  await page.locator("#contact").scrollIntoViewIfNeeded();
+  await expect(intro).not.toBeInViewport();
+  await expectState("paused");
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+  await expectState("running");
+
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator(".intro-motion-toggle")).toBeHidden();
+  await expect.poll(animations).toEqual([]);
+  await expect(page.locator(".intro-world")).toHaveCSS("transform", "none");
+  const reducedOffsets = await offsets();
+  await page.mouse.move(300, 300);
+  expect(await offsets()).toEqual(reducedOffsets);
+});
+
 test("reduced-motion visitors receive still images until they choose to play", async ({
   page,
 }) => {

@@ -166,6 +166,7 @@
   border: 2px solid #fff2d58c;
   border-radius: 10px;
   position: relative;
+  animation: intro-scroll-nudge 3.6s ease-in-out infinite;
 }
 .intro-scroll > span:first-child::after {
   content: "";
@@ -178,6 +179,7 @@
 }
 .intro-scroll > span:last-child {
   font-size: 18px;
+  animation: intro-scroll-nudge 3.6s ease-in-out infinite;
 }
 .intro-state {
   font-size: 10px;
@@ -187,6 +189,7 @@
   text-align: right;
 }
 .intro-state > span {
+  position: relative;
   width: 6px;
   height: 6px;
   display: inline-block;
@@ -194,6 +197,40 @@
   margin-right: 5px;
   box-shadow: 0 0 10px #c0e5b0;
   border-radius: 50%;
+}
+.intro-status-dot::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 1px solid #c0e5b099;
+  border-radius: inherit;
+  animation: intro-status-pulse 3.8s ease-out infinite;
+}
+.intro-motion-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: end;
+  gap: 6px;
+  min-height: 32px;
+  margin-top: 5px;
+  padding: 5px 2px;
+  border: 0;
+  border-bottom: 1px solid #fff2d536;
+  background: transparent;
+  color: #e6ddf1;
+  font-size: 9px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  opacity: 0.8;
+}
+.intro-motion-toggle:hover {
+  color: var(--paper);
+  opacity: 1;
+}
+.intro-motion-toggle:focus-visible {
+  outline-color: var(--yellow);
+  opacity: 1;
 }
 .intro-state small {
   display: block;
@@ -231,39 +268,140 @@
   position: absolute;
   left: 8%;
   top: 32%;
-  height: 6px;
-  width: 6px;
-  background: #f8cc83;
-  border-radius: 1px;
-  transform: rotate(45deg);
-  box-shadow: 0 0 14px #ffbe5e;
-  opacity: 0.6;
+  height: 5px;
+  width: 5px;
+  background: #d7a9ff;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #b36bff99;
+  opacity: 0.35;
+  animation: intro-particle-drift var(--drift-duration, 17s) ease-in-out
+    var(--drift-delay, -4s) infinite alternate;
 }
 .intro-runes i:nth-child(2) {
   left: 25%;
   top: 73%;
   width: 4px;
   height: 4px;
+  --drift-duration: 21s;
+  --drift-delay: -11s;
+  --drift-x: -18px;
 }
 .intro-runes i:nth-child(3) {
   left: 44%;
   top: 22%;
-  background: #dfa4ff;
+  --drift-duration: 15s;
+  --drift-delay: -7s;
 }
 .intro-runes i:nth-child(4) {
   left: 63%;
   top: 79%;
-  background: #dfa4ff;
+  --drift-duration: 19s;
+  --drift-delay: -13s;
+  --drift-x: -12px;
 }
 .intro-runes i:nth-child(5) {
   left: 76%;
   top: 31%;
+  --drift-duration: 16s;
+  --drift-delay: -2s;
 }
 .intro-runes i:nth-child(6) {
   left: 90%;
   top: 65%;
   width: 4px;
   height: 4px;
+  --drift-duration: 23s;
+  --drift-delay: -16s;
+  --drift-x: -23px;
+}
+.intro-runes i:nth-child(7) {
+  left: 14%;
+  top: 14%;
+  --drift-duration: 20s;
+  --drift-delay: -6s;
+}
+.intro-runes i:nth-child(8) {
+  left: 34%;
+  top: 51%;
+  width: 3px;
+  height: 3px;
+  --drift-duration: 18s;
+  --drift-delay: -12s;
+  --drift-x: -15px;
+}
+.intro-runes i:nth-child(9) {
+  left: 58%;
+  top: 12%;
+  --drift-duration: 22s;
+  --drift-delay: -9s;
+}
+.intro-runes i:nth-child(10) {
+  left: 70%;
+  top: 57%;
+  width: 4px;
+  height: 4px;
+  --drift-duration: 16s;
+  --drift-delay: -5s;
+  --drift-x: -19px;
+}
+.intro-runes i:nth-child(11) {
+  left: 84%;
+  top: 84%;
+  --drift-duration: 19s;
+  --drift-delay: -15s;
+}
+.intro-runes i:nth-child(12) {
+  left: 93%;
+  top: 24%;
+  width: 3px;
+  height: 3px;
+  --drift-duration: 24s;
+  --drift-delay: -10s;
+  --drift-x: -14px;
+}
+.intro[data-motion-paused="true"] .intro-runes i,
+.intro[data-motion-paused="true"] .intro-scroll > span:first-child,
+.intro[data-motion-paused="true"] .intro-scroll > span:last-child,
+.intro[data-motion-paused="true"] .intro-status-dot::after {
+  animation-play-state: paused;
+}
+.intro[data-motion-paused="true"] .intro-world {
+  transition: none;
+}
+@keyframes intro-particle-drift {
+  0% {
+    transform: translate3d(-4px, 12px, 0) scale(0.7);
+    opacity: 0.18;
+  }
+  50% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translate3d(var(--drift-x, 16px), -55px, 0) scale(1);
+    opacity: 0.28;
+  }
+}
+@keyframes intro-scroll-nudge {
+  0%,
+  50%,
+  85%,
+  100% {
+    transform: translateY(0);
+  }
+  67% {
+    transform: translateY(6px);
+  }
+}
+@keyframes intro-status-pulse {
+  0% {
+    transform: scale(0.65);
+    opacity: 0.5;
+  }
+  75%,
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
 }
 @media (min-width: 1700px) {
   .intro {
@@ -296,6 +434,9 @@
   }
 }
 @media (max-width: 620px) {
+  .intro-runes i:nth-child(n + 9) {
+    display: none;
+  }
   .intro {
     min-height: 840px;
     min-height: max(820px, 100svh);
@@ -370,5 +511,13 @@
   }
   .intro-battlements {
     height: 23px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-motion-toggle {
+    display: none;
+  }
+  .intro-status-dot::after {
+    display: none;
   }
 }
