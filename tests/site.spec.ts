@@ -89,6 +89,40 @@ test("all four independent sections render, artwork loads and contact works", as
   await page.screenshot({ path: "test-results/site-hero.png" });
 });
 
+test("production bootstraps content and reuses cached artwork on reload", async ({
+  page,
+}) => {
+  const requests: string[] = [];
+  page.on("request", (request) =>
+    requests.push(new URL(request.url()).pathname),
+  );
+  await page.goto("/");
+  await waitForGuide(page);
+  const hero = page.locator(".intro-world img");
+  await expect(hero).toHaveAttribute(
+    "src",
+    /\/cache\/[a-f0-9]{16}\/media\/portal.webp$/,
+  );
+  await hero.evaluate((img: HTMLImageElement) => img.decode());
+  expect(
+    requests.filter((path) => /mfe-manifest\.json$|\/data\//.test(path)),
+  ).toEqual([]);
+  expect(requests.filter((path) => path.endsWith(".mp4"))).toEqual([]);
+  await expect(
+    page.locator('link[rel="modulepreload"][href*="/mfe/"]'),
+  ).toHaveCount(4);
+  await page.reload();
+  await waitForGuide(page);
+  await hero.evaluate((img: HTMLImageElement) => img.decode());
+  const cached = await hero.evaluate((img: HTMLImageElement) =>
+    performance.getEntriesByName(img.currentSrc).some((entry) => {
+      const resource = entry as PerformanceResourceTiming;
+      return resource.transferSize === 0 && resource.decodedBodySize > 0;
+    }),
+  );
+  expect(cached).toBe(true);
+});
+
 test("copy feedback leaves the postcard and button size fixed", async ({
   page,
 }) => {
@@ -444,6 +478,7 @@ test("reduced-motion visitors receive a paused preview until they choose to play
   });
   await page.goto("/");
   await waitForGuide(page);
+  await page.getByRole("button", { name: "Defend", exact: true }).click();
   const video = page.locator(".game-visual video");
   await expect(video).toHaveAttribute("src", /horde-loop.mp4$/);
   await expect(video).toHaveJSProperty("paused", true);
@@ -499,9 +534,7 @@ test("game showcase browses actual screenshots and plays clips on request", asyn
   await page.getByRole("button", { name: "Defend", exact: true }).click();
   const video = page.locator(".game-visual video");
   await expect(video).toHaveJSProperty("paused", true);
-  await expect
-    .poll(() => video.evaluate((clip: HTMLVideoElement) => clip.readyState))
-    .toBeGreaterThanOrEqual(2);
+  await expect(video).toHaveAttribute("preload", "none");
   const preview = await video.elementHandle();
   const source = await video.getAttribute("src");
   await page
@@ -554,64 +587,56 @@ test("game showcase browses actual screenshots and plays clips on request", asyn
   await expect(video).toHaveJSProperty("currentTime", 0);
 });
 
-test("showcase rotates every minute, resets on selection and can pause", async ({
+test("showcase rotates every 15 seconds from The world and resets on selection", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.clock.install({ time: new Date("2026-11-27T10:00:00Z") });
   await page.goto("/");
   await waitForGuide(page);
+  await expect(
+    page.getByRole("button", { name: "The world", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: /slideshow/i })).toHaveCount(0);
   await page.clock.pauseAt(new Date("2026-11-27T10:01:00Z"));
   const tab = (name: string) => page.getByRole("button", { name, exact: true });
   const selected = (name: string) =>
     expect(tab(name)).toHaveAttribute("aria-pressed", "true");
 
   await tab("The world").click();
-  await page.clock.fastForward(59_999);
+  await page.clock.fastForward(14_999);
   await selected("The world");
   await page.clock.fastForward(1);
   await selected("Build");
   for (const name of ["Funnel", "Defend", "Fight", "Guardians", "The world"]) {
-    await page.clock.fastForward(60_000);
+    await page.clock.fastForward(15_000);
     await selected(name);
   }
 
-  // Manual changes and reselecting the active tab both restart the minute.
-  await page.clock.fastForward(30_000);
+  // Manual changes and reselecting the active tab both restart the timer.
+  await page.clock.fastForward(7_000);
   await tab("Funnel").click();
-  await page.clock.fastForward(59_999);
+  await page.clock.fastForward(14_999);
   await selected("Funnel");
   await page.clock.fastForward(1);
   await selected("Defend");
-  await page.clock.fastForward(30_000);
+  await page.clock.fastForward(7_000);
   await tab("Defend").click();
-  await page.clock.fastForward(59_999);
+  await page.clock.fastForward(14_999);
   await selected("Defend");
   await page.clock.fastForward(1);
   await selected("Fight");
-
-  await tab("Pause slideshow").click();
-  await page.clock.fastForward(180_000);
-  await selected("Fight");
-  await tab("Guardians").click();
-  await page.clock.fastForward(60_000);
-  await selected("Guardians");
-  await tab("Resume slideshow").click();
-  await page.clock.fastForward(59_999);
-  await selected("Guardians");
-  await page.clock.fastForward(1);
-  await selected("The world");
 
   // Automatic navigation uses the same video cleanup as a manual change.
   await tab("Defend").click();
   const video = page.locator(".game-visual video");
   await tab("Play gameplay").click();
   await expect(video).toHaveJSProperty("paused", false);
-  await page.clock.fastForward(60_000);
+  await page.clock.fastForward(15_000);
   await selected("Fight");
   await expect(video).toHaveJSProperty("paused", true);
   for (const name of ["Guardians", "The world", "Build", "Funnel", "Defend"]) {
-    await page.clock.fastForward(60_000);
+    await page.clock.fastForward(15_000);
     await selected(name);
   }
   await expect(video).toHaveJSProperty("paused", true);
@@ -628,6 +653,8 @@ test("gallery and collection changes blend, resize, and handle rapid selections"
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     const slides = page.locator(".game-slides");
+    await page.getByRole("button", { name: "Defend", exact: true }).click();
+    await expect(slides).not.toHaveAttribute("data-transitioning", "true");
     await page.getByRole("button", { name: "Build", exact: true }).click();
     const blend = await slides.evaluate((container) => {
       for (const animation of container.getAnimations({ subtree: true })) {
@@ -759,15 +786,15 @@ test("the complete artifact works below a GitHub Pages repository path", async (
   await waitForGuide(page);
   await expect(page.locator(".intro-world img")).toHaveAttribute(
     "src",
-    /\/broken-robots\/media\/portal.webp$/,
+    /\/broken-robots\/cache\/[a-f0-9]{16}\/media\/portal.webp$/,
   );
   await expect(page.locator(".intro-game-logo")).toHaveAttribute(
     "src",
-    /\/broken-robots\/media\/brickhold-logo.webp$/,
+    /\/broken-robots\/cache\/[a-f0-9]{16}\/media\/brickhold-logo.webp$/,
   );
   await expect(page.locator(".game-particles i").first()).toHaveCSS(
     "background-image",
-    /\/broken-robots\/media\/particle-brick-teal\.png/,
+    /\/broken-robots\/cache\/[a-f0-9]{16}\/media\/particle-brick-teal\.png/,
   );
   await page
     .getByRole("tab", { name: "The troublemakers", exact: true })
@@ -784,12 +811,18 @@ test("the complete artifact works below a GitHub Pages repository path", async (
     activeCollection(page)
       .getByRole("article", { name: "The Playground", exact: true })
       .locator("img"),
-  ).toHaveAttribute("src", /\/broken-robots\/media\/world.webp$/);
+  ).toHaveAttribute(
+    "src",
+    /\/broken-robots\/cache\/[a-f0-9]{16}\/media\/world.webp$/,
+  );
   await expect(
     activeCollection(page)
       .getByRole("article", { name: "WindWhistle Mill", exact: true })
       .locator("img"),
-  ).toHaveAttribute("src", /\/broken-robots\/media\/windwhistle-mill.webp$/);
+  ).toHaveAttribute(
+    "src",
+    /\/broken-robots\/cache\/[a-f0-9]{16}\/media\/windwhistle-mill.webp$/,
+  );
   await loadCollectionImages(page);
   expect(failures).toEqual([]);
 });

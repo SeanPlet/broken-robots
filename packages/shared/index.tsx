@@ -1,7 +1,12 @@
 import { createRoot } from "react-dom/client";
 import { Component, useEffect, useState, type ReactNode } from "react";
 
-export type MountOptions = { baseUrl: string; apiBase?: string };
+export type MountOptions = {
+  baseUrl: string;
+  apiBase?: string;
+  assets?: Record<string, string>;
+  content?: Record<string, unknown>;
+};
 export type CatalogEntry = {
   id: string;
   category: "traps" | "enemies";
@@ -27,7 +32,10 @@ export type SiteContent = {
   game: { title: string; status: string; description: string };
 };
 export const media = (options: MountOptions, filename: string) =>
-  new URL(`media/${filename}`, options.baseUrl).href;
+  new URL(
+    options.assets?.[`media/${filename}`] ?? `media/${filename}`,
+    options.baseUrl,
+  ).href;
 class SectionBoundary extends Component<
   { children: ReactNode },
   { failed: boolean }
@@ -58,8 +66,17 @@ export function mountComponent(container: HTMLElement, component: ReactNode) {
   return () => root.unmount();
 }
 export function useContent<T>(options: MountOptions, endpoint: string) {
-  const [state, setState] = useState<{ data?: T; error?: string }>({});
+  const embedded = options.apiBase
+    ? undefined
+    : (options.content?.[endpoint] as T | undefined);
+  const [state, setState] = useState<{ data?: T; error?: string }>(() => ({
+    data: embedded,
+  }));
   useEffect(() => {
+    if (embedded !== undefined) {
+      setState({ data: embedded });
+      return;
+    }
     const controller = new AbortController();
     const url = options.apiBase
       ? `${options.apiBase}/${endpoint}`
@@ -79,7 +96,7 @@ export function useContent<T>(options: MountOptions, endpoint: string) {
           });
       });
     return () => controller.abort();
-  }, [options.baseUrl, options.apiBase, endpoint]);
+  }, [options.baseUrl, options.apiBase, endpoint, embedded]);
   return state;
 }
 export function Arrow({ diagonal = false }: { diagonal?: boolean }) {

@@ -62,12 +62,11 @@ const gallery: Record<
   },
 };
 const galleryOrder = Object.keys(gallery);
-const rotationDelay = 60_000;
+const rotationDelay = 15_000;
 
 function Brickhold({ options }: { options: MountOptions }) {
-  const [view, setView] = useState("defend");
+  const [view, setView] = useState("world");
   const [playing, setPlaying] = useState(false);
-  const [rotationPaused, setRotationPaused] = useState(false);
   const [manualSelection, setManualSelection] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const slidesRef = usePanelTransition(view, "gallery");
@@ -81,13 +80,12 @@ function Brickhold({ options }: { options: MountOptions }) {
     setPlaying(false);
   }, []);
   useEffect(() => {
-    if (rotationPaused) return;
     const timer = window.setTimeout(() => {
       const next = (galleryOrder.indexOf(view) + 1) % galleryOrder.length;
       selectView(galleryOrder[next]);
     }, rotationDelay);
     return () => window.clearTimeout(timer);
-  }, [view, rotationPaused, manualSelection, selectView]);
+  }, [view, manualSelection, selectView]);
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
     const stop = () => {
@@ -144,7 +142,7 @@ function Brickhold({ options }: { options: MountOptions }) {
                       src={media(options, shot.video)}
                       poster={media(options, shot.image)}
                       aria-label={shot.alt}
-                      preload="auto"
+                      preload="none"
                       muted
                       loop
                       playsInline
@@ -220,7 +218,7 @@ function Brickhold({ options }: { options: MountOptions }) {
                   key={id}
                   aria-pressed={view === id}
                   onClick={() => {
-                    // Even reselecting the current tab grants a full minute.
+                    // Even reselecting the current tab restarts the timer.
                     setManualSelection((selection) => selection + 1);
                     if (id !== view) selectView(id);
                   }}
@@ -229,17 +227,6 @@ function Brickhold({ options }: { options: MountOptions }) {
                 </button>
               ))}
             </div>
-          </div>
-          <div className="game-rotation">
-            <span>
-              {rotationPaused ? "Slideshow paused" : "Changes every 60 seconds"}
-            </span>
-            <button
-              type="button"
-              onClick={() => setRotationPaused((paused) => !paused)}
-            >
-              {rotationPaused ? "Resume slideshow" : "Pause slideshow"}
-            </button>
           </div>
           <p className="game-gallery-caption">
             A peek inside the actual game. Still building. Still breaking

@@ -101,15 +101,21 @@ export function usePanelTransition(
       }
       panel.style.opacity = "";
       const active = panel === incoming;
-      const transform =
-        frame?.transform ?? (gallery ? "none" : "translateY(7px)");
+      const transform = "none";
       animations.current.push(
         panel.animate(
           [
             { opacity, transform },
             { opacity: active ? 1 : 0, transform: active ? "none" : transform },
           ],
-          !gallery && !active ? { ...timing, duration: 400 } : timing,
+          gallery
+            ? timing
+            : {
+                ...timing,
+                duration: active ? 280 : 160,
+                delay: active ? 100 : 0,
+                easing: "ease-out",
+              },
         ),
       );
     });
@@ -121,8 +127,8 @@ export function usePanelTransition(
         container.animate(
           [{ height: `${startHeight}px` }, { height: `${targetHeight}px` }],
           {
-            duration: Math.min(680, 480 + distance * 0.12),
-            easing: "cubic-bezier(0.45, 0, 0.25, 1)",
+            duration: 440,
+            easing: "cubic-bezier(0.4, 0, 0.2, 1)",
             fill: "both",
           },
         ),

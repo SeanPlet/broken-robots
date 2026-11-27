@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { mfeConfig } from "./mfe-config.mjs";
 import { remotes, runtimeManifest } from "./runtime-manifest.mjs";
 import { emitSiteSeo } from "./site-seo.mjs";
+import { prepareSnapshot, emitBootstrap } from "./cache-assets.mjs";
 
 export const root = fileURLToPath(new URL("../", import.meta.url));
 export { remotes };
@@ -51,6 +52,14 @@ if (
     await cp(outputDirectory, resolve(root, "dist/site/mfe"), {
       recursive: true,
     });
+    const snapshot = await prepareSnapshot(
+      resolve(root, "dist/site"),
+      sourcePublic,
+      outputDirectory,
+      remotes,
+      resolve(root, "content"),
+    );
+    await emitBootstrap(resolve(root, "dist/site"), snapshot);
     await writeFile(resolve(root, "dist/site/.nojekyll"), "");
     await emitSiteSeo(resolve(root, "dist/site"));
     console.log("\nReady: dist/site (static GitHub Pages output).");

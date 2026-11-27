@@ -24,7 +24,7 @@ dispose();
 
 The shared mounting helper wraps each section in a React error boundary, so a render failure stays inside that section. Each bundle contains its own React runtime: this keeps the first version self-contained, at the cost of some duplicate download bytes. The shared package is compiled into each bundle; React elements and hook state never cross the mounting contract. A future shared-runtime or Module Federation setup could reduce duplication, but is not required to build and load these sections independently.
 
-`baseUrl` is the site's deployment prefix, including a trailing slash. Asset and static-data URLs must be resolved against it so repository-subpath deployments work. `apiBase` is optional and selects BFF mode. The public runtime manifest points to built MFE entry URLs. It is configuration, not executable source.
+`baseUrl` is the site's deployment prefix, including a trailing slash. Asset and static-data URLs must be resolved against it so repository-subpath deployments work. `apiBase` is optional and selects BFF mode. Production HTML embeds a manifest, an asset URL map and static content. Mount options pass the map and content to each MFE. Development reads the public runtime manifest and JSON endpoints; optional BFF mode continues to use its API.
 
 ## Request flow
 
@@ -46,7 +46,7 @@ flowchart TD
   Content -. build copies .-> Static
 ```
 
-The default mode is fully static. The production build stages public assets and the shared JSON under `dist/production-public`, then packages all frontend builds into `dist/site`. This works on GitHub Pages without a server. During development, remote builds are watched and served by shell middleware from `dist/mfe`; `/data/site.json` and `/data/catalog.json` are read directly from `content/`, and the runtime manifest comes from `scripts/runtime-manifest.mjs`. This keeps production staging separate from live development files and avoids copying JSON into a watched public directory.
+The default mode is fully static. After assembling the site, `scripts/cache-assets.mjs` fingerprints each media file and MFE bundle, writes immutable resource URLs, and injects the manifest/content snapshot and preload hints into HTML. Static rendering needs no additional manifest or JSON fetch. The shell fonts are fingerprinted by Vite. Original public paths remain available for compatibility and social metadata. Host response headers determine cache lifetimes; first loads still require downloads. The production build stages public assets and the shared JSON under `dist/production-public`, then packages all frontend builds into `dist/site`. This works on GitHub Pages without a server. During development, remote builds are watched and served by shell middleware from `dist/mfe`; `/data/site.json` and `/data/catalog.json` are read directly from `content/`, and the runtime manifest comes from `scripts/runtime-manifest.mjs`. This keeps production staging separate from live development files and avoids copying JSON into a watched public directory.
 
 The Field Guide MFE reads the full trap/enemy roster from `catalog.json` and the map collection from the `maps` array in `site.json`. The same files are exposed by `/api/catalog` and `/api/site` in optional BFF mode. Selecting a collection changes the active accessible tab panel; it does not request a paginated slice or open a detail dialog. The Shardkeeper preview remains a separate part of this MFE, ready for a future hero roster when approved content exists.
 

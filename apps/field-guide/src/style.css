@@ -44,10 +44,11 @@
 .guide-panels {
   position: relative;
   isolation: isolate;
+  /* Prevent browser scroll anchoring from fighting the height transition. */
+  overflow-anchor: none;
 }
 .guide-panels[data-transitioning] {
-  overflow: clip;
-  overflow-clip-margin: 12px;
+  overflow: hidden;
 }
 .guide-panel {
   display: flow-root;

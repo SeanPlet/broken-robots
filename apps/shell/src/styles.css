@@ -1,13 +1,13 @@
 @font-face {
   font-family: Bungee;
-  src: url("/fonts/bungee-latin.woff2") format("woff2");
+  src: url("../public/fonts/bungee-latin.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
   font-display: swap;
 }
 @font-face {
   font-family: DM Sans;
-  src: url("/fonts/dm-sans-latin.woff2") format("woff2");
+  src: url("../public/fonts/dm-sans-latin.woff2") format("woff2");
   font-style: normal;
   font-weight: 100 1000;
   font-display: swap;

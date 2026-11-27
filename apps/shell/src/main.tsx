@@ -5,13 +5,24 @@ import { useDecorationInView } from "../../../packages/shared/use-decoration-in-
 import "./styles.css";
 
 const baseUrl = new URL(import.meta.env.BASE_URL, document.baseURI).href;
+type Remote = { module: string; stylesheet: string };
+const embedded = document.getElementById("site-bootstrap")?.textContent;
+const snapshot:
+  | {
+      manifest: Record<string, Remote>;
+      assets: Record<string, string>;
+      content: Record<string, unknown>;
+    }
+  | undefined = embedded ? JSON.parse(embedded) : undefined;
 const options: MountOptions = {
   baseUrl,
   apiBase: import.meta.env.VITE_BFF_URL ? "/api" : undefined,
+  assets: snapshot?.assets,
+  content: snapshot?.content,
 };
-type Remote = { module: string; stylesheet: string };
 let manifest: Promise<Record<string, Remote>> | undefined;
 function getManifest() {
+  if (snapshot) return Promise.resolve(snapshot.manifest);
   return (manifest ??= fetch(new URL("mfe-manifest.json", baseUrl))
     .then((response) => {
       if (!response.ok)
@@ -38,7 +49,17 @@ function MicroFrontend({ name, label }: { name: string; label: string }) {
       const remote = remotes[name];
       if (!remote) throw new Error(`Unknown micro frontend: ${name}`);
       const cssUrl = new URL(remote.stylesheet, baseUrl).href;
-      if (!document.querySelector(`link[data-mfe="${name}"]`)) {
+      const url =
+        new URL(remote.module, baseUrl).href +
+        (attempt ? `?retry=${attempt}` : "");
+      // Start JS and CSS together in development and on retry.
+      const modulePromise = import(/* @vite-ignore */ url);
+      void modulePromise.catch(() => {});
+      const stylesheet = document.querySelector<HTMLLinkElement>(
+        `link[data-mfe="${name}"]`,
+      );
+      if (!stylesheet?.sheet) {
+        stylesheet?.remove();
         await new Promise<void>((resolve, reject) => {
           const link = document.createElement("link");
           link.rel = "stylesheet";
@@ -52,10 +73,7 @@ function MicroFrontend({ name, label }: { name: string; label: string }) {
           document.head.append(link);
         });
       }
-      const url =
-        new URL(remote.module, baseUrl).href +
-        (attempt ? `?retry=${attempt}` : "");
-      const module = await import(/* @vite-ignore */ url);
+      const module = await modulePromise;
       if (!cancelled && host.current) {
         unmount = module.mount(host.current, options);
         setLoading(false);

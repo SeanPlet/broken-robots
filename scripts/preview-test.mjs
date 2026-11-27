@@ -32,7 +32,8 @@ const server = createServer(async (request, response) => {
     const data = await readFile(path);
     response.writeHead(200, {
       "Content-Type": types[extname(path)] ?? "application/octet-stream",
-      "Cache-Control": "no-store",
+      "Cache-Control": /\/(cache|assets)\//.test(pathname)
+        ? "public, max-age=31536000, immutable" : "no-cache",
     });
     response.end(data);
   } catch {

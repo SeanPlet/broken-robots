@@ -54,7 +54,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for boundaries, request flow, c
 - `apps/shell/public/media/`: self-contained, compressed artwork.
 - `apps/shell/src/styles.css`: shared colours, typography, navigation.
 
-The game repository and Downloads folder are not needed to run or build this site. [docs/ASSETS.md](docs/ASSETS.md) records the supplied source files, crop bounds and animation details. To regenerate the media, run `node scripts/import-assets.mjs` with the named originals in Downloads, or pass an explicit source directory. The gallery has six actual game views. Defend has an opt-in gameplay video that starts paused and supports pausing and resuming in place. The field guide has three keyboard-accessible tabs: The traps, The troublemakers and Kingdoms. Each roster displays its whole collection at once: eight defenses or eleven enemies as non-clickable cards with hover effects and visible descriptions. Kingdoms features the actual Playground arena and the supplied WindWhistle Mill artwork. A separate Shardkeeper preview beneath the collections establishes where the future playable-hero roster will sit. The showcase cycles through The world, Build, Funnel, Defend, Fight and Guardians every 60 seconds, looping from the current selection. A manual selection restarts the timer; Pause slideshow holds the selected view. Gameplay video still only plays on request, including for reduced-motion visitors, and pauses when the view changes.
+The game repository and Downloads folder are not needed to run or build this site. [docs/ASSETS.md](docs/ASSETS.md) records the supplied source files, crop bounds and animation details. To regenerate the media, run `node scripts/import-assets.mjs` with the named originals in Downloads, or pass an explicit source directory. The gallery has six actual game views. Defend has an opt-in gameplay video that starts paused and supports pausing and resuming in place. The field guide has three keyboard-accessible tabs: The traps, The troublemakers and Kingdoms. Each roster displays its whole collection at once: eight defenses or eleven enemies as non-clickable cards with hover effects and visible descriptions. Kingdoms features the actual Playground arena and the supplied WindWhistle Mill artwork. A separate Shardkeeper preview beneath the collections establishes where the future playable-hero roster will sit. The showcase cycles through The world, Build, Funnel, Defend, Fight and Guardians every 15 seconds, starting on The world and looping through all six views. A manual selection restarts the timer. Gameplay video still only plays on request, including for reduced-motion visitors, and pauses when the view changes.
 
 ## Browser checks
 
@@ -64,6 +64,16 @@ npm run test:e2e
 ```
 
 Tests start their own production preview on port 4173 and cover loading all four MFEs, complete static collections, keyboard tab navigation, both kingdoms, gameplay switching, mobile navigation, image loading, a failed remote with retry, and deployment below a repository path. Build first. On Windows the configuration uses the installed Microsoft Edge; elsewhere it uses Playwright Chromium. `node services/bff/integration-check.mjs` also checks the live BFF through the Vite proxy and browser (uses Edge on Windows).
+
+## Loading and caching
+
+Production builds include the section manifest and static content in the HTML, so rendering does not wait for separate manifest or JSON requests. Styles, section modules, the opening artwork and fonts are discovered early through preload hints. The gameplay video downloads only when played.
+
+Media and section bundles use content fingerprints under `cache/<hash>/`; fonts and shell bundles use Vite's hashed filenames. Unchanged files retain the same URLs, while changed files get new ones. Development keeps live content requests, and optional BFF mode still fetches its API.
+
+Upload the complete `dist/site` artifact as one deployment. On a configurable host, use `Cache-Control: no-cache` for HTML and `public, max-age=31536000, immutable` for `/cache/` and hashed `/assets/` files. GitHub Pages controls its own response headers; the build does not override them. Keep prior hashed assets available during deployment if the host supports it, so previously opened pages can finish loading. Fingerprinting follows [Vite's asset caching approach](https://vite.dev/guide/assets). There is no service worker or offline cache, and first-time visitors still need to download the assets.
+
+The browser tests verify embedded content, cache reuse with the local test server's cache headers, manual retry, and repository-subpath URLs. To check Chrome on Windows, run `$env:TEST_BROWSER='chrome'` followed by `npm run test:e2e`; remove that variable to return to Edge.
 
 ## GitHub Pages later
 
