@@ -21,6 +21,7 @@ export type SiteContent = {
     description: string;
     image: string;
     alt: string;
+    note: string;
   }[];
   studio: { name: string; email: string };
   game: { title: string; status: string; description: string };

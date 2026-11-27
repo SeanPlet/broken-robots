@@ -208,7 +208,7 @@ test("complete trap and enemy collections are static cards with visible descript
   });
 });
 
-test("collection tabs support keyboard navigation and show the current kingdom", async ({
+test("collection tabs support keyboard navigation and show both kingdoms", async ({
   page,
 }) => {
   await page.goto("/");
@@ -233,7 +233,20 @@ test("collection tabs support keyboard navigation and show the current kingdom",
   });
   await expect(map).toBeVisible();
   await expect(map.locator("img")).toHaveAttribute("src", /media\/world.webp$/);
-  await expect(activeCollection(page).getByRole("article")).toHaveCount(1);
+  const mill = activeCollection(page).getByRole("article", {
+    name: "WindWhistle Mill",
+    exact: true,
+  });
+  await expect(mill).toBeVisible();
+  await expect(mill.locator("img")).toHaveAttribute(
+    "src",
+    /media\/windwhistle-mill.webp$/,
+  );
+  await expect(mill.locator(".guide-map-note")).toHaveText(
+    "Map artwork · In development",
+  );
+  await expect(kingdoms.locator("span")).toHaveText("02");
+  await expect(activeCollection(page).getByRole("article")).toHaveCount(2);
   await expect(
     page.getByRole("heading", {
       name: "Choose your Shardkeeper.",
@@ -541,6 +554,70 @@ test("game showcase browses actual screenshots and plays clips on request", asyn
   await expect(video).toHaveJSProperty("currentTime", 0);
 });
 
+test("showcase rotates every minute, resets on selection and can pause", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.clock.install({ time: new Date("2026-11-27T10:00:00Z") });
+  await page.goto("/");
+  await waitForGuide(page);
+  await page.clock.pauseAt(new Date("2026-11-27T10:01:00Z"));
+  const tab = (name: string) => page.getByRole("button", { name, exact: true });
+  const selected = (name: string) =>
+    expect(tab(name)).toHaveAttribute("aria-pressed", "true");
+
+  await tab("The world").click();
+  await page.clock.fastForward(59_999);
+  await selected("The world");
+  await page.clock.fastForward(1);
+  await selected("Build");
+  for (const name of ["Funnel", "Defend", "Fight", "Guardians", "The world"]) {
+    await page.clock.fastForward(60_000);
+    await selected(name);
+  }
+
+  // Manual changes and reselecting the active tab both restart the minute.
+  await page.clock.fastForward(30_000);
+  await tab("Funnel").click();
+  await page.clock.fastForward(59_999);
+  await selected("Funnel");
+  await page.clock.fastForward(1);
+  await selected("Defend");
+  await page.clock.fastForward(30_000);
+  await tab("Defend").click();
+  await page.clock.fastForward(59_999);
+  await selected("Defend");
+  await page.clock.fastForward(1);
+  await selected("Fight");
+
+  await tab("Pause slideshow").click();
+  await page.clock.fastForward(180_000);
+  await selected("Fight");
+  await tab("Guardians").click();
+  await page.clock.fastForward(60_000);
+  await selected("Guardians");
+  await tab("Resume slideshow").click();
+  await page.clock.fastForward(59_999);
+  await selected("Guardians");
+  await page.clock.fastForward(1);
+  await selected("The world");
+
+  // Automatic navigation uses the same video cleanup as a manual change.
+  await tab("Defend").click();
+  const video = page.locator(".game-visual video");
+  await tab("Play gameplay").click();
+  await expect(video).toHaveJSProperty("paused", false);
+  await page.clock.fastForward(60_000);
+  await selected("Fight");
+  await expect(video).toHaveJSProperty("paused", true);
+  for (const name of ["Guardians", "The world", "Build", "Funnel", "Defend"]) {
+    await page.clock.fastForward(60_000);
+    await selected(name);
+  }
+  await expect(video).toHaveJSProperty("paused", true);
+  await expect(video).toHaveJSProperty("currentTime", 0);
+});
+
 test("gallery and collection changes blend, resize, and handle rapid selections", async ({
   page,
 }) => {
@@ -617,8 +694,8 @@ test("gallery and collection changes blend, resize, and handle rapid selections"
           .getBoundingClientRect().height,
       };
     });
-    expect(sizes.current).toBeGreaterThan(sizes.target);
-    expect(sizes.current).toBeLessThan(before);
+    expect(sizes.current).toBeGreaterThan(Math.min(before, sizes.target));
+    expect(sizes.current).toBeLessThan(Math.max(before, sizes.target));
     await expect(page.getByRole("tabpanel")).toHaveCount(1);
     await panels.evaluate((container) =>
       container
@@ -708,6 +785,12 @@ test("the complete artifact works below a GitHub Pages repository path", async (
       .getByRole("article", { name: "The Playground", exact: true })
       .locator("img"),
   ).toHaveAttribute("src", /\/broken-robots\/media\/world.webp$/);
+  await expect(
+    activeCollection(page)
+      .getByRole("article", { name: "WindWhistle Mill", exact: true })
+      .locator("img"),
+  ).toHaveAttribute("src", /\/broken-robots\/media\/windwhistle-mill.webp$/);
+  await loadCollectionImages(page);
   expect(failures).toEqual([]);
 });
 
@@ -743,6 +826,13 @@ test.describe("small screens", () => {
       .click();
     await expect(activeCollection(page).locator(".guide-card")).toHaveCount(11);
     await page.getByRole("tab", { name: "Kingdoms", exact: true }).click();
+    await expect(activeCollection(page).getByRole("article")).toHaveCount(2);
+    await expect(
+      activeCollection(page).getByRole("article", {
+        name: "WindWhistle Mill",
+        exact: true,
+      }),
+    ).toBeVisible();
     await expect(
       activeCollection(page).getByRole("article", {
         name: "The Playground",

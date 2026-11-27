@@ -538,6 +538,29 @@
   text-align: center;
   font-style: italic;
 }
+.game-rotation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 14px;
+  margin-top: 13px;
+  font-size: 10px;
+  color: #75634b;
+}
+.game-rotation button {
+  min-height: 36px;
+  padding: 7px 9px;
+  border: 1px solid #cbb38b;
+  border-radius: 4px;
+  background: #f7e4bc;
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 700;
+}
+.game-rotation button:hover {
+  background: var(--yellow);
+}
 @media (max-width: 620px) {
   .game-tabs {
     display: grid;

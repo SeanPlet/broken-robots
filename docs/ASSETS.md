@@ -10,6 +10,7 @@ Run `node scripts/import-assets.mjs` to regenerate from the current user's Downl
 | brickhold-logo.webp                       | brickhold_logo.png                 | Actual transparent Brickhold wordmark and swords            |
 | portal.webp                               | 04_out_of_the_portal.jpg           | Opening scene                                               |
 | world.webp                                | 05_the_playground.jpg              | Arena gallery view and the Playground Kingdoms card         |
+| windwhistle-mill.webp                      | windwhistle-mill.png (chat attachment) | Supplied WindWhistle Mill artwork in the Kingdoms collection |
 | gameplay.webp                             | 03_build_mode.jpg                  | Build-mode gallery view                                     |
 | funnel.webp                               | 07_barricade_funnel.jpg            | Barricade routing gallery view                              |
 | battle.webp                               | 01_horde_through_traps.jpg         | Trap-lane gallery view                                      |
@@ -33,6 +34,8 @@ The individual roster crops exclude the baked titles, captions and margins. Colu
 The retained WebP animations preserve all source frames, frame delays and looping: gameplay has 56 frames over 4660ms, horde has 70 frames over 4670ms. The Defend gallery uses an H.264 MP4 converted from the horde animation, with the matching first-frame poster. One muted, inline video preloads and stays paused until a visitor selects **Play gameplay**. **Pause gameplay** holds the current frame; playing again resumes from that point without replacing the media. Switching gallery views or changing a motion preference to reduce pauses playback. Returning to Defend starts paused. Fight uses the supplied still hero image.
 
 To regenerate the MP4 after importing media, run `node scripts/convert-gameplay-video.mjs` with FFmpeg 9 or newer on PATH, or pass its executable path as the first argument. The converter reads the committed WebP, so the original Downloads are not needed. FFmpeg is only needed for regenerating this asset, not for running or building the site.
+
+WindWhistle Mill uses the image supplied in chat on 27 November 2026, converted to WebP at its original 1672 × 941 dimensions without cropping or redrawing. Save the attachment as `windwhistle-mill.png` in the source directory to regenerate it with the importer. Its Kingdoms card is labelled **Map artwork · In development**; the Playground retains its **In-game capture** caption.
 
 Both logos preserve transparency. The favicon is a transparent crop of the actual studio robot's head; it is recorded as `faviconCrop` in the importer and written to `apps/shell/public/favicon.png`. The logo's spelling, **Broken Robot**, is used consistently in visible site copy.
 

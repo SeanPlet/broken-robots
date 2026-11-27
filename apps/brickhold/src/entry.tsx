@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Arrow,
   Crystal,
@@ -61,14 +61,33 @@ const gallery: Record<
     alt: "The Blue Knight archer at his brick-built guard post in Brickhold",
   },
 };
+const galleryOrder = Object.keys(gallery);
+const rotationDelay = 60_000;
+
 function Brickhold({ options }: { options: MountOptions }) {
   const [view, setView] = useState("defend");
   const [playing, setPlaying] = useState(false);
+  const [rotationPaused, setRotationPaused] = useState(false);
+  const [manualSelection, setManualSelection] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const slidesRef = usePanelTransition(view, "gallery");
   const crystalRef = useDecorationInView<HTMLDivElement>();
   const { data } = useContent<SiteContent>(options, "site");
   const selectedShot = gallery[view];
+  const selectView = useCallback((id: string) => {
+    videoRef.current?.pause();
+    if (id === "defend" && videoRef.current) videoRef.current.currentTime = 0;
+    setView(id);
+    setPlaying(false);
+  }, []);
+  useEffect(() => {
+    if (rotationPaused) return;
+    const timer = window.setTimeout(() => {
+      const next = (galleryOrder.indexOf(view) + 1) % galleryOrder.length;
+      selectView(galleryOrder[next]);
+    }, rotationDelay);
+    return () => window.clearTimeout(timer);
+  }, [view, rotationPaused, manualSelection, selectView]);
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
     const stop = () => {
@@ -201,18 +220,26 @@ function Brickhold({ options }: { options: MountOptions }) {
                   key={id}
                   aria-pressed={view === id}
                   onClick={() => {
-                    if (id === view) return;
-                    videoRef.current?.pause();
-                    if (id === "defend" && videoRef.current)
-                      videoRef.current.currentTime = 0;
-                    setView(id);
-                    setPlaying(false);
+                    // Even reselecting the current tab grants a full minute.
+                    setManualSelection((selection) => selection + 1);
+                    if (id !== view) selectView(id);
                   }}
                 >
                   {entry.label}
                 </button>
               ))}
             </div>
+          </div>
+          <div className="game-rotation">
+            <span>
+              {rotationPaused ? "Slideshow paused" : "Changes every 60 seconds"}
+            </span>
+            <button
+              type="button"
+              onClick={() => setRotationPaused((paused) => !paused)}
+            >
+              {rotationPaused ? "Resume slideshow" : "Pause slideshow"}
+            </button>
           </div>
           <p className="game-gallery-caption">
             A peek inside the actual game. Still building. Still breaking

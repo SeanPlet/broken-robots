@@ -181,8 +181,8 @@ function GuideContent({
               ) : isMaps ? (
                 <>
                   <p className="guide-collection-intro">
-                    Places worth defending. Starting with the courtyard where it
-                    all comes together.
+                    Places worth defending. From castle courtyards to golden
+                    fields and windmill walls.
                   </p>
                   <div className="guide-map-grid">
                     {site.data!.maps.map((map) => (
@@ -205,9 +205,7 @@ function GuideContent({
                           <p className="eyebrow">{map.eyebrow}</p>
                           <h3 id={`guide-map-${map.id}`}>{map.name}</h3>
                           <p>{map.description}</p>
-                          <span className="guide-map-note">
-                            In-game capture · In development
-                          </span>
+                          <span className="guide-map-note">{map.note}</span>
                         </div>
                       </article>
                     ))}
@@ -263,7 +261,7 @@ function GuideContent({
       <div className="guide-bottom">
         <span>Small pieces. Big consequences.</span>
         <Spark />
-        <span>Captured in Brickhold.</span>
+        <span>The world of Brickhold.</span>
       </div>
     </>
   );

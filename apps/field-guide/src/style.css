@@ -394,6 +394,8 @@
   margin-top: auto;
 }
 .guide-map-grid {
+  display: grid;
+  gap: 28px;
   padding: 8px 7px 20px;
 }
 .guide-map-card {
