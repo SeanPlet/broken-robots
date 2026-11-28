@@ -41,7 +41,7 @@ test("site presents the actual studio identity and development status", async ()
     assert.equal(site.maps.length, 2);
     assert.equal(site.maps[0].id, "playground");
     assert.equal(site.maps[0].name, "The Playground");
-    assert.equal(site.maps[0].image, "media/world.webp");
+    assert.equal(site.maps[0].image, "media/playground.webp");
     assert.equal(site.maps[1].id, "windwhistle-mill");
     assert.equal(site.maps[1].name, "WindWhistle Mill");
     assert.equal(site.maps[1].image, "media/windwhistle-mill.webp");
@@ -57,18 +57,23 @@ test("catalog filters categories without losing entries or crossing categories",
     const enemies = await (
       await fetch(`${base}/api/catalog?category=enemies`)
     ).json();
-    assert.equal(all.length, 19);
+    const upgrades = await (
+      await fetch(`${base}/api/catalog?category=upgrades`)
+    ).json();
+    assert.equal(all.length, 44);
     assert.equal(traps.length, 8);
     assert.equal(enemies.length, 11);
+    assert.equal(upgrades.length, 25);
     assert.ok(traps.every((entry) => entry.category === "traps"));
     assert.ok(enemies.every((entry) => entry.category === "enemies"));
+    assert.ok(upgrades.every((entry) => entry.category === "upgrades"));
     assert.deepEqual(
-      new Set([...traps, ...enemies].map((entry) => entry.id)),
+      new Set([...traps, ...enemies, ...upgrades].map((entry) => entry.id)),
       new Set(all.map((entry) => entry.id)),
     );
     const response = await fetch(`${base}/api/catalog?category=unknown`);
     assert.equal(response.status, 400);
-    assert.match((await response.json()).error, /traps or enemies/);
+    assert.match((await response.json()).error, /traps, enemies or upgrades/);
     assert.equal((await fetch(`${base}/api/catalog?category=`)).status, 400);
   });
 });

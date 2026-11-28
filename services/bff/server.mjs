@@ -43,8 +43,11 @@ export function createBffServer({
       }
       if (url.pathname === "/api/catalog") {
         const category = url.searchParams.get("category");
-        if (category !== null && !["traps", "enemies"].includes(category)) {
-          send(400, { error: "category must be traps or enemies." });
+        if (
+          category !== null &&
+          !["traps", "enemies", "upgrades"].includes(category)
+        ) {
+          send(400, { error: "category must be traps, enemies or upgrades." });
           return;
         }
         const entries = JSON.parse(

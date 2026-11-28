@@ -242,22 +242,117 @@ test("complete trap and enemy collections are static cards with visible descript
   });
 });
 
-test("collection tabs support keyboard navigation and show both kingdoms", async ({
+test("upgrade cards show the supplied effects, categories and rarities", async ({
   page,
 }) => {
   await page.goto("/");
   await waitForGuide(page);
+  await expect(page.getByRole("tab")).toHaveText([
+    "Shardkeepers",
+    "The traps08",
+    "The troublemakers11",
+    "Upgrade Cards25",
+    "Kingdoms02",
+  ]);
+  await page.getByRole("tab", { name: "Upgrade Cards", exact: true }).click();
+  const panel = activeCollection(page);
+  await expect(panel.locator(".guide-collection-intro")).toContainText(
+    "between waves",
+  );
+  await expect(panel.getByRole("article")).toHaveCount(25);
+  for (const [name, effect] of [
+    ["Sharpened Studs", "Every trap deals 15% more damage."],
+    ["Floor Fury", "Floor traps deal 20% more damage."],
+    ["Wall Whackers", "Wall traps deal 20% more damage."],
+    ["Death from Above", "Ceiling traps deal 20% more damage."],
+    ["Quick Mechanisms", "Traps reset 12% faster."],
+    ["Giant Slayer", "Traps deal 20% more to Trolls and Shield Brutes."],
+    ["Stud Collector", "Defeated enemies drop 15% more studs."],
+    ["Discount Day", "New traps cost 10% less."],
+    ["Payday", "Wave rewards pay 20% more studs."],
+    ["More Bricks!", "Build 2 more free barricades."],
+    ["Knight School", "Guard post archers deal 20% more damage."],
+    ["Crystal Insurance", "Restore 1 Crystal Heart."],
+    ["Extra Padding", "Heroes get 20% more hearts."],
+    ["Pack a Punch", "Sword swings deal 12% more damage."],
+    ["Quick Feet", "Heroes run 10% faster."],
+    ["Lingering Lava", "Brimstone burns last twice as long."],
+    ["Extra Quiver", "Arrow walls fire 4 volleys, not 3."],
+    ["Double Sweep", "The Ripsaw blade sweeps twice."],
+    ["Bigger Boulders", "Boulders are bigger and bounce for longer."],
+    ["Free Recruits", "Guard posts cost nothing to recruit."],
+    ["Magnet Gloves", "Studs fly to you from much further away."],
+    ["Lucky Clover", "Enemies drop hearts twice as often."],
+    ["Treasure Hunter", "The treasure chest costs half."],
+    ["Free Rebuild", "Each hero's first knock-out costs no Crystal Heart."],
+    ["Pawn Shop", "Gain 8,000 studs, lose 2 Crystal Hearts."],
+  ]) {
+    const card = panel.getByRole("article", { name, exact: true });
+    await expect(card.locator(".guide-card-description")).toHaveText(effect);
+    await expect(card.locator("button, a, [tabindex]")).toHaveCount(0);
+    await expect(card.locator("img")).toHaveAttribute(
+      "src",
+      /media\/upgrades\/.+\.webp$/,
+    );
+  }
+  await expect(panel.locator(".guide-card-rarity")).toHaveCount(6);
+  for (const name of [
+    "Sharpened Studs",
+    "Quick Mechanisms",
+    "Crystal Insurance",
+    "Free Recruits",
+    "Free Rebuild",
+    "Pawn Shop",
+  ]) {
+    await expect(
+      panel
+        .getByRole("article", { name, exact: true })
+        .locator(".guide-card-rarity"),
+    ).toContainText("Rare");
+  }
+  for (const [category, count] of [
+    ["trap", 10],
+    ["economy", 6],
+    ["defence", 4],
+    ["hero", 4],
+    ["gamble", 1],
+  ] as const) {
+    await expect(
+      panel.locator(`[data-upgrade-type="${category}"]`),
+    ).toHaveCount(count);
+  }
+  await loadCollectionImages(page);
+  await page.locator("#workshop").screenshot({
+    path: "test-results/field-guide-upgrades.png",
+    style: collectionScreenshotStyle,
+  });
+});
+
+test("collection tabs support keyboard navigation, Shardkeepers and both kingdoms", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await waitForGuide(page);
+  const shardkeepers = page.getByRole("tab", { name: "Shardkeepers", exact: true });
   const traps = page.getByRole("tab", { name: "The traps", exact: true });
   const enemies = page.getByRole("tab", {
     name: "The troublemakers",
     exact: true,
   });
   const kingdoms = page.getByRole("tab", { name: "Kingdoms", exact: true });
+  const upgrades = page.getByRole("tab", {
+    name: "Upgrade Cards",
+    exact: true,
+  });
   await traps.focus();
   await page.keyboard.press("ArrowRight");
   await expect(enemies).toBeFocused();
   await expect(enemies).toHaveAttribute("aria-selected", "true");
   await expect(activeCollection(page).locator(".guide-card")).toHaveCount(11);
+  await page.keyboard.press("ArrowRight");
+  await expect(upgrades).toBeFocused();
+  await expect(upgrades).toHaveAttribute("aria-selected", "true");
+  await expect(activeCollection(page).locator(".guide-card")).toHaveCount(25);
   await page.keyboard.press("End");
   await expect(kingdoms).toBeFocused();
   await expect(kingdoms).toHaveAttribute("aria-selected", "true");
@@ -266,7 +361,10 @@ test("collection tabs support keyboard navigation and show both kingdoms", async
     exact: true,
   });
   await expect(map).toBeVisible();
-  await expect(map.locator("img")).toHaveAttribute("src", /media\/world.webp$/);
+  await expect(map.locator("img")).toHaveAttribute(
+    "src",
+    /media\/playground.webp$/,
+  );
   const mill = activeCollection(page).getByRole("article", {
     name: "WindWhistle Mill",
     exact: true,
@@ -286,18 +384,30 @@ test("collection tabs support keyboard navigation and show both kingdoms", async
       name: "Choose your Shardkeeper.",
       exact: true,
     }),
-  ).toBeVisible();
-  await expect(
-    page.locator(".guide-heroes button, .guide-heroes a"),
-  ).toHaveCount(0);
+  ).toBeHidden();
   await loadCollectionImages(page);
   await page.locator("#workshop").screenshot({
     path: "test-results/field-guide-kingdoms.png",
     style: collectionScreenshotStyle,
   });
   await page.keyboard.press("Home");
+  await expect(shardkeepers).toBeFocused();
+  await expect(shardkeepers).toHaveAttribute("aria-selected", "true");
+  await expect(activeCollection(page)).toHaveAccessibleName("Shardkeepers");
+  await expect(activeCollection(page).getByRole("heading", { name: "Choose your Shardkeeper.", exact: true })).toBeVisible();
+  await expect(activeCollection(page).locator(".guide-hero-portrait")).toHaveAttribute("src", /media\/hero.webp$/);
+  await expect(page.locator(".guide-heroes")).toHaveCount(1);
+  await expect(page.locator(".guide-heroes button, .guide-heroes a")).toHaveCount(0);
+  await loadCollectionImages(page);
+  await page.locator("#workshop").screenshot({
+    path: "test-results/field-guide-shardkeepers.png",
+    style: collectionScreenshotStyle,
+  });
+  await page.keyboard.press("ArrowRight");
   await expect(traps).toBeFocused();
   await expect(activeCollection(page).locator(".guide-card")).toHaveCount(8);
+  await page.keyboard.press("ArrowLeft");
+  await expect(shardkeepers).toBeFocused();
   await page.keyboard.press("ArrowLeft");
   await expect(kingdoms).toBeFocused();
   await expect(kingdoms).toHaveAttribute("aria-selected", "true");
@@ -309,9 +419,15 @@ test("the illustrated layout fits narrow phones and tablets", async ({
   await page.goto("/");
   await waitForGuide(page);
   await page.evaluate(() => document.fonts.ready);
-  for (const width of [320, 768, 1024]) {
+  for (const width of [320, 768, 900, 1024]) {
     await page.setViewportSize({ width, height: 900 });
-    for (const tab of ["The traps", "The troublemakers", "Kingdoms"]) {
+    for (const tab of [
+      "Shardkeepers",
+      "The traps",
+      "The troublemakers",
+      "Upgrade Cards",
+      "Kingdoms",
+    ]) {
       await page.getByRole("tab", { name: tab, exact: true }).click();
       const fits = await page.evaluate(() => {
         const title = document.querySelector("h1")!.getBoundingClientRect();
@@ -806,6 +922,17 @@ test("the complete artifact works below a GitHub Pages repository path", async (
       exact: true,
     }),
   ).toBeVisible();
+  await page.getByRole("tab", { name: "Upgrade Cards", exact: true }).click();
+  await expect(activeCollection(page).getByRole("article")).toHaveCount(25);
+  await expect(
+    activeCollection(page)
+      .getByRole("article", { name: "Sharpened Studs", exact: true })
+      .locator("img"),
+  ).toHaveAttribute(
+    "src",
+    /\/broken-robots\/cache\/[a-f0-9]{16}\/media\/upgrades\/sharpened-studs.webp$/,
+  );
+  await loadCollectionImages(page);
   await page.getByRole("tab", { name: "Kingdoms", exact: true }).click();
   await expect(
     activeCollection(page)
@@ -813,7 +940,7 @@ test("the complete artifact works below a GitHub Pages repository path", async (
       .locator("img"),
   ).toHaveAttribute(
     "src",
-    /\/broken-robots\/cache\/[a-f0-9]{16}\/media\/world.webp$/,
+    /\/broken-robots\/cache\/[a-f0-9]{16}\/media\/playground.webp$/,
   );
   await expect(
     activeCollection(page)
@@ -858,6 +985,19 @@ test.describe("small screens", () => {
       .getByRole("tab", { name: "The troublemakers", exact: true })
       .click();
     await expect(activeCollection(page).locator(".guide-card")).toHaveCount(11);
+    await page.getByRole("tab", { name: "Upgrade Cards", exact: true }).click();
+    await expect(activeCollection(page).getByRole("article")).toHaveCount(25);
+    await loadCollectionImages(page);
+    await page.locator(".guide-toolbar").screenshot({
+      path: "test-results/field-guide-mobile-tabs.png",
+      style: collectionScreenshotStyle,
+    });
+    await activeCollection(page)
+      .getByRole("article", { name: "Sharpened Studs", exact: true })
+      .screenshot({
+        path: "test-results/field-guide-mobile-upgrade.png",
+        style: collectionScreenshotStyle,
+      });
     await page.getByRole("tab", { name: "Kingdoms", exact: true }).click();
     await expect(activeCollection(page).getByRole("article")).toHaveCount(2);
     await expect(

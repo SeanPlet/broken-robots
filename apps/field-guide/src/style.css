@@ -145,6 +145,7 @@
 }
 .guide-filters {
   display: inline-flex;
+  max-width: 100%;
   padding: 5px;
   gap: 5px;
   border: 2px solid #0e0b1b;
@@ -241,6 +242,8 @@
   --card-tilt: 0.8deg;
 }
 .guide-card {
+  --card-radius: 10px;
+  --card-border-width: 3px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -248,14 +251,28 @@
   width: 100%;
   padding: 0;
   text-align: left;
-  border: 3px solid #110e22;
-  border-radius: 10px;
-  background: var(--paper);
+  border: var(--card-border-width) solid #110e22;
+  border-radius: var(--card-radius);
+  background: #110e22;
   color: var(--ink);
   font-family: var(--body);
   box-shadow: 0 7px 0 #100b20;
   transform: translateY(var(--card-lift, 0px)) rotate(var(--card-tilt));
   cursor: default;
+}
+.guide-card-surface {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  /* One inner curve clips every fill; the outer card keeps its hover shadow. */
+  overflow: hidden;
+  border-radius: calc(var(--card-radius) - var(--card-border-width));
+  /* Match the header beneath its antialiased corners to avoid a pale fringe. */
+  background: linear-gradient(
+    var(--upgrade-color, #e1c995) var(--card-radius),
+    var(--paper) var(--card-radius)
+  );
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .guide-card-slot {
@@ -294,7 +311,6 @@
   min-height: 39px;
   padding: 10px 10px;
   border-bottom: 2px solid #3b2c34;
-  border-radius: 6px 6px 0 0;
   background: #e1c995;
   color: #34283e;
   font-size: 8px;
@@ -394,6 +410,64 @@
   padding-top: 11px;
   margin-top: auto;
 }
+.guide-card[data-category="upgrades"] {
+  /* Keep the coloured headers and border on the same pixel axes. */
+  transform: translateY(var(--card-lift, 0px));
+}
+.guide-card[data-upgrade-type="trap"] {
+  --upgrade-color: #ba251a;
+  --upgrade-tint: #f7e2d6;
+  --upgrade-ink: #fff5df;
+}
+.guide-card[data-upgrade-type="economy"] {
+  --upgrade-color: #edc32c;
+  --upgrade-tint: #f7edc5;
+  --upgrade-ink: #3c2b12;
+}
+.guide-card[data-upgrade-type="defence"] {
+  --upgrade-color: #1d5ba6;
+  --upgrade-tint: #e0e9ef;
+  --upgrade-ink: #fff5df;
+}
+.guide-card[data-upgrade-type="hero"] {
+  --upgrade-color: #287e39;
+  --upgrade-tint: #deebd2;
+  --upgrade-ink: #fff5df;
+}
+.guide-card[data-upgrade-type="gamble"] {
+  --upgrade-color: #68409d;
+  --upgrade-tint: #eee2f5;
+  --upgrade-ink: #fff5df;
+}
+.guide-card[data-category="upgrades"] .guide-card-top {
+  background: var(--upgrade-color);
+  color: var(--upgrade-ink);
+}
+.guide-card[data-category="upgrades"] .guide-card-image {
+  display: grid;
+  place-items: center;
+  aspect-ratio: auto;
+  height: 156px;
+  background: var(--upgrade-tint);
+}
+.guide-card[data-category="upgrades"] .guide-card-image img {
+  width: 116px;
+  height: 116px;
+  border-radius: 50%;
+}
+.guide-card-rarity {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid #a97624;
+  border-radius: 20px;
+  padding: 2px 7px;
+  background: #ffe084;
+  color: #573709;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
 .guide-map-grid {
   display: grid;
   gap: 28px;
@@ -458,7 +532,7 @@
   align-items: center;
   gap: 30px;
   padding: 25px 28px;
-  margin: 49px 7px 0;
+  margin: 8px 7px 20px;
   border-top: 1px solid #b69bd84a;
   border-bottom: 1px solid #b69bd84a;
   background: #b69bd80a;
@@ -548,6 +622,16 @@
   }
   .guide-map-copy p:not(.eyebrow) {
     font-size: 13px;
+  }
+}
+@media (max-width: 950px) {
+  .guide-filters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: min(100%, 480px);
+  }
+  .guide-filters button:last-child {
+    grid-column: 1 / -1;
   }
 }
 @media (max-width: 850px) {
@@ -643,18 +727,17 @@
   }
   .guide-filters {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     width: 100%;
     gap: 3px;
     padding: 4px;
   }
   .guide-filters button {
-    flex-direction: column;
-    padding: 11px 6px;
+    padding: 12px 8px;
     min-width: 0;
-    min-height: 61px;
-    gap: 5px;
-    font-size: 10px;
+    min-height: 48px;
+    gap: 10px;
+    font-size: 11px;
     line-height: 1.35;
   }
   .guide-filters button span {
@@ -694,7 +777,6 @@
     grid-template-columns: 100px minmax(0, 1fr);
     gap: 19px;
     padding: 22px 10px;
-    margin-top: 34px;
   }
   .guide-hero-portrait {
     width: 100px;

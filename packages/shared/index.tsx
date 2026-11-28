@@ -9,7 +9,7 @@ export type MountOptions = {
 };
 export type CatalogEntry = {
   id: string;
-  category: "traps" | "enemies";
+  category: "traps" | "enemies" | "upgrades";
   name: string;
   eyebrow: string;
   description: string;
@@ -17,6 +17,8 @@ export type CatalogEntry = {
   alt: string;
   kind: string;
   cost?: string;
+  upgradeType?: "trap" | "economy" | "defence" | "hero" | "gamble";
+  rare?: boolean;
 };
 export type SiteContent = {
   maps: {

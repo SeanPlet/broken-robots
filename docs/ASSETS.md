@@ -9,7 +9,8 @@ Run `node scripts/import-assets.mjs` to regenerate from the current user's Downl
 | studio-logo.webp                          | broken_robot.png                   | Actual transparent studio logo in header, studio and footer |
 | brickhold-logo.webp                       | brickhold_logo.png                 | Actual transparent Brickhold wordmark and swords            |
 | portal.webp                               | 04_out_of_the_portal.jpg           | Opening scene                                               |
-| world.webp                                | 05_the_playground.jpg              | Arena gallery view and the Playground Kingdoms card         |
+| world.webp                                | 05_the_playground.jpg              | Arena gallery view                                          |
+| playground.webp                           | playground.png (chat attachment)  | Supplied Playground artwork in the Kingdoms collection      |
 | windwhistle-mill.webp                      | windwhistle-mill.png (chat attachment) | Supplied WindWhistle Mill artwork in the Kingdoms collection |
 | gameplay.webp                             | 03_build_mode.jpg                  | Build-mode gallery view                                     |
 | funnel.webp                               | 07_barricade_funnel.jpg            | Barricade routing gallery view                              |
@@ -28,14 +29,17 @@ Run `node scripts/import-assets.mjs` to regenerate from the current user's Downl
 | horde-loop.webp / horde-poster.webp       | horde_through_traps.gif            | Optional horde animation and still poster                   |
 | horde-loop.mp4                            | horde-loop.webp                    | Pausable Defend gameplay preview                            |
 | catalog/*.webp                            | trap_roster.png / enemy_roster.png | Individual in-game portraits for all nineteen cards         |
+| upgrades/*.webp                           | upgrade-cards.png / upgrade-cards-extra.png (chat attachments) | Original icon medallions for all twenty-five upgrade cards |
 
 The individual roster crops exclude the baked titles, captions and margins. Columns start at x = 60, 517, 974, 1431, width 427px. Trap rows start at y = 196, 588, height 241px. Enemy rows start at y = 196, 739, 1282, height 427px. These bounds and every ID are recorded in the importer. Card copy, prices and roles follow the supplied sheets. Each tab displays the full corresponding roster as static cards, with the descriptions directly visible; there are no detail dialogs or pagination.
+
+Upgrade icons come from the original 1280 × 1680 sheet and the additional 1280 × 1260 sheet supplied on 28 November 2026. Run `node scripts/import-upgrade-cards.mjs path/to/upgrade-cards.png`, then run it again with `path/to/upgrade-cards-extra.png` to regenerate all twenty-five lossless 116 × 116 WebP crops. The importer identifies the two sheets by their dimensions. Columns start at x = 152, 442, 732, 1022; rows start at y = 76, 496, 916, 1336 (the shorter sheet has only three rows). Names, effects, category colours and the six Rare badges follow the references. Text is rendered as HTML; the sheets' example current-run totals and upgrade-level dots are not presented as live game state on the website.
 
 The retained WebP animations preserve all source frames, frame delays and looping: gameplay has 56 frames over 4660ms, horde has 70 frames over 4670ms. The Defend gallery uses an H.264 MP4 converted from the horde animation, with the matching first-frame poster. One muted, inline video uses its still poster and defers downloading until a visitor selects **Play gameplay**. **Pause gameplay** holds the current frame; playing again resumes from that point without replacing the media. Switching gallery views or changing a motion preference to reduce pauses playback. Returning to Defend starts paused. Fight uses the supplied still hero image.
 
 To regenerate the MP4 after importing media, run `node scripts/convert-gameplay-video.mjs` with FFmpeg 9 or newer on PATH, or pass its executable path as the first argument. The converter reads the committed WebP, so the original Downloads are not needed. FFmpeg is only needed for regenerating this asset, not for running or building the site.
 
-WindWhistle Mill uses the image supplied in chat on 27 November 2026, converted to WebP at its original 1672 × 941 dimensions without cropping or redrawing. Save the attachment as `windwhistle-mill.png` in the source directory to regenerate it with the importer. Its Kingdoms card is labelled **Map artwork · In development**; the Playground retains its **In-game capture** caption.
+WindWhistle Mill uses the image supplied in chat on 27 November 2026. The Playground Kingdoms card uses the replacement image supplied on 28 November 2026. Both images are converted to WebP at their original 1672 × 941 dimensions without cropping or redrawing. Save the attachments as `windwhistle-mill.png` and `playground.png` in the source directory to regenerate them with the importer. Both Kingdoms cards are labelled **Map artwork · In development**. The gallery's **The world** view retains the original in-game capture.
 
 Both logos preserve transparency. The favicon is a transparent crop of the actual studio robot's head; it is recorded as `faviconCrop` in the importer and written to `apps/shell/public/favicon.png`. The logo's spelling, **Broken Robot**, is used consistently in visible site copy.
 

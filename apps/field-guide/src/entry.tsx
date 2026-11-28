@@ -13,8 +13,10 @@ import { usePanelTransition } from "../../../packages/shared/use-panel-transitio
 import { AmbientParticles } from "../../../packages/shared/ambient-particles";
 
 const tabs = [
+  { id: "shardkeepers", label: "Shardkeepers" },
   { id: "traps", label: "The traps" },
   { id: "enemies", label: "The troublemakers" },
+  { id: "upgrades", label: "Upgrade Cards" },
   { id: "kingdoms", label: "Kingdoms" },
 ] as const;
 type Category = (typeof tabs)[number]["id"];
@@ -49,35 +51,75 @@ function RosterCard({
     <article
       className={`guide-card guide-card-${entry.id}`}
       data-category={entry.category}
+      data-upgrade-type={entry.upgradeType}
       aria-labelledby={titleId}
     >
-      <div className="guide-card-top">
-        <span className="guide-card-stud" aria-hidden="true" />
-        <span>{entry.eyebrow}</span>
-        <span className="guide-card-stud" aria-hidden="true" />
-      </div>
-      <div className="guide-card-image">
-        <img
-          src={media(options, entry.image.replace(/^media\//, ""))}
-          alt={entry.alt}
-          loading="lazy"
-          width="427"
-          height={entry.category === "traps" ? "241" : "427"}
-        />
-      </div>
-      <div className="guide-card-copy">
-        <div className="guide-card-index">
-          <span aria-hidden="true">
-            NO. {String(index + 1).padStart(2, "0")}
-          </span>
-          {entry.cost && <span className="guide-card-cost">{entry.cost}</span>}
+      <div className="guide-card-surface">
+        <div className="guide-card-top">
+          <span className="guide-card-stud" aria-hidden="true" />
+          <span>{entry.eyebrow}</span>
+          <span className="guide-card-stud" aria-hidden="true" />
         </div>
-        <h3 className="guide-card-name" id={titleId}>
-          {entry.name}
-        </h3>
-        <p className="guide-card-description">{entry.description}</p>
+        <div className="guide-card-image">
+          <img
+            src={media(options, entry.image.replace(/^media\//, ""))}
+            alt={entry.alt}
+            loading="lazy"
+            width={entry.category === "upgrades" ? "116" : "427"}
+            height={
+              entry.category === "upgrades"
+                ? "116"
+                : entry.category === "traps"
+                  ? "241"
+                  : "427"
+            }
+          />
+        </div>
+        <div className="guide-card-copy">
+          <div className="guide-card-index">
+            <span aria-hidden="true">
+              NO. {String(index + 1).padStart(2, "0")}
+            </span>
+            {entry.cost && (
+              <span className="guide-card-cost">{entry.cost}</span>
+            )}
+            {entry.rare && (
+              <span className="guide-card-rarity">
+                <span aria-hidden="true">★</span> Rare
+              </span>
+            )}
+          </div>
+          <h3 className="guide-card-name" id={titleId}>
+            {entry.name}
+          </h3>
+          <p className="guide-card-description">{entry.description}</p>
+        </div>
       </div>
     </article>
+  );
+}
+
+function ShardkeeperPreview({ options }: { options: MountOptions }) {
+  return (
+    <div className="guide-heroes" aria-labelledby="guide-heroes-title">
+      <AmbientParticles className="guide-hero-particles" shape="runes" />
+      <img
+        className="guide-hero-portrait"
+        src={media(options, "hero.webp")}
+        alt="A smiling yellow-headed Shardkeeper in a red torso and blue legs, standing in Brickhold's courtyard"
+        loading="lazy"
+        width="800"
+        height="800"
+      />
+      <div className="guide-hero-copy">
+        <p className="eyebrow">THE OTHER SIDE OF THE FIGHT</p>
+        <h3 id="guide-heroes-title">Choose your Shardkeeper.</h3>
+        <p>
+          The heroes behind the defenses. We’ll introduce the playable roster
+          here as it takes shape.
+        </p>
+      </div>
+    </div>
   );
 }
 
@@ -138,11 +180,13 @@ function GuideContent({
               onClick={() => setCategory(tab.id)}
             >
               {tab.label}
-              <span aria-hidden="true">
-                {count(tab.id) === undefined
-                  ? "…"
-                  : String(count(tab.id)).padStart(2, "0")}
-              </span>
+              {tab.id !== "shardkeepers" && (
+                <span aria-hidden="true">
+                  {count(tab.id) === undefined
+                    ? "…"
+                    : String(count(tab.id)).padStart(2, "0")}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -167,7 +211,9 @@ function GuideContent({
               aria-hidden={category !== tab.id}
               inert={category !== tab.id}
             >
-              {error ? (
+              {tab.id === "shardkeepers" ? (
+                <ShardkeeperPreview options={options} />
+              ) : error ? (
                 <div className="guide-state" role="alert">
                   <p>{error}</p>
                   <button className="button guide-reload" onClick={onRetry}>
@@ -216,11 +262,18 @@ function GuideContent({
                   <p className="guide-collection-intro">
                     <span className="guide-roster-count">
                       {entries.length}{" "}
-                      {tab.id === "traps" ? "defenses" : "troublemakers"}.
+                      {tab.id === "traps"
+                        ? "defenses"
+                        : tab.id === "upgrades"
+                          ? "upgrades"
+                          : "troublemakers"}
+                      .
                     </span>{" "}
                     {tab.id === "traps"
                       ? "Build a plan. Make it everyone's problem."
-                      : "Know what is coming through that portal."}
+                      : tab.id === "upgrades"
+                        ? "A roguelike twist between waves. Choose upgrade cards to strengthen your traps, grow your stud income, bolster your defenses or power up your heroes."
+                        : "Know what is coming through that portal."}
                   </p>
                   <div className="guide-grid" data-category={tab.id}>
                     {entries.map((entry, index) => (
@@ -239,25 +292,6 @@ function GuideContent({
           );
         })}
       </div>
-      <aside className="guide-heroes" aria-labelledby="guide-heroes-title">
-        <AmbientParticles className="guide-hero-particles" shape="runes" />
-        <img
-          className="guide-hero-portrait"
-          src={media(options, "hero.webp")}
-          alt="A smiling yellow-headed Shardkeeper in a red torso and blue legs, standing in Brickhold's courtyard"
-          loading="lazy"
-          width="800"
-          height="800"
-        />
-        <div className="guide-hero-copy">
-          <p className="eyebrow">THE OTHER SIDE OF THE FIGHT</p>
-          <h3 id="guide-heroes-title">Choose your Shardkeeper.</h3>
-          <p>
-            The heroes behind the defenses. We’ll introduce the playable roster
-            here as it takes shape.
-          </p>
-        </div>
-      </aside>
       <div className="guide-bottom">
         <span>Small pieces. Big consequences.</span>
         <Spark />
@@ -287,7 +321,7 @@ function FieldGuide({ options }: { options: MountOptions }) {
             Meet your problems.
           </h2>
           <p className="guide-intro">
-            The defenses, the creatures, and the places worth protecting.
+            The heroes, defenses, creatures, upgrades, and places worth protecting.
           </p>
         </div>
         <GuideContent

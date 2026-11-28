@@ -9,7 +9,7 @@ The site is a local-first React learning project: a small studio website, four r
 | Shell           | Document, navigation, shared styling, runtime manifest loading, section loading and retry states |
 | Intro MFE       | Studio introduction and opening artwork                                                          |
 | Brickhold MFE   | Featured game and its current development status                                                 |
-| Field Guide MFE | Complete static trap/enemy collections, Kingdoms maps and future Shardkeeper preview             |
+| Field Guide MFE | Complete static trap/enemy/upgrade collections, Kingdoms maps and future Shardkeeper preview             |
 | Studio MFE      | Studio story and contact                                                                         |
 | Shared content  | `content/site.json` and `content/catalog.json` are the editorial source of truth                 |
 | Optional BFF    | Read-only HTTP presentation API over that shared content                                         |
@@ -48,7 +48,7 @@ flowchart TD
 
 The default mode is fully static. After assembling the site, `scripts/cache-assets.mjs` fingerprints each media file and MFE bundle, writes immutable resource URLs, and injects the manifest/content snapshot and preload hints into HTML. Static rendering needs no additional manifest or JSON fetch. The shell fonts are fingerprinted by Vite. Original public paths remain available for compatibility and social metadata. Host response headers determine cache lifetimes; first loads still require downloads. The production build stages public assets and the shared JSON under `dist/production-public`, then packages all frontend builds into `dist/site`. This works on GitHub Pages without a server. During development, remote builds are watched and served by shell middleware from `dist/mfe`; `/data/site.json` and `/data/catalog.json` are read directly from `content/`, and the runtime manifest comes from `scripts/runtime-manifest.mjs`. This keeps production staging separate from live development files and avoids copying JSON into a watched public directory.
 
-The Field Guide MFE reads the full trap/enemy roster from `catalog.json` and the map collection from the `maps` array in `site.json`. The same files are exposed by `/api/catalog` and `/api/site` in optional BFF mode. Selecting a collection changes the active accessible tab panel; it does not request a paginated slice or open a detail dialog. The Shardkeeper preview remains a separate part of this MFE, ready for a future hero roster when approved content exists.
+The Field Guide MFE reads the full trap/enemy/upgrade roster from `catalog.json` and the map collection from the `maps` array in `site.json`. The same files are exposed by `/api/catalog` and `/api/site` in optional BFF mode. Selecting a collection changes the active accessible tab panel; it does not request a paginated slice or open a detail dialog. The Shardkeeper preview remains a separate part of this MFE, ready for a future hero roster when approved content exists.
 
 ## Try the BFF locally
 
@@ -76,6 +76,7 @@ The BFF has no dependencies beyond Node's standard library and no database. It i
 | `GET /api/catalog`                  | Full catalog                         |
 | `GET /api/catalog?category=traps`   | Only traps                           |
 | `GET /api/catalog?category=enemies` | Only enemies                         |
+| `GET /api/catalog?category=upgrades` | Only upgrade cards                   |
 
 Unknown categories return 400, unknown paths return 404, and methods other than GET return 405. Content failures return a generic 500 response and log details locally. The server binds to loopback and uses port 8787 by default; `PORT` overrides it. It fails clearly if the requested port is occupied. No requests mutate content, send email, or collect visitor information.
 

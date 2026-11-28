@@ -15,6 +15,7 @@ sharp.concurrency(2);
 
 export const screenshotSources = {
   "world.webp": { source: "05_the_playground.jpg", width: 1920 },
+  "playground.webp": { source: "playground.png", width: 1920 },
   "windwhistle-mill.webp": { source: "windwhistle-mill.png", width: 1920 },
   "portal.webp": { source: "04_out_of_the_portal.jpg", width: 1920 },
   "guard-post.webp": { source: "guard_post.jpg", width: 1280 },
